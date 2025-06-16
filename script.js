@@ -1,73 +1,84 @@
 class MathProblemGuidingBot {
   constructor() {
     this.guidingQuestions = [
-      { key: 'א', text: "מה צריך למצוא?" , icon: "icons-leading-questions/question_find.png" },
-      { key: 'ב', text: "מה אתה כבר יודע שיכול לעזור?" , icon: "icons-leading-questions/question_know.png" },
-      { key: 'ג', text: "מה אתה צריך לדעת או להבין כדי לפתור?" , icon: "icons-leading-questions/question_need.png" }
+      { key: 'א', text: "מה צריך למצוא?", icon: "icons-leading-questions/question_find.png" },
+      { key: 'ב', text: "מה אתה כבר יודע שיכול לעזור?", icon: "icons-leading-questions/question_know.png" },
+      { key: 'ג', text: "מה אתה צריך לדעת או להבין כדי לפתור?", icon: "icons-leading-questions/question_need.png" }
     ];
     this.currentQuestionIndex = 0;
     this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
     this.dialogStage = 'start';
     this.currentProblem = "דוגמה: אבא קנה 5 תפוחים ואמא קנתה 3 תפוחים. כמה תפוחים יש בסך הכל?";
+    this.userGender = null; // 'male', 'female', 'other'
   }
 
   startConversationLogic() {
-    this.postBotMessage("שלום! אני מתי, כאן כדי לעזור לך להבין בעיות מתמטיות בדרך פשוטה ואינטראקטיבית. <br>זכור/י: המטרה היא להבין את הבעיה, לא רק לקבל תשובה.");
+    this.postBotMessageWithAvatar("שלום! אני מתי, כאן כדי לעזור לך להבין בעיות מתמטיות בדרך פשוטה ואינטראקטיבית.<br>זכור/י: המטרה היא להבין את הבעיה, לא רק לקבל תשובה.", "avatar_welcoming.png");
     setTimeout(() => {
-      this.postBotMessage(`הבעיה שלנו היום היא:<br><b>${this.currentProblem}</b>`);
-      this.dialogStage = 'asking_guiding_questions';
-      setTimeout(() => {
-        this.askGuidingQuestion();
-      }, 1000);
+      this.postBotMessageWithAvatar("איך אוכל לפנות אליך? בחר/י את המגדר שלך כדי לדבר בצורה הכי נכונה.", "avatar_inviting_action.png", true, ["זכר", "נקבה", "אחר/ת"]);
+      this.dialogStage = 'awaiting_gender';
     }, 2000);
+  }
+
+  handleGenderSelection(genderText) {
+    const genderMap = { "זכר": "male", "נקבה": "female", "אחר/ת": "other" };
+    this.userGender = genderMap[genderText] || null;
+    this.postBotMessageWithAvatar(`נעים מאוד! אדבר אליך בהתאם למגדר שבחרת: ${genderText}.`, "avatar_confident.png");
+    setTimeout(() => {
+      this.postBotMessageWithAvatar(`הבעיה שלנו היום היא:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+      this.dialogStage = 'asking_guiding_questions';
+      setTimeout(() => this.askGuidingQuestion(), 1500);
+    }, 1500);
   }
 
   askGuidingQuestion() {
     if (this.currentQuestionIndex < this.guidingQuestions.length) {
       const q = this.guidingQuestions[this.currentQuestionIndex];
-      this.postBotMessageWithIcon(q.text, q.icon);
+      this.postBotMessageWithIcon(q.text, q.icon, "avatar_support.png");
     } else {
-      this.postBotMessage("נראה שהבנת טוב את הבעיה! זה עוזר לנו להמשיך בדרך לפתרון.");
+      this.postBotMessageWithAvatar("נראה שהבנת טוב את הבעיה! זה עוזר לנו להמשיך בדרך לפתרון.", "avatar_compliment.png");
       this.dialogStage = 'problem_translation_help';
-      setTimeout(() => {
-        this.askForFirstStepInTranslation();
-      }, 1500);
+      setTimeout(() => this.askForFirstStepInTranslation(), 1500);
     }
   }
 
   askForFirstStepInTranslation() {
-    this.postBotMessage("איך היית מתחיל/ה לתרגם את הבעיה הזו למספרים ופעולות חשבון?");
-    this.postBotMessage("מה הדבר הראשון שהיית כותב/ת או מחשב/ת?");
+    this.postBotMessageWithAvatar("איך היית מתחיל/ה לתרגם את הבעיה הזו למספרים ופעולות חשבון?", "avatar_inviting_action.png");
+    this.postBotMessageWithAvatar("מה הדבר הראשון שהיית כותב/ת או מחשב/ת?", "avatar_inviting_action.png");
   }
 
   handleStudentInputLogic(userInput) {
     if (userInput.trim() === "") {
-      this.postBotMessage("🤔 כתוב/י משהו כדי שאוכל לעזור.");
+      this.postBotMessageWithAvatar("🤔 כתוב/י משהו כדי שאוכל לעזור.", "avatar_support.png");
+      return;
+    }
+
+    if (this.dialogStage === 'awaiting_gender') {
+      // בטיפול דרך כפתורים בלבד - אם משתמש הקליד טקסט, מבקשים לבחור כפתור
+      this.postBotMessageWithAvatar("אנא בחר/י את המגדר שלך מהכפתורים למטה.", "avatar_confuse.png", true, ["זכר", "נקבה", "אחר/ת"]);
       return;
     }
 
     if (this.dialogStage === 'asking_guiding_questions') {
-      const qKey = this.guidingQuestions[this.currentQuestionIndex].key;
-      this.studentGuidingAnswers[qKey] = userInput;
+      const q = this.guidingQuestions[this.currentQuestionIndex];
+      this.studentGuidingAnswers[q.key] = userInput;
 
       let response = `תודה על התשובה שלך. נמשיך לשאלה הבאה.`;
 
-      // דגשים לפי שאלה
-      if (qKey === 'א') {
+      // משוב מותאם לשאלות
+      if (q.key === 'א') {
         if (!userInput.includes("כמה") && !userInput.includes("מה")) {
           response += "<br>נסה/נסי לנסח את מה שאתה רוצה למצוא בצורה מדויקת יותר.";
         } else {
           response += "<br>מעולה, זה עוזר למקד את המטרה.";
         }
-      }
-      if (qKey === 'ב') {
+      } else if (q.key === 'ב') {
         if (!/\d/.test(userInput)) {
           response += "<br>נסה/נסי למצוא את כל המספרים או הנתונים שבבעיה.";
         } else {
           response += "<br>יופי, זיהית נתונים חשובים.";
         }
-      }
-      if (qKey === 'ג') {
+      } else if (q.key === 'ג') {
         if (userInput.includes("אין") || userInput.includes("לא יודע")) {
           response += "<br>חשוב לבדוק אם חסר מידע לפני שמתחילים.";
         } else {
@@ -75,10 +86,9 @@ class MathProblemGuidingBot {
         }
       }
 
-      this.postBotMessage(response);
-
+      this.postBotMessageWithAvatar(response, "avatar_support.png");
       this.currentQuestionIndex++;
-      setTimeout(() => this.askGuidingQuestion(), 1800);
+      setTimeout(() => this.askGuidingQuestion(), 2000);
 
     } else if (this.dialogStage === 'problem_translation_help') {
       const inputLower = userInput.toLowerCase();
@@ -95,71 +105,122 @@ class MathProblemGuidingBot {
       }
 
       botResponse += "<br>מה הסיבה שבחרת בדרך הזו לפתור את הבעיה?";
-      this.postBotMessage(botResponse);
+      this.postBotMessageWithAvatar(botResponse, "avatar_thinking.png");
     }
   }
 
-  postBotMessage(message) {
+  postBotMessageWithAvatar(message, avatarFilename, showButtons = false, buttons = []) {
     const chatBox = document.getElementById('chat-box');
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', 'bot-message');
-    msgDiv.innerHTML = message;
-    chatBox.appendChild(msgDiv);
+
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', 'bot-message');
+
+    const avatarImg = document.createElement('img');
+    avatarImg.src = `images/avatars/${avatarFilename}`;
+    avatarImg.alt = "אווטאר מתי";
+    avatarImg.classList.add('avatar');
+    messageDiv.appendChild(avatarImg);
+
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('message-text');
+    textDiv.innerHTML = message;
+    messageDiv.appendChild(textDiv);
+
+    if (showButtons && buttons.length > 0) {
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.classList.add('button-group');
+
+      buttons.forEach(btnText => {
+        const btn = document.createElement('button');
+        btn.textContent = btnText;
+        btn.classList.add('choice-button');
+        btn.onclick = () => {
+          if (this.dialogStage === 'awaiting_gender') {
+            this.handleGenderSelection(btnText);
+          } else if (this.dialogStage === 'continue_or_stop') {
+            if (btnText === "להמשיך") {
+              this.postBotMessageWithAvatar(`שמח/ה שאתה/את רוצה להמשיך! בוא/י נתקדם.`, "avatar_compliment.png");
+              this.currentQuestionIndex = 0;
+              this.dialogStage = 'asking_guiding_questions';
+              setTimeout(() => this.askGuidingQuestion(), 1800);
+            } else {
+              this.postBotMessageWithAvatar(`אני כאן בשבילך מתי שתרצה/י לחזור.`, "avatar_support.png");
+              this.dialogStage = 'ended';
+            }
+          }
+          buttonsDiv.remove();
+        };
+        buttonsDiv.appendChild(btn);
+      });
+
+      messageDiv.appendChild(buttonsDiv);
+    }
+
+    chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  postBotMessageWithIcon(message, iconPath) {
+  postBotMessageWithIcon(message, iconPath, avatarFilename) {
     const chatBox = document.getElementById('chat-box');
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', 'bot-message');
+
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', 'bot-message');
 
     const iconImg = document.createElement('img');
     iconImg.src = iconPath;
     iconImg.alt = "שאלה מנחה";
     iconImg.classList.add('question-icon');
+    messageDiv.appendChild(iconImg);
 
-    const textSpan = document.createElement('span');
-    textSpan.innerHTML = message;
+    const avatarImg = document.createElement('img');
+    avatarImg.src = `images/avatars/${avatarFilename}`;
+    avatarImg.alt = "אווטאר מתי";
+    avatarImg.classList.add('avatar');
+    messageDiv.appendChild(avatarImg);
 
-    msgDiv.appendChild(iconImg);
-    msgDiv.appendChild(textSpan);
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('message-text');
+    textDiv.innerHTML = message;
+    messageDiv.appendChild(textDiv);
 
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  postStudentMessage(message) {
-    const chatBox = document.getElementById('chat-box');
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', 'student-message');
-    msgDiv.textContent = message;
-    chatBox.appendChild(msgDiv);
+    chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 }
 
+// יצירת מופע של הבוט
 const myGuidingBot = new MathProblemGuidingBot();
 
+// פונקציות להפעלה ושליחה
 function startChat() {
   document.getElementById("welcome-screen").style.display = "none";
-  document.getElementById("chat-container").style.display = "block";
+  document.getElementById("chat-container").style.display = "flex";
   myGuidingBot.startConversationLogic();
 }
 
 function sendMessage() {
-  const userInput = document.getElementById("user-input");
-  const input = userInput.value;
-
-  if (!input.trim()) {
-    myGuidingBot.postBotMessage("🤔 כתוב/י משהו כדי שאוכל לעזור.");
+  const userInputElement = document.getElementById("user-input");
+  const input = userInputElement.value.trim();
+  if (!input) {
+    myGuidingBot.postBotMessageWithAvatar("🤔 כתוב/י משהו כדי שאוכל לעזור.", "avatar_support.png");
     return;
   }
-
   myGuidingBot.postStudentMessage(input);
   myGuidingBot.handleStudentInputLogic(input);
-  userInput.value = "";
+  userInputElement.value = "";
 }
 
+// הצגת הודעת תלמיד
+MathProblemGuidingBot.prototype.postStudentMessage = function(message) {
+  const chatBox = document.getElementById('chat-box');
+  const studentMessageDiv = document.createElement('div');
+  studentMessageDiv.classList.add('message', 'student-message');
+  studentMessageDiv.textContent = message;
+  chatBox.appendChild(studentMessageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+};
+
+// מאזינים לאירועים
 document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.getElementById('start-button');
   if (startButton) startButton.addEventListener('click', startChat);
