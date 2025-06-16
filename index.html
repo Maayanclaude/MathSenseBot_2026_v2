@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>מתי - Math Sense Bot</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- מסך פתיחה -->
+    <div id="welcome-screen" class="welcome-screen">
+        <img src="images/avatars/avatar_welcoming.png" alt="אווטר מתי - ברוכה הבאה" class="avatar" />
+        <h1>שלום! אני מתי, כאן כדי לעזור לך להבין את השפה המתמטית.</h1>
+        <button id="start-button">התחל/י</button>
+    </div>
+
+    <!-- מסך הצ'אט -->
+    <div id="chat-container" class="chat-container" style="display:none;">
+        <div class="chat-header">
+            <img src="images/avatars/avatar_support.png" alt="אווטר מתי תומכת" class="avatar-small" />
+            <h2>מתי - Math Sense Bot</h2>
+        </div>
+        <div id="chat-box" class="chat-box"></div>
+        <div id="input-container" class="input-container">
+            <input type="text" id="user-input" placeholder="כתוב כאן..." autocomplete="off" />
+            <button id="send-button">שלח</button>
