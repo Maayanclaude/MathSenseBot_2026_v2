@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarImg.src = `./avatars/${avatarFileName}`; // נתיב מתוקן
         avatarImg.alt = sender + ' avatar';
 
-        const textSpan = document.createElement('span');
+        const textSpan = document.createElement('span'); // Changed to span as per addMessage
         textSpan.classList.add('message-text');
         textSpan.innerHTML = text;
 
@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
     class MathProblemGuidingBot {
         constructor() {
             this.guidingQuestions = [
-                { key: 'א', text: "מה אנחנו צריכים למצוא? כלומר, מה השאלה המרכזית כאן?", icon: "question_find.png" },
-                { key: 'ב', text: "מה כבר יש לנו בבעיה? מה הנתונים שיכולים לעזור לנו?", icon: "question_know.png" },
-                { key: 'ג', text: "יש משהו שעדיין לא ברור או חסר לנו לדעת כדי לפתור את הבעיה?", icon: "question_need.png" }
+                { key: 'א', text: "מה אנחנו צריכים למצוא? כלומר, מה השאלה המרכזית כאן?", icon: "magnifying_glass.png" }, // שם קובץ מדויק
+                { key: 'ב', text: "מה כבר יש לנו בבעיה? מה הנתונים שיכולים לעזור לנו?", icon: "list.png" }, // שם קובץ מדויק
+                { key: 'ג', text: "יש משהו שעדיין לא ברור או חסר לנו לדעת כדי לפתור את הבעיה?", icon: "Missing_puzzle.png" } // שם קובץ *מתוקן*
             ];
             this.currentQuestionIndex = 0;
             this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
@@ -240,9 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
         handleStudentInputLogic(input) {
             if (isBotTyping) return;
 
-            // Immediately add student message
             addMessage('student', input, 'student_avatar.png');
-            userInput.value = ""; // Clear input after sending
+            userInput.value = "";
 
             if (input.trim() === "") {
                 this.postBotMessageWithAvatar("🤔 כתוב/י משהו כדי שאוכל לעזור.", "avatar_confuse.png");
