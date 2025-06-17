@@ -269,10 +269,10 @@ body.app-started #welcome-screen {
 }
 
 /* אין צורך ב-body.app-started #app-main-container { display: grid; }
-   כי body.app-started כבר מגדיר את ה-body כ-grid וה-app-main-container
-   יקבל את הפריסה אוטומטית. חשוב שה-app-main-container
-   יהיה גלוי רק כשהאפליקציה מתחילה (display: none -> display: block/grid).
-   זה יטופל ב-JS. */
+    כי body.app-started כבר מגדיר את ה-body כ-grid וה-app-main-container
+    יקבל את הפריסה אוטומטית. חשוב שה-app-main-container
+    יהיה גלוי רק כשהאפליקציה מתחילה (display: none -> display: block/grid).
+    זה יטופל ב-JS. */
 
 /* רספונסיביות למסכים קטנים יותר */
 @media (max-width: 768px) {
