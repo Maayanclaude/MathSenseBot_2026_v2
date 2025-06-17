@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>מתי - Math Sense Bot</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Sense Bot</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- מסך פתיחה -->
-    <div id="welcome-screen" class="welcome-screen">
-        <img src="images/avatars/avatar_welcoming.png" alt="אווטר מתי - ברוכה הבאה" class="avatar" />
-        <h1>שלום! אני מתי, כאן כדי לעזור לך להבין את השפה המתמטית.</h1>
-        <button id="start-button">התחל/י</button>
+    <div id="welcome-screen">
+        <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי - ברוכה הבאה" class="welcome-avatar">
+        <h1>פתאום זה קורה</h1>
+        <h2>שלום! אני מתי, כאן כדי לעזור לך להבין בעיות מתמטיות בדרך פשוטה ואינטראקטיבית.</h2>
+        <button id="start-button">התחילו!</button>
     </div>
 
-    <!-- מסך הצ'אט -->
-    <div id="chat-container" class="chat-container" style="display:none;">
-        <div class="chat-header">
-            <img src="images/avatars/avatar_support.png" alt="אווטר מתי תומכת" class="avatar-small" />
-            <h2>מתי - Math Sense Bot</h2>
+    <div id="app-main-container" class="hidden">
+        <div id="left-panel">
+            <div id="chat-header">
+                <span id="bot-status">אווטאר מתי זמין/ה</span>
+                <span id="bot-name">מתי - Math Sense Bot</span>
+            </div>
+
+            <div id="chat-window">
+                </div>
+
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="כתבו כאן...">
+                <button id="send-button">שלח</button>
+            </div>
         </div>
-        <div id="chat-box" class="chat-box"></div>
-        <div id="input-container" class="input-container">
-            <input type="text" id="user-input" placeholder="כתוב כאן..." autocomplete="off" />
-            <button id="send-button">שלח</button>
+
+        <div id="right-panel">
+            <div id="main-avatar-display">
+                <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי" id="large-avatar">
+            </div>
         </div>
     </div>
 
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
-
