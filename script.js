@@ -1,176 +1,321 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const welcomeScreen = document.getElementById('welcome-screen');
-    const appMainContainer = document.getElementById('app-main-container');
-    const chatWindow = document.getElementById('chat-window');
+    const appMainContainer = document.getElementById('app-main-container'); // מתאים ל-HTML
+    const chatWindow = document.getElementById('chat-window'); // מתאים ל-HTML
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     const largeAvatar = document.getElementById('large-avatar');
     const botStatus = document.getElementById('bot-status');
 
-    // Ensure initial state
-    if (welcomeScreen) {
-        welcomeScreen.style.display = 'flex';
-    }
-    if (appMainContainer) {
-        appMainContainer.style.display = 'none';
-    }
-
     let isBotTyping = false;
-    let currentAvatarMood = 'welcoming'; // Default avatar mood
 
     // --- Helper function to add message to chat ---
-    function addMessage(sender, text, avatarFileName) {
+    function addMessage(sender, text, avatarFileName, showButtons = false, buttons = []) {
+        if (!chatWindow) {
+            console.error("Chat window element not found!");
+            return;
+        }
+
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
         messageDiv.classList.add(sender === 'bot' ? 'bot-message' : 'student-message');
 
         const avatarImg = document.createElement('img');
         avatarImg.classList.add('avatar');
-        // Ensure the avatar path is always .png
-        avatarImg.src = `avatars/${avatarFileName}.png`; 
+        avatarImg.src = `./avatars/${avatarFileName}`; // נתיב מתוקן
         avatarImg.alt = sender + ' avatar';
 
         const textSpan = document.createElement('span');
         textSpan.classList.add('message-text');
-        textSpan.textContent = text;
+        textSpan.innerHTML = text;
 
         if (sender === 'bot') {
             messageDiv.appendChild(avatarImg);
             messageDiv.appendChild(textSpan);
-        } else {
+        } else { // For student messages
             messageDiv.appendChild(textSpan);
-            messageDiv.appendChild(avatarImg);
+            const studentAvatarImg = document.createElement('img');
+            studentAvatarImg.classList.add('avatar');
+            studentAvatarImg.src = `./avatars/student_avatar.png`; // נתיב לאווטאר תלמיד
+            studentAvatarImg.alt = 'Student avatar';
+            messageDiv.appendChild(studentAvatarImg);
         }
+
         chatWindow.appendChild(messageDiv);
-        chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to bottom
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        if (showButtons && buttons.length > 0 && sender === 'bot') {
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.classList.add('button-group');
+            messageDiv.classList.add('has-buttons'); // Mark message as having buttons
+
+            buttons.forEach(btnText => {
+                const btn = document.createElement('button');
+                btn.textContent = btnText;
+                btn.classList.add('choice-button');
+                btn.addEventListener('click', (e) => bot.handleChoiceButtonClick(e));
+                buttonsDiv.appendChild(btn);
+            });
+            messageDiv.appendChild(buttonsDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
     }
 
-    // --- Bot Logic Class (Example, can be expanded) ---
+    // --- Bot Logic Class ---
     class MathProblemGuidingBot {
         constructor() {
             this.guidingQuestions = [
-                // Make sure these filenames are correct and files are PNG!
-                { key: 'N', text: 'מה נתון לנו בבעיה?', icon: 'icons-leading-questions/question_given.png' },
-                { key: 'B', text: 'מה אנחנו צריכים למצוא/לחשב?', icon: 'icons-leading-questions/question_find.png' },
-                { key: 'R', text: 'האם יש לנו רמזים בבעיה?', icon: 'icons-leading-questions/question_clues.png' },
-                { key: 'L', text: 'האם יש מילים בעייתיות או לא ברורות?', icon: 'icons-leading-questions/question_unclear_words.png' },
-                { key: 'T', text: 'מהו סוג הבעיה (למשל: בעיית תנועה, אחוזים, יחס)?', icon: 'icons-leading-questions/question_type.png' },
-                { key: 'P', text: 'כיצד היית מנסה לפתור את הבעיה?', icon: 'icons-leading-questions/question_solve.png' },
-                { key: 'S', text: 'האם ניסית לצייר/לשרטט את הבעיה?', icon: 'icons-leading-questions/question_draw.png' }
+                { key: 'א', text: "מה אנחנו צריכים למצוא? כלומר, מה השאלה המרכזית כאן?", icon: "question_find.png" },
+                { key: 'ב', text: "מה כבר יש לנו בבעיה? מה הנתונים שיכולים לעזור לנו?", icon: "question_know.png" },
+                { key: 'ג', text: "יש משהו שעדיין לא ברור או חסר לנו לדעת כדי לפתור את הבעיה?", icon: "question_need.png" }
             ];
             this.currentQuestionIndex = 0;
-            this.studentGender = ''; // 'male', 'female', 'neutral'
+            this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
+            this.dialogStage = 'start';
+            this.currentProblem = "אבא קנה 5 תפוחים ואמא קנתה 3 תפוחים. כמה תפוחים יש בסך הכל?"; // הבעיה המתמטית
+            this.userGender = null; // 'male', 'female', 'other'
         }
 
-        // Helper to post bot message with current avatar mood
-        postBotMessageWithAvatar(text, mood = currentAvatarMood) {
-            // Pass only the filename without extension, addMessage will add .png
-            addMessage('bot', text, `avatar_${mood}`);
-            largeAvatar.src = `avatars/avatar_${mood}.png`;
-            currentAvatarMood = mood; // Update current mood
+        simulateBotTyping(callback, delay = 1000) {
+            isBotTyping = true;
+            if (botStatus) botStatus.textContent = 'מתי מקליד/ה...';
+            setTimeout(() => {
+                callback();
+                isBotTyping = false;
+                if (botStatus) botStatus.textContent = 'אווטאר מתי זמין/ה';
+            }, delay);
         }
 
-        // Helper to post student message
-        postStudentMessageWithAvatar(text) {
-            // Assuming a generic student avatar filename without extension
-            addMessage('student', text, `avatar_student_placeholder`); // Make sure avatar_student_placeholder.png exists
+        postBotMessageWithAvatar(message, avatarFilename, showButtons = false, buttons = []) {
+            this.simulateBotTyping(() => {
+                addMessage('bot', message, avatarFilename, showButtons, buttons);
+            });
+        }
+
+        postBotMessageWithIcon(message, iconFilename, avatarFilename) {
+            this.simulateBotTyping(() => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'bot-message');
+
+                const avatarImg = document.createElement('img');
+                avatarImg.src = `./avatars/${avatarFilename}`; // נתיב לאווטאר
+                avatarImg.alt = "אווטאר מתי";
+                avatarImg.classList.add('avatar');
+
+                const textDiv = document.createElement('span'); // Changed to span as per addMessage
+                textDiv.classList.add('message-text');
+                textDiv.innerHTML = message;
+
+                const iconImg = document.createElement('img');
+                iconImg.src = `./icons-leading-questions/${iconFilename}`; // נתיב לאייקון
+                iconImg.alt = "שאלה מנחה";
+                iconImg.classList.add('question-icon');
+
+                // Order of elements for bot-message with icon (icon, avatar, text) for RTL
+                messageDiv.appendChild(iconImg);
+                messageDiv.appendChild(avatarImg);
+                messageDiv.appendChild(textDiv);
+
+                chatWindow.appendChild(messageDiv);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
         }
 
         startConversationLogic() {
-            this.postBotMessageWithAvatar('שלום! אני מתי, כאן כדי לעזור לך להבין בעיות מתמטיות בדרך פשוטה ואינטראקטיבית. זכור/זכרי: המטרה היא להבין את הבעיה, לא רק לקבל תשובה.', 'welcoming');
+            this.postBotMessageWithAvatar(
+                "היי! אני מתי, ואני כאן כדי לעזור לך להבין מתמטיקה בצורה קלה וברורה. נלמד יחד, צעד אחר צעד!",
+                "avatar_welcoming.png"
+            );
             setTimeout(() => {
-                this.postBotMessageWithAvatar('איך אוכל לפנות אלייך? בחר/י את המגדר שלך כדי לדבר בצורה הכי נכונה.', 'confused');
-                this.displayGenderSelectionButtons();
-            }, 1500);
+                this.postBotMessageWithAvatar(
+                    "המטרה שלי היא לעזור לך להבין את הבעיה, לא רק למצוא את התשובה.",
+                    "avatar_confident.png"
+                );
+            }, 2000);
+            setTimeout(() => {
+                this.postBotMessageWithAvatar(
+                    "ספר לי, איך תרצה שאפנה אליך? בחר/י את המגדר שלך כדי שנדבר בצורה הכי נוחה לך.",
+                    "avatar_inviting_action.png",
+                    true, // showButtons = true
+                    ["זכר", "נקבה", "אחר/ת"]
+                );
+                this.dialogStage = 'awaiting_gender';
+            }, 4000);
         }
 
-        displayGenderSelectionButtons() {
-            const buttonGroupDiv = document.createElement('div');
-            buttonGroupDiv.classList.add('button-group');
+        handleChoiceButtonClick(event) {
+            const button = event.target;
+            const btnText = button.textContent;
 
-            const maleBtn = document.createElement('button');
-            maleBtn.classList.add('choice-button');
-            maleBtn.textContent = 'זכר';
-            maleBtn.onclick = () => {
-                this.handleGenderSelection('male');
-                buttonGroupDiv.remove(); // Remove buttons after selection
-            };
-
-            const femaleBtn = document.createElement('button');
-            femaleBtn.classList.add('choice-button');
-            femaleBtn.textContent = 'נקבה';
-            femaleBtn.onclick = () => {
-                this.handleGenderSelection('female');
-                buttonGroupDiv.remove();
-            };
-
-            const neutralBtn = document.createElement('button');
-            neutralBtn.classList.add('choice-button');
-            neutralBtn.textContent = 'אח/ות';
-            neutralBtn.onclick = () => {
-                this.handleGenderSelection('neutral');
-                buttonGroupDiv.remove();
-            };
-
-            buttonGroupDiv.appendChild(maleBtn);
-            buttonGroupDiv.appendChild(femaleBtn);
-            buttonGroupDiv.appendChild(neutralBtn);
-            chatWindow.appendChild(buttonGroupDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        handleGenderSelection(gender) {
-            this.studentGender = gender;
-            let responseText;
-            switch (gender) {
-                case 'male':
-                    responseText = 'תודה, נפלא! אתה יכול לפנות אלי בכל שאלה. אז בוא נתחיל...';
-                    break;
-                case 'female':
-                    responseText = 'תודה, נפלא! את יכולה לפנות אלי בכל שאלה. אז בואי נתחיל...';
-                    break;
-                case 'neutral':
-                    responseText = 'תודה, נפלא! אתם יכולים לפנות אלי בכל שאלה. אז בואו נתחיל...';
-                    break;
+            // Disable all buttons in the same group after a choice is made
+            const parentButtonGroup = button.closest('.button-group');
+            if (parentButtonGroup) {
+                Array.from(parentButtonGroup.children).forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    btn.style.cursor = 'default';
+                });
             }
-            this.postBotMessageWithAvatar(responseText, 'confident');
-            setTimeout(() => {
-                this.askGuidingQuestion();
-            }, 1000);
+
+            addMessage('student', `בחרתי: ${btnText}`, 'student_avatar.png');
+
+            if (this.dialogStage === 'awaiting_gender') {
+                const genderMap = { "זכר": "male", "נקבה": "female", "אחר/ת": "other" };
+                this.userGender = genderMap[btnText] || null;
+                this.updateMainAvatar(this.userGender); // Update the large avatar
+
+                let genderResponse = "";
+                if (this.userGender === 'male') {
+                    genderResponse = "נהדר, נפלא! אדבר אליך בלשון זכר. אתה מוכן? בוא נתחיל.";
+                } else if (this.userGender === 'female') {
+                    genderResponse = "נהדר, נפלא! אדבר אליך בלשון נקבה. את מוכנה? בואי נתחיל.";
+                } else {
+                    genderResponse = "נהדר, נפלא! אדבר אליך בלשון ניטרלית. בואו נתחיל.";
+                }
+
+                this.postBotMessageWithAvatar(genderResponse, "avatar_confident.png");
+
+                setTimeout(() => {
+                    this.postBotMessageWithAvatar(`הנה הבעיה שלנו היום:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+                }, 1500);
+                setTimeout(() => {
+                    this.postBotMessageWithAvatar("עכשיו, בוא/י נתחיל עם כמה שאלות שיעזרו לנו להבין טוב יותר את הבעיה:", "avatar_support.png");
+                    this.dialogStage = 'asking_guiding_questions';
+                    setTimeout(() => this.askGuidingQuestion(), 1500);
+                }, 3000);
+            } else if (this.dialogStage === 'continue_or_stop') {
+                if (btnText === "להמשיך") {
+                    this.postBotMessageWithAvatar(`מעולה! בוא/י נתחיל לתרגם את הבעיה למספרים ולפעולות מתמטיות.`, "avatar_compliment.png");
+                    this.dialogStage = 'problem_translation_help';
+                    setTimeout(() => this.askForFirstStepInTranslation(), 1500);
+                } else {
+                    this.postBotMessageWithAvatar(`אני פה כשתרצה/י להמשיך. בהצלחה!`, "avatar_support.png");
+                    this.dialogStage = 'ended';
+                    userInput.disabled = true;
+                    sendButton.disabled = true;
+                }
+            }
+        }
+
+        updateMainAvatar(gender) {
+            if (largeAvatar) {
+                if (gender === 'male') {
+                    largeAvatar.src = './avatars/avatar_male_default.png';
+                } else if (gender === 'female') {
+                    largeAvatar.src = './avatars/avatar_female_default.png';
+                } else {
+                    largeAvatar.src = './avatars/avatar_welcoming.png';
+                }
+                largeAvatar.alt = `אווטאר מתי - ${gender}`;
+            }
         }
 
         askGuidingQuestion() {
             if (this.currentQuestionIndex < this.guidingQuestions.length) {
-                const question = this.guidingQuestions[this.currentQuestionIndex];
-                // Display the question text directly in the chat.
-                // The icon is part of the bot's message style if you want to integrate it within the message bubble,
-                // or you can add it as a separate element similar to the button group.
-                this.postBotMessageWithAvatar(question.text, 'thinking');
-                this.currentQuestionIndex++;
+                const q = this.guidingQuestions[this.currentQuestionIndex];
+                let currentAvatar = "avatar_support.png";
+                if (this.userGender === 'male') currentAvatar = "avatar_male_support.png";
+                if (this.userGender === 'female') currentAvatar = "avatar_female_support.png";
+
+                this.postBotMessageWithIcon(q.text, q.icon, currentAvatar);
             } else {
-                this.postBotMessageWithAvatar('סיימנו את סבב השאלות המנחות. האם תרצה/י לחזור על משהו או שיש לך שאלות נוספות?', 'empathic');
-                this.currentQuestionIndex = 0; // Reset for another round if needed
+                this.postBotMessageWithAvatar(
+                    "מה תרצה/י לעשות עכשיו?",
+                    "avatar_inviting_action.png",
+                    true,
+                    ["להמשיך", "לעצור"]
+                );
+                this.dialogStage = 'continue_or_stop';
             }
         }
 
-        handleStudentInput(input) {
-            if (isBotTyping) return; // Prevent input while bot is typing
-
-            this.postStudentMessageWithAvatar(input);
-            userInput.value = ''; // Clear input
-
-            // Simulate bot typing
-            isBotTyping = true;
-            if (botStatus) botStatus.textContent = 'מתי מקליד/ה...';
-            // Simulate processing time
+        askForFirstStepInTranslation() {
+            this.postBotMessageWithAvatar("בוא/י נסביר איך להתחיל לפתור: מה הצעד הראשון שתעשה/י?", "avatar_inviting_action.png");
             setTimeout(() => {
-                this.postBotMessageWithAvatar('תשובה למשתמש: ' + input, 'support'); // Basic response
-                if (botStatus) botStatus.textContent = 'אווטאר מתי זמין/ה';
-                isBotTyping = false;
-                // You can add logic here to decide next question based on input
-                this.askGuidingQuestion(); // For now, just ask the next question
+                this.postBotMessageWithAvatar("איך היית כותב/ת את זה במתמטיקה?", "avatar_inviting_action.png");
             }, 1500);
+        }
+
+        handleStudentInputLogic(input) {
+            if (isBotTyping) return;
+
+            // Immediately add student message
+            addMessage('student', input, 'student_avatar.png');
+            userInput.value = ""; // Clear input after sending
+
+            if (input.trim() === "") {
+                this.postBotMessageWithAvatar("🤔 כתוב/י משהו כדי שאוכל לעזור.", "avatar_confuse.png");
+                return;
+            }
+
+            if (this.dialogStage === 'awaiting_gender') {
+                this.postBotMessageWithAvatar("אנא בחר/י את המגדר שלך מהכפתורים למטה.", "avatar_confuse.png", true, ["זכר", "נקבה", "אחר/ת"]);
+                return;
+            }
+
+            if (this.dialogStage === 'asking_guiding_questions') {
+                const q = this.guidingQuestions[this.currentQuestionIndex];
+                this.studentGuidingAnswers[q.key] = input;
+
+                let response = "";
+                let currentAvatar = "avatar_support.png";
+
+                if (q.key === 'א') { // What to find
+                    if (input.includes("כמה") || input.includes("מה")) {
+                        response = "מעולה, אתה/את מתמקד/ת בשאלה החשובה!";
+                        currentAvatar = "avatar_compliment.png";
+                    } else {
+                        response = "נסה/נסי לנסח את מה שאתה/את רוצה למצוא בצורה מדויקת יותר.";
+                        currentAvatar = "avatar_confuse.png";
+                    }
+                } else if (q.key === 'ב') { // What we know
+                    if (/\d/.test(input)) { // Check if input contains numbers
+                        response = "יפה, זיהית את הנתונים החשובים!";
+                        currentAvatar = "avatar_compliment.png";
+                    } else {
+                        response = "נסה/נסי למצוא את כל המספרים או הנתונים שבבעיה.";
+                        currentAvatar = "avatar_confuse.png";
+                    }
+                } else if (q.key === 'ג') { // What's unclear/missing
+                    if (input.includes("אין") || input.includes("לא יודע") || input.includes("ברור")) { // Check for keywords
+                        response = "טוב, בוא/י נוודא שאין פרטים חסרים לפני שמתחילים לפתור.";
+                        currentAvatar = "avatar_thinking.png";
+                    } else {
+                        response = "מעולה, נשמע שאתה/את ממוקד/ת!";
+                        currentAvatar = "avatar_compliment.png";
+                    }
+                }
+
+                this.postBotMessageWithAvatar(response, currentAvatar);
+                this.currentQuestionIndex++;
+                setTimeout(() => this.askGuidingQuestion(), 2000);
+
+            } else if (this.dialogStage === 'problem_translation_help') {
+                const inputLower = input.toLowerCase();
+                let botResponse = "";
+                let currentAvatar = "avatar_thinking.png";
+
+                if (inputLower.includes("חיבור") || inputLower.includes("+") || inputLower.includes("ועוד") || inputLower.includes("יותר")) {
+                    botResponse = "נשמע שאתה/את חושב/ת על חיבור, למה דווקא חיבור?";
+                    currentAvatar = "avatar_thinking.png";
+                } else if (inputLower.includes("חיסור") || inputLower.includes("-") || inputLower.includes("פחות")) {
+                    botResponse = "חיסור זו אפשרות טובה, מה גרם לך לחשוב כך?";
+                    currentAvatar = "avatar_thinking.png";
+                } else if (inputLower.includes("לא יודע") || inputLower.includes("קשה לי")) {
+                    botResponse = "זה בסדר אם לא בטוח/ה, בוא/י ננסה יחד.";
+                    currentAvatar = "avatar_support.png";
+                } else {
+                    botResponse = "מעניין! ספר לי איך הגעת למחשבה הזו.";
+                    currentAvatar = "avatar_thinking.png";
+                }
+                this.postBotMessageWithAvatar(botResponse, currentAvatar);
+
+            } else if (this.dialogStage === 'continue_or_stop') {
+                this.postBotMessageWithAvatar("אנא בחר/י אחת מהאפשרויות למטה.", "avatar_confuse.png", true, ["להמשיך", "לעצור"]);
+            } else if (this.dialogStage === 'ended') {
+                this.postBotMessageWithAvatar("השיחה הסתיימה. אני כאן בשבילך מתי שתרצה/י לחזור.", "avatar_support.png");
+            }
         }
     }
 
@@ -184,8 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (appMainContainer) {
                 appMainContainer.style.display = 'grid'; // Change to grid
+                document.body.classList.add('app-started'); // Add class to body for CSS
             }
-            document.body.classList.add('app-started'); // Add class to body for CSS
             bot.startConversationLogic();
         });
     }
@@ -193,8 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sendButton) {
         sendButton.addEventListener('click', () => {
             const input = userInput.value.trim();
-            if (input) {
-                bot.handleStudentInput(input);
+            if (!isBotTyping) { // Only process if bot is not typing
+                bot.handleStudentInputLogic(input);
             }
         });
     }
