@@ -1,14 +1,47 @@
+אוקיי, תודה ששלחת שוב את קוד ה-CSS. זה מאשר את מה שחשדתי: הקוד הזה הוא הגורם לבעיה של תצוגה בו-זמנית של מסך הפתיחה ואזור הצ'אט, וגם לכפתור שלא מגיב.
+
+הסיבה לכך היא שבחלק העליון של ה-CSS ששלחת, בתוך תג ה-body, עדיין יש את השורות הבאות:
+
+CSS
+
+body {
+    /* ... */
+    display: flex; /* <-- זה ממרכז את ה-body, אבל גורם לשני האלמנטים להופיע יחד */
+    justify-content: center;
+    align-items: center;
+    /* ... */
+}
+הגדרות אלו גורמות לכך שכל התוכן בתוך ה-body (גם מסך הפתיחה וגם app-main-container) מנסה להיות ממורכז כ-flex מההתחלה, במקום שמסך הפתיחה יהיה position: absolute וה-app-main-container יהיה display: none בהתחלה.
+
+מה שצריך לקרות:
+
+ה-body צריך להיות ניטרלי בהתחלה (ללא display: flex).
+מסך הפתיחה (#welcome-screen) צריך להיות ממוקם באופן מוחלט (position: absolute) כדי לכסות את כל המסך.
+האפליקציה הראשית (#app-main-container) צריכה להיות מוסתרת לגמרי (display: none).
+כאשר לוחצים על הכפתור "התחילו!", ה-JavaScript יסיר את מסך הפתיחה, יציג את app-main-container ויוסיף קלאס ל-body שיגדיר אותו כ-display: grid.
+בבקשה, העתיקי והדביקי את כל קוד ה-CSS הבא (בדיוק כפי שהוא) והחליפי איתו את כל התוכן בקובץ style.css שלך. זהו הקוד המלא, המתוקן והמתואם ל-HTML ול-JavaScript.
+
+CSS
+
 body {
     font-family: 'Heebo', sans-serif;
     direction: rtl; /* לשמירה על כיוון מימין לשמאל */
     margin: 0;
     padding: 0;
     background-color: #f0f2f5;
-    display: flex; /* כדי למרכז את מסך הפתיחה בהתחלה */
-    justify-content: center;
-    align-items: center;
     min-height: 100vh; /* גובה מסך מלא */
     overflow: hidden; /* למנוע גלילה מיותרת ברמת ה-body */
+    position: relative; /* חיוני למיקום מוחלט של מסך הפתיחה */
+}
+
+/* הגדרות עבור ה-body כאשר האפליקציה מתחילה (מופעל ע"י JS) */
+body.app-started {
+    display: grid; /* כעת ה-body הוא גריד */
+    grid-template-columns: 3fr 1fr; /* 3 רבעים לצד שמאל, רבע לצד ימין */
+    grid-template-rows: 1fr; /* שורה אחת */
+    height: 100vh;
+    width: 100vw;
+    position: static; /* חוזר למצב רגיל של DOM Flow כדי שהגריד יעבוד */
 }
 
 /* ---------- מסך פתיחה ---------- */
@@ -18,12 +51,14 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 600px; /* רוחב מוגבל למסך הפתיחה */
-    width: 90%;
+    background-color: #f0f2f5; /* הרקע של ה-body כדי שיראה חלק */
+    padding: 20px;
+    position: absolute; /* מיקום מוחלט כדי לכסות את כל המסך */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* לוודא שהוא מעל כל שאר התוכן */
 }
 
 #welcome-screen .welcome-avatar {
@@ -34,10 +69,17 @@ body {
 }
 
 #welcome-screen h1 {
+    color: #5B2C6F; /* צבע סגול */
+    font-size: 3em;
+    margin-bottom: 10px; /* רווח קטן בין הכותרות */
+}
+
+#welcome-screen h2 {
     color: #333;
-    font-size: 2em;
+    font-size: 1.5em;
     margin-bottom: 30px;
     line-height: 1.4;
+    max-width: 80%; /* כדי למנוע טקסט ארוך מדי */
 }
 
 #welcome-screen button {
@@ -57,12 +99,11 @@ body {
 
 /* ---------- מיכל האפליקציה הראשי (לאחר מסך הפתיחה) ---------- */
 #app-main-container {
-    display: none; /* יוסתר בהתחלה, יוצג עם לחיצה על כפתור התחלה */
+    display: none; /* יוצג רק כאשר מסך הפתיחה ייעלם ע"י JS */
     width: 100vw; /* רוחב מסך מלא */
     height: 100vh; /* גובה מסך מלא */
-    display: grid;
-    grid-template-columns: 3fr 1fr; /* 3 רבעים לצד שמאל, רבע לצד ימין */
     overflow: hidden; /* למנוע גלילה ברמה זו */
+    /* אין צורך ב-display: grid כאן, זה יוגדר דרך body.app-started */
 }
 
 /* צד שמאל - חלון שיחה, קלט, וייצוג גרפי */
@@ -73,26 +114,27 @@ body {
     background-color: #e0e6ed; /* רקע עדין לצד שמאל */
     box-sizing: border-box; /* לוודא שפאדינג לא מוסיף לרוחב */
     overflow: hidden; /* למנוע גלילה ב-left-panel עצמו */
+    grid-column: 1 / 2; /* תופס את העמודה הראשונה */
 }
 
-/* ייצוג גרפי של הבעיה */
+/* ייצוג גרפי של הבעיה - כרגע לא קיים ב-HTML, אבל ה-CSS נשמר */
 #problem-representation {
-    min-height: 100px; /* גובה מינימלי, ניתן להתאים */
+    min-height: 100px;
     background-color: #ffffff;
     border-radius: 10px;
     padding: 15px;
-    margin-bottom: 20px; /* רווח בין הייצוג לצ'אט */
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.1em;
     color: #666;
-    border: 1px solid #c0c0c0; /* גבול עדין */
-    overflow: auto; /* אם התוכן ארוך מדי */
+    border: 1px solid #c0c0c0;
+    overflow: auto;
 }
 
-/* חלון השיחה (צ'אט-בוקס) */
-#chat-box {
+/* חלון השיחה */
+#chat-window { /* שינוי: מ-chat-box ל-chat-window */
     flex-grow: 1; /* יתפוס את כל השטח הפנוי בין הייצוג לקלט */
     padding: 15px;
     overflow-y: auto; /* גלילה רק כשצריך */
@@ -138,28 +180,28 @@ body {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    margin-left: 10px; /* רווח מהטקסט בהודעת בוט */
 }
 
 /* תיקון סדר ורווחים לאווטרים בהודעות */
 .bot-message .avatar {
-     order: 1; /* אווטר מצד ימין ב-rtl */
-     margin-left: 0;
-     margin-right: 10px;
+    order: 1; /* אווטר מצד ימין ב-rtl */
+    margin-left: 0;
+    margin-right: 10px;
 }
- .student-message .avatar {
-     order: 2; /* אווטר מצד שמאל ב-rtl (אם נרצה) */
-     margin-right: 0;
-     margin-left: 10px;
- }
+.student-message .avatar {
+    order: 2; /* אווטר מצד שמאל ב-rtl */
+    margin-right: 0;
+    margin-left: 10px;
+}
 
 
 /* ---------- אזור קלט המשתמש ---------- */
-#user-input-area {
+#input-area { /* שינוי: מ-user-input-area ל-input-area */
     display: flex;
     gap: 10px; /* רווח בין שדה הקלט לכפתור */
-    padding-top: 10px; /* רווח מה-chat-box */
+    padding-top: 10px; /* רווח מה-chat-window */
     align-items: center; /* יישור אנכי */
+    margin-top: auto; /* דוחף את אזור הקלט לתחתית ה-left-panel */
 }
 
 #user-input {
@@ -189,13 +231,14 @@ body {
 /* צד ימין - אווטר הגדול */
 #right-panel {
     display: flex;
-    flex-direction: column; /* אם בעתיד יהיו עוד דברים בצד ימין */
+    flex-direction: column;
     align-items: center;
     justify-content: center; /* כדי למרכז את האווטר */
     background-color: #d1d9e6; /* רקע עדין לצד ימין */
     padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
+    grid-column: 2 / 3; /* תופס את העמודה השנייה */
 }
 
 #main-avatar-display {
@@ -250,13 +293,15 @@ body.app-started #welcome-screen {
     display: none;
 }
 
-body.app-started #app-main-container {
-    display: grid; /* חשוב לשנות ל-grid כאשר האפליקציה מתחילה */
-}
+/* אין צורך ב-body.app-started #app-main-container { display: grid; }
+   כי body.app-started כבר מגדיר את ה-body כ-grid וה-app-main-container
+   יקבל את הפריסה אוטומטית. חשוב שה-app-main-container
+   יהיה גלוי רק כשהאפליקציה מתחילה (display: none -> display: block/grid).
+   זה יטופל ב-JS. */
 
 /* רספונסיביות למסכים קטנים יותר */
 @media (max-width: 768px) {
-    #app-main-container {
+    body.app-started { /* מוחל רק כשהאפליקציה התחילה */
         grid-template-columns: 1fr; /* טור אחד במסכים קטנים */
         grid-template-rows: auto 1fr; /* אווטר למעלה, שאר התוכן למטה */
     }
@@ -282,11 +327,11 @@ body.app-started #app-main-container {
         margin-bottom: 10px;
     }
 
-    #chat-box {
+    #chat-window { /* שינוי: מ-chat-box ל-chat-window */
         margin-bottom: 10px;
     }
 
-    #user-input-area {
+    #input-area { /* שינוי: מ-user-input-area ל-input-area */
         flex-direction: column; /* כפתור מתחת לשדה קלט */
     }
 
