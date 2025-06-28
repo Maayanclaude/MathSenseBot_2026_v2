@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.currentProblem = null;
             this.guidingQuestions = [];
             this.currentQuestionIndex = 0;
-            this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
+            this.studentGuidingAnswers = { 'א': '', 'ב': '', 'ג': '' };
             this.dialogStage = 'start';
             this.userGender = null;
             this.successfulAnswers = 0;
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         async loadProblemsFromFile() {
             try {
-                const response = await fetch('problems.json');
+                const response = await fetch('questions_data.json');
                 const data = await response.json();
                 this.wordProblems = {
                     level1: data.filter(q => q.level === 1),
@@ -178,7 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
         askGuidingQuestion() {
             if (this.currentQuestionIndex < this.guidingQuestions.length) {
                 const q = this.guidingQuestions[this.currentQuestionIndex];
-                this.postBotMessageWithAvatar(q.text, "avatar_support.png");
+                const messageHtml = `<div class="guided-question">
+                    <img src="./icons/${q.icon}" alt="icon" />
+                    ${q.text}
+                </div>`;
+                this.postBotMessageWithAvatar(messageHtml, "avatar_support.png");
             } else {
                 this.postBotMessageWithAvatar("רוצה להמשיך לפתור את הבעיה?", "avatar_inviting_action.png", true, ["כן", "לא"]);
                 this.dialogStage = 'continue_or_stop';
@@ -229,4 +233,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
