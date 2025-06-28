@@ -128,6 +128,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.dialogStage = 'asking_guiding_questions';
                     setTimeout(() => this.askGuidingQuestion(), 1500);
                 }, 1500);
+            } else if (this.dialogStage === 'continue_or_stop') {
+                if (btnText === "כן") {
+                    this.postBotMessageWithAvatar("מצוין! נתחיל שוב עם בעיה חדשה...", "avatar_welcoming.png");
+                    this.currentProblem = this.chooseRandomProblem();
+                    this.currentQuestionIndex = 0;
+                    this.dialogStage = 'asking_guiding_questions';
+                    setTimeout(() => {
+                        this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+                        setTimeout(() => this.askGuidingQuestion(), 1500);
+                    }, 1500);
+                } else {
+                    this.postBotMessageWithAvatar("אין בעיה, נחזור מתי שתרצה. בהצלחה!", "avatar_support.png");
+                    this.dialogStage = 'ended';
+                }
             }
         }
 
@@ -138,6 +152,28 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 this.postBotMessageWithAvatar("רוצה להמשיך לפתור את הבעיה?", "avatar_inviting_action.png", true, ["כן", "לא"]);
                 this.dialogStage = 'continue_or_stop';
+            }
+        }
+
+        handleStudentInputLogic(input) {
+            addMessage('student', input, 'student_avatar.png');
+
+            if (this.dialogStage === 'asking_guiding_questions') {
+                const q = this.guidingQuestions[this.currentQuestionIndex];
+                this.studentGuidingAnswers[q.key] = input;
+
+                let feedback = "תודה על התשובה!";
+                if (q.key === 'א' && /(כמה|מה)/.test(input)) {
+                    feedback = "יפה מאוד! הצלחת לזהות מה צריך למצוא.";
+                } else if (q.key === 'ב' && /\d/.test(input)) {
+                    feedback = "מעולה! הצלחת למצוא את הנתונים שיש לנו.";
+                } else if (q.key === 'ג' && /(לא ברור|חסר|צריך לדעת)/.test(input)) {
+                    feedback = "יופי! הצלחת לזהות מה חסר לפתרון.";
+                }
+
+                this.postBotMessageWithAvatar(feedback, "avatar_compliment.png");
+                this.currentQuestionIndex++;
+                setTimeout(() => this.askGuidingQuestion(), 1500);
             }
         }
     }
@@ -158,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = userInput.value.trim();
             if (!isBotTyping && input) {
                 bot.handleStudentInputLogic(input);
+                userInput.value = "";
             }
         });
     }
