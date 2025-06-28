@@ -1,42 +1,32 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Sense Bot</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Math Sense Bot</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="welcome-screen">
-        <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי - ברוכה הבאה" class="welcome-avatar">
-        <h1>פתאום זה קורה</h1>
-        <h2>שלום! אני מתי, ואני כאן כדי לעזור לך להבין מתמטיקה בצורה קלה וברורה. נלמד יחד, צעד אחר צעד!.</h2>
-        <button id="start-button">שנתחיל!?</button>
+  <div id="welcome-screen">
+    <div class="welcome-content">
+      <h1>הקסם מתחיל כאן</h1>
+      <p>מילים הופכות למספרים בקלות</p>
+      <button id="start-btn">נתחיל!?</button>
     </div>
+    <img src="avatars/avatar_welcoming.png" alt="אווטאר ברוך הבא" class="welcome-avatar" />
+  </div>
 
-    <div id="app-main-container" class="hidden">
-        <div id="left-panel">
-            <div id="chat-header">
-                <span id="bot-status">אווטאר מתי זמין/ה</span>
-                <span id="bot-name">מתי - Math Sense Bot</span>
-            </div>
-
-            <div id="chat-window">
-            </div>
-
-            <div id="input-area">
-                <input type="text" id="user-input" placeholder="כתבו כאן...">
-                <button id="send-button">שלח</button>
-            </div>
-        </div>
-
-        <div id="right-panel">
-            <div id="main-avatar-display">
-                <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי" id="large-avatar">
-            </div>
-        </div>
+  <div id="app-main-container" class="hidden">
+    <div id="left-panel">
+      <div id="chat-header">Math Sense Bot - מתי</div>
+      <div id="chat-window"></div>
+      <div id="input-area">
+        <input type="text" id="user-input" placeholder="כתבו כאן..." />
+        <button id="send-btn">שלח</button>
+      </div>
     </div>
+    <div id="right-panel"></div>
+  </div>
 
-    <script src="script.js"></script> </body>
+  <script src="script.js"></script>
+</body>
 </html>

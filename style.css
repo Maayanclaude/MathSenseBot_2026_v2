@@ -6,54 +6,88 @@ body {
     background-color: #f0f2f5;
     min-height: 100vh;
     overflow: hidden;
-    position: relative; /* חיוני למיקום מוחלט של מסך הפתיחה */
+    position: relative;
 }
 
-/* הגדרות עבור ה-body כאשר האפליקציה מתחילה (מופעל ע"י JS) */
 body.app-started {
     display: grid;
     grid-template-columns: 3fr 1fr;
     grid-template-rows: 1fr;
     height: 100vh;
     width: 100vw;
-    position: static; /* חוזר למצב רגיל של DOM Flow כדי שהגריד יעבוד */
+    position: static;
 }
 
-/* ---------- מסך פתיחה ---------- */
+/* מסך פתיחה */
 #welcome-screen {
-    display: flex; /* שיהיה גלוי בהתחלה */
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: #f0f2f5;
+    background: linear-gradient(to bottom right, #f5f5ff, #e6e6f9);
     padding: 20px;
-    position: absolute; /* ממקם אותו מעל הכל */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1000; /* ודאי שיהיה מעל הכל */
+    z-index: 1000;
+    font-family: 'Heebo', sans-serif;
 }
 
-/* נסתר כשהאפליקציה מתחילה (יטופל ב-JS) */
+#welcome-screen h1 {
+    font-size: 3.5rem;
+    color: #933bda;
+    text-shadow: 0 0 15px rgba(147, 59, 218, 0.3);
+    margin-bottom: 0.5em;
+}
+
+#welcome-screen h2 {
+    font-size: 2.5rem;
+    color: #7b1fa2;
+    font-weight: bold;
+}
+
+#welcome-screen img.character {
+    max-width: 250px;
+    height: auto;
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
+}
+
+#start-button {
+    margin-top: 30px;
+    padding: 14px 30px;
+    background: linear-gradient(to right, #a1e3ff, #c7a6f8);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.3rem;
+    color: #2c2c2c;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+#start-button:hover {
+    background: linear-gradient(to right, #97dbff, #b187f5);
+    transform: scale(1.05);
+}
+
 body.app-started #welcome-screen {
     display: none;
 }
 
-/* הוספה חשובה: הסתרת ה-app-main-container כברירת מחדל */
 #app-main-container {
-    display: none; /* מוסתר בהתחלה - זה הכלל הקריטי */
+    display: none;
 }
 
-/* גלוי כשהאפליקציה מתחילה (יטופל ב-JS) */
 body.app-started #app-main-container {
-    display: grid; /* חשוב שיהיה גלוי ב-grid כשהאפליקציה מתחילה */
-    /* שאר הגדרות הגריד שלו מגיעות מה-body.app-started */
+    display: grid;
 }
 
-
-/* ---------- פאנלים ראשיים ---------- */
 #left-panel {
     background-color: #ffffff;
     border-radius: 8px;
@@ -72,16 +106,15 @@ body.app-started #app-main-container {
 }
 
 #large-avatar {
-    width: 90%; /* Adjust as needed */
-    max-width: 300px; /* Limit max size */
+    width: 90%;
+    max-width: 300px;
     height: auto;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/* ---------- כותרת הצ'אט ---------- */
 #chat-header {
-    background-color: #4CAF50; /* ירוק */
+    background-color: #4CAF50;
     color: white;
     padding: 15px;
     display: flex;
@@ -92,30 +125,28 @@ body.app-started #app-main-container {
     border-top-right-radius: 8px;
 }
 
-/* ---------- חלון הצ'אט ---------- */
 #chat-window {
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
     display: flex;
-    flex-direction: column; /* הודעות נערמות מלמעלה למטה */
-    gap: 10px; /* רווח בין הודעות */
+    flex-direction: column;
+    gap: 10px;
     background-color: #f9f9f9;
 }
 
-/* הודעה בודדת */
 .message {
     display: flex;
-    align-items: flex-end; /* יישור תחתון (לאווטאר וטקסט) */
-    max-width: 80%; /* הגבלת רוחב הודעה */
-    position: relative; /* למיקום האייקון של השאלה המנחה */
+    align-items: flex-end;
+    max-width: 80%;
+    position: relative;
 }
 
 .message-text {
     padding: 10px 15px;
     border-radius: 20px;
     line-height: 1.5;
-    word-wrap: break-word; /* שבירת מילים ארוכות */
+    word-wrap: break-word;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
@@ -124,43 +155,39 @@ body.app-started #app-main-container {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 8px; /* רווח מההודעה */
-    flex-shrink: 0; /* למנוע מהאווטאר להתכווץ */
+    margin: 0 8px;
+    flex-shrink: 0;
 }
 
-/* הודעות בוט */
 .bot-message {
-    align-self: flex-start; /* יישור לשמאל (כי RTL) */
-    flex-direction: row-reverse; /* אווטאר מצד ימין, טקסט משמאל */
+    align-self: flex-start;
+    flex-direction: row-reverse;
 }
 
 .bot-message .message-text {
-    background-color: #e0e0e0; /* אפור בהיר */
+    background-color: #e0e0e0;
     color: #333;
-    border-bottom-right-radius: 5px; /* פינה חדה בצד האווטאר */
+    border-bottom-right-radius: 5px;
 }
 
-/* הודעות משתמש */
 .student-message {
-    align-self: flex-end; /* יישור לימין (כי RTL) */
-    flex-direction: row; /* אווטאר מצד שמאל, טקסט מימין */
+    align-self: flex-end;
+    flex-direction: row;
 }
 
 .student-message .message-text {
-    background-color: #dcf8c6; /* ירוק בהיר */
+    background-color: #dcf8c6;
     color: #333;
-    border-bottom-left-radius: 5px; /* פינה חדה בצד האווטאר */
+    border-bottom-left-radius: 5px;
 }
 
-/* אייקונים לשאלות מנחות */
 .question-icon {
-    width: 25px; /* גודל האייקון */
+    width: 25px;
     height: 25px;
-    margin-left: 5px; /* רווח בין האייקון לאווטאר */
-    align-self: center; /* יישור אנכי במרכז ההודעה */
+    margin-left: 5px;
+    align-self: center;
 }
 
-/* אזור קלט */
 #input-area {
     display: flex;
     padding: 15px;
@@ -181,7 +208,7 @@ body.app-started #app-main-container {
 }
 
 #send-button {
-    background-color: #4CAF50; /* ירוק */
+    background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -195,18 +222,17 @@ body.app-started #app-main-container {
     background-color: #45a049;
 }
 
-/* כפתורי בחירה (מגדר, המשך/עצור) */
 .button-group {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start; /* כיוון RTL */
+    justify-content: flex-start;
     gap: 10px;
     margin-top: 10px;
-    width: 100%; /* כדי שיקבל את רוחב הודעת הבוט */
+    width: 100%;
 }
 
 .choice-button {
-    background-color: #008CBA; /* כחול */
+    background-color: #008CBA;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -220,7 +246,28 @@ body.app-started #app-main-container {
     background-color: #007bb5;
 }
 
-/* רספונסיביות למסכים קטנים יותר */
+.bot-message.positive .message-text {
+    background-color: #d2f4dc;
+    color: #0b5e20;
+    font-weight: bold;
+}
+
+#new-problem-button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #FF9800;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#new-problem-button:hover {
+    background-color: #fb8c00;
+}
+
 @media (max-width: 768px) {
     body.app-started {
         grid-template-columns: 1fr;
@@ -240,7 +287,7 @@ body.app-started #app-main-container {
     }
 
     #large-avatar {
-        width: 150px; /* קטן יותר במסכים צרים */
+        width: 150px;
         height: 150px;
     }
 
