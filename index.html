@@ -2,46 +2,31 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Math Sense Bot</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- מסך פתיחה -->
-  <div id="welcome-screen" class="screen active">
+  <div id="welcome-screen">
     <div class="welcome-content">
-      <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי" class="welcome-avatar" />
-      <h1>פתאום זה קורה</h1>
-      <p>שלום! אני מתי, הבוטית שתלווה אותך שלב אחרי שלב בפתרון בעיות מילוליות.</p>
-      <button id="start-button">שנתחיל?</button>
+      <h1>הקסם מתחיל כאן</h1>
+      <p>מילים הופכות למספרים בקלות</p>
+      <button id="start-btn">נתחיל!?</button>
     </div>
+    <img src="avatars/avatar_welcoming.png" alt="אווטאר ברוך הבא" class="welcome-avatar" />
   </div>
 
-  <!-- ממשק ראשי -->
-  <div id="app-main-container" class="screen hidden">
+  <div id="app-main-container" class="hidden">
     <div id="left-panel">
-      <div id="chat-header">
-        <span id="bot-name">מתי – Math Sense Bot</span>
-        <span id="bot-status">💬 זמינה לשיחה</span>
-      </div>
-
+      <div id="chat-header">Math Sense Bot - מתי</div>
       <div id="chat-window"></div>
-
       <div id="input-area">
-        <input type="text" id="user-input" placeholder="כתבו כאן..." autocomplete="off" />
-        <button id="send-button">שלח</button>
+        <input type="text" id="user-input" placeholder="כתבו כאן..." />
+        <button id="send-btn">שלח</button>
       </div>
     </div>
-
-    <div id="right-panel">
-      <div id="main-avatar-display">
-        <img src="avatars/avatar_welcoming.png" alt="אווטאר ראשי של מתי" id="large-avatar" />
-      </div>
-    </div>
+    <div id="right-panel"></div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
