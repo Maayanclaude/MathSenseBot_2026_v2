@@ -70,8 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     "מכנסיים עולים 120 ש\"ח, וסוודר 150 ש\"ח. כמה אשלם יחד?",
                     "כל מיץ עולה 7 ש\"ח. כמה משלמים על 4 מיצים?",
                     "מגש פיצה עולה 64 ש\"ח. כמה יעלה לקנות 2 מגשים?"
+                ],
+                level2: [
+                    "יש לי 200 ש\"ח. קניתי 3 מגשים ב-58 ש\"ח כל אחד ועוד עוגה ב-35 ש\"ח. כמה נשאר לי?",
+                    "5 ילדים רוצים 3 פרוסות פיצה כל אחד. במגש יש 8 פרוסות. כמה מגשים צריך?",
+                    "קניתי פריטים ב-395 ש\"ח ונתתי שטר של 500 ש\"ח. כמה עודף אקבל?"
                 ]
             };
+            this.currentLevel = 'level1';
             this.currentProblem = this.chooseRandomProblem();
             this.guidingQuestions = [
                 { key: 'א', text: "מה אנחנו צריכים למצוא?", icon: "magnifying_glass.png" },
@@ -82,10 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
             this.dialogStage = 'start';
             this.userGender = null;
+            this.successfulAnswers = 0;
+            this.lastQuestionTime = null;
         }
 
         chooseRandomProblem() {
-            const problems = this.wordProblems.level1;
+            const problems = this.wordProblems[this.currentLevel];
             return problems[Math.floor(Math.random() * problems.length)];
         }
 
@@ -102,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         postBotMessageWithAvatar(message, avatarFilename, showButtons = false, buttons = []) {
             this.simulateBotTyping(() => {
                 addMessage('bot', message, avatarFilename, showButtons, buttons);
+                this.lastQuestionTime = Date.now();
             });
         }
 
@@ -130,14 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1500);
             } else if (this.dialogStage === 'continue_or_stop') {
                 if (btnText === "כן") {
-                    this.postBotMessageWithAvatar("מצוין! נתחיל שוב עם בעיה חדשה...", "avatar_welcoming.png");
+                    this.currentLevel = this.successfulAnswers >= 2 ? 'level2' : 'level1';
                     this.currentProblem = this.chooseRandomProblem();
                     this.currentQuestionIndex = 0;
                     this.dialogStage = 'asking_guiding_questions';
-                    setTimeout(() => {
-                        this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
-                        setTimeout(() => this.askGuidingQuestion(), 1500);
-                    }, 1500);
+                    this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+                    setTimeout(() => this.askGuidingQuestion(), 1500);
                 } else {
                     this.postBotMessageWithAvatar("אין בעיה, נחזור מתי שתרצה. בהצלחה!", "avatar_support.png");
                     this.dialogStage = 'ended';
@@ -157,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         handleStudentInputLogic(input) {
             addMessage('student', input, 'student_avatar.png');
-
             if (this.dialogStage === 'asking_guiding_questions') {
                 const q = this.guidingQuestions[this.currentQuestionIndex];
                 this.studentGuidingAnswers[q.key] = input;
@@ -169,6 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedback = "מעולה! הצלחת למצוא את הנתונים שיש לנו.";
                 } else if (q.key === 'ג' && /(לא ברור|חסר|צריך לדעת)/.test(input)) {
                     feedback = "יופי! הצלחת לזהות מה חסר לפתרון.";
+                }
+
+                const reactionTime = Date.now() - (this.lastQuestionTime || Date.now());
+                if (reactionTime < 10000 && feedback.includes("הצלחת")) {
+                    this.successfulAnswers++;
                 }
 
                 this.postBotMessageWithAvatar(feedback, "avatar_compliment.png");
@@ -205,3 +216,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
