@@ -70,30 +70,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     "מכנסיים עולים 120 ש\"ח, וסוודר 150 ש\"ח. כמה אשלם יחד?",
                     "כל מיץ עולה 7 ש\"ח. כמה משלמים על 4 מיצים?",
                     "מגש פיצה עולה 64 ש\"ח. כמה יעלה לקנות 2 מגשים?"
-                ],
-                level2: [
-                    "יש לי 200 ש\"ח. קניתי 3 מגשים ב-58 ש\"ח כל אחד ועוד עוגה ב-35 ש\"ח. כמה נשאר לי?",
-                    "5 ילדים רוצים 3 פרוסות פיצה כל אחד. במגש יש 8 פרוסות. כמה מגשים צריך?",
-                    "קניתי פריטים ב-395 ש\"ח ונתתי שטר של 500 ש\"ח. כמה עודף אקבל?"
                 ]
             };
-            this.currentLevel = 'level1';
             this.currentProblem = this.chooseRandomProblem();
-            this.guidingQuestions = [
-                { key: 'א', text: "מה אנחנו צריכים למצוא?", icon: "magnifying_glass.png" },
-                { key: 'ב', text: "מה כבר יש לנו בבעיה?", icon: "list.png" },
-                { key: 'ג', text: "מה חסר לנו לדעת כדי לפתור את הבעיה?", icon: "Missing_puzzle.png" }
-            ];
+            this.guidingQuestions = [];
             this.currentQuestionIndex = 0;
             this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
             this.dialogStage = 'start';
             this.userGender = null;
-            this.successfulAnswers = 0;
-            this.lastQuestionTime = null;
         }
 
         chooseRandomProblem() {
-            const problems = this.wordProblems[this.currentLevel];
+            const problems = this.wordProblems.level1;
             return problems[Math.floor(Math.random() * problems.length)];
         }
 
@@ -110,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         postBotMessageWithAvatar(message, avatarFilename, showButtons = false, buttons = []) {
             this.simulateBotTyping(() => {
                 addMessage('bot', message, avatarFilename, showButtons, buttons);
-                this.lastQuestionTime = Date.now();
             });
         }
 
@@ -128,28 +115,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (this.dialogStage === 'awaiting_gender') {
                 this.userGender = btnText === "זכר" ? 'male' : 'female';
-                this.postBotMessageWithAvatar(
-                    this.userGender === 'male' ? "מעולה! נדבר בלשון זכר." : "נהדר! נדבר בלשון נקבה.",
-                    "avatar_confident.png"
-                );
+                this.updateGuidingQuestionsByGender();
+                const greeting = this.userGender === 'male' ? "מעולה! נדבר בלשון זכר." : "נהדר! נדבר בלשון נקבה.";
+                this.postBotMessageWithAvatar(greeting, "avatar_confident.png");
                 setTimeout(() => {
                     this.postBotMessageWithAvatar(`הנה הבעיה שלנו:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
                     this.dialogStage = 'asking_guiding_questions';
                     setTimeout(() => this.askGuidingQuestion(), 1500);
                 }, 1500);
-            } else if (this.dialogStage === 'continue_or_stop') {
-                if (btnText === "כן") {
-                    this.currentLevel = this.successfulAnswers >= 2 ? 'level2' : 'level1';
-                    this.currentProblem = this.chooseRandomProblem();
-                    this.currentQuestionIndex = 0;
-                    this.dialogStage = 'asking_guiding_questions';
-                    this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
-                    setTimeout(() => this.askGuidingQuestion(), 1500);
-                } else {
-                    this.postBotMessageWithAvatar("אין בעיה, נחזור מתי שתרצה. בהצלחה!", "avatar_support.png");
-                    this.dialogStage = 'ended';
-                }
             }
+        }
+
+        updateGuidingQuestionsByGender() {
+            const isMale = this.userGender === 'male';
+            this.guidingQuestions = [
+                { key: 'א', text: isMale ? "מה אני צריך למצוא?" : "מה אני צריכה למצוא?", icon: "magnifying_glass.png" },
+                { key: 'ב', text: isMale ? "מה אני יודע מהבעיה?" : "מה אני יודעת מהבעיה?", icon: "list.png" },
+                { key: 'ג', text: isMale ? "מה חסר לי לדעת כדי לפתור?" : "מה חסר לי לדעת כדי לפתור?", icon: "Missing_puzzle.png" }
+            ];
+        }
+
+        getRandomFeedback(type) {
+            const emotional = {
+                'א': ["איזה יופי, קלטת את השאלה המרכזית!", "נהדר! הבנת מה לבחון."],
+                'ב': ["מעולה! אספת את הנתונים הנכונים.", "נהדר, אתה בכיוון הנכון עם מה שידוע."],
+                'ג': ["כל הכבוד! סימנת את מה שעדיין חסר.", "מעולה! איתרת את החסר בתמונה."]
+            };
+            const neutral = {
+                'א': ["נראה שהבנת מה נדרש למצוא. עבודה טובה!", "תשובה ברורה – מצאת את הדרוש."],
+                'ב': ["הצלחת לזהות את הנתונים הקיימים.", "זיהית מה יש לנו – זה חשוב!"],
+                'ג': ["סימנת נכון את החסר. זה חשוב!", "התייחסת למה שחסר – כל הכבוד."]
+            };
+            const rand = Math.random();
+            const pool = rand < 0.5 ? emotional[type] : neutral[type];
+            return pool[Math.floor(Math.random() * pool.length)];
         }
 
         askGuidingQuestion() {
@@ -164,25 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         handleStudentInputLogic(input) {
             addMessage('student', input, 'student_avatar.png');
+
             if (this.dialogStage === 'asking_guiding_questions') {
                 const q = this.guidingQuestions[this.currentQuestionIndex];
                 this.studentGuidingAnswers[q.key] = input;
 
-                let feedback = "תודה על התשובה!";
-                if (q.key === 'א' && /(כמה|מה)/.test(input)) {
-                    feedback = "יפה מאוד! הצלחת לזהות מה צריך למצוא.";
-                } else if (q.key === 'ב' && /\d/.test(input)) {
-                    feedback = "מעולה! הצלחת למצוא את הנתונים שיש לנו.";
-                } else if (q.key === 'ג' && /(לא ברור|חסר|צריך לדעת)/.test(input)) {
-                    feedback = "יופי! הצלחת לזהות מה חסר לפתרון.";
-                }
-
-                const reactionTime = Date.now() - (this.lastQuestionTime || Date.now());
-                if (reactionTime < 10000 && feedback.includes("הצלחת")) {
-                    this.successfulAnswers++;
-                }
-
+                const feedback = this.getRandomFeedback(q.key);
                 this.postBotMessageWithAvatar(feedback, "avatar_compliment.png");
+
                 this.currentQuestionIndex++;
                 setTimeout(() => this.askGuidingQuestion(), 1500);
             }
@@ -216,4 +204,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
