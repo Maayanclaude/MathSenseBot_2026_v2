@@ -25,7 +25,7 @@ body.app-started {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: #f0f2f5;
+    background: linear-gradient(to bottom right, #f5f5ff, #e6e6f9);
     padding: 20px;
     position: absolute;
     top: 0;
@@ -33,6 +33,47 @@ body.app-started {
     width: 100%;
     height: 100%;
     z-index: 1000;
+    font-family: 'Heebo', sans-serif;
+}
+
+#welcome-screen h1 {
+    font-size: 3.5rem;
+    color: #933bda;
+    text-shadow: 0 0 15px rgba(147, 59, 218, 0.3);
+    margin-bottom: 0.5em;
+}
+
+#welcome-screen h2 {
+    font-size: 2.5rem;
+    color: #7b1fa2;
+    font-weight: bold;
+}
+
+#welcome-screen img.character {
+    max-width: 250px;
+    height: auto;
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
+}
+
+#start-button {
+    margin-top: 30px;
+    padding: 14px 30px;
+    background: linear-gradient(to right, #a1e3ff, #c7a6f8);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.3rem;
+    color: #2c2c2c;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+#start-button:hover {
+    background: linear-gradient(to right, #97dbff, #b187f5);
+    transform: scale(1.05);
 }
 
 body.app-started #welcome-screen {
@@ -47,7 +88,6 @@ body.app-started #app-main-container {
     display: grid;
 }
 
-/* פאנלים */
 #left-panel {
     background-color: #ffffff;
     border-radius: 8px;
@@ -73,7 +113,6 @@ body.app-started #app-main-container {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/* כותרת */
 #chat-header {
     background-color: #4CAF50;
     color: white;
@@ -86,7 +125,6 @@ body.app-started #app-main-container {
     border-top-right-radius: 8px;
 }
 
-/* חלון צ'אט */
 #chat-window {
     flex-grow: 1;
     padding: 15px;
@@ -97,7 +135,6 @@ body.app-started #app-main-container {
     background-color: #f9f9f9;
 }
 
-/* הודעה */
 .message {
     display: flex;
     align-items: flex-end;
@@ -122,7 +159,6 @@ body.app-started #app-main-container {
     flex-shrink: 0;
 }
 
-/* בוט */
 .bot-message {
     align-self: flex-start;
     flex-direction: row-reverse;
@@ -134,7 +170,6 @@ body.app-started #app-main-container {
     border-bottom-right-radius: 5px;
 }
 
-/* תלמיד */
 .student-message {
     align-self: flex-end;
     flex-direction: row;
@@ -146,7 +181,6 @@ body.app-started #app-main-container {
     border-bottom-left-radius: 5px;
 }
 
-/* אייקונים */
 .question-icon {
     width: 25px;
     height: 25px;
@@ -154,7 +188,6 @@ body.app-started #app-main-container {
     align-self: center;
 }
 
-/* קלט */
 #input-area {
     display: flex;
     padding: 15px;
@@ -189,7 +222,6 @@ body.app-started #app-main-container {
     background-color: #45a049;
 }
 
-/* כפתורים */
 .button-group {
     display: flex;
     flex-wrap: wrap;
@@ -214,14 +246,12 @@ body.app-started #app-main-container {
     background-color: #007bb5;
 }
 
-/* סגנון למשובים */
 .bot-message.positive .message-text {
     background-color: #d2f4dc;
     color: #0b5e20;
     font-weight: bold;
 }
 
-/* כפתור מעבר לבעיה חדשה */
 #new-problem-button {
     margin-top: 10px;
     padding: 10px 16px;
@@ -238,7 +268,6 @@ body.app-started #app-main-container {
     background-color: #fb8c00;
 }
 
-/* רספונסיביות */
 @media (max-width: 768px) {
     body.app-started {
         grid-template-columns: 1fr;
