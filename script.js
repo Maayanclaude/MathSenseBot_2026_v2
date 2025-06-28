@@ -60,31 +60,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     class MathProblemGuidingBot {
         constructor() {
-            this.wordProblems = {
-                level1: [
-                    "חבילת חטיפים עולה 9 ש\"ח. כמה עולות 4 חבילות כאלה?",
-                    "בקבוק שתייה עולה 6 ש\"ח. כמה תשלם על 5 בקבוקים?",
-                    "לשיר יש 850 עוקבים. נוספו לה עוד 175. כמה עוקבים יש לה עכשיו?",
-                    "לדניאל יש 1,200 צפיות ועוד 980 צפיות. כמה צפיות קיבל בסך הכול?"
-                ],
-                level2: [
-                    "יש לי 200 ש\"ח. קניתי 3 מגשים ב-58 ש\"ח כל אחד ועוד עוגה ב-35 ש\"ח. כמה נשאר לי?",
-                    "5 ילדים רוצים 3 פרוסות פיצה כל אחד. במגש יש 8 פרוסות. כמה מגשים צריך?"
-                ],
-                level3: [
-                    "בכיתה יש 24 תלמידים. כל אחד מהם הביא 3 עפרונות ו-2 מחברות. כמה עפרונות ומחברות יש בסך הכול?",
-                    "מתוך 300 תלמידים, 40% משתתפים בחוג. כמה תלמידים לא משתתפים?"
-                ]
-            };
+            this.wordProblems = {};
             this.levelOrder = ['level1', 'level2', 'level3'];
             this.currentLevelIndex = 0;
-            this.currentProblem = this.chooseRandomProblem();
+            this.currentProblem = null;
             this.guidingQuestions = [];
             this.currentQuestionIndex = 0;
             this.studentGuidingAnswers = { 'א': "", 'ב': "", 'ג': "" };
             this.dialogStage = 'start';
             this.userGender = null;
             this.successfulAnswers = 0;
+            this.loadProblemsFromFile();
+        }
+
+        async loadProblemsFromFile() {
+            try {
+                const response = await fetch('problems.json');
+                const data = await response.json();
+                this.wordProblems = {
+                    level1: data.filter(q => q.level === 1),
+                    level2: data.filter(q => q.level === 2),
+                    level3: data.filter(q => q.level === 3)
+                };
+                this.currentProblem = this.chooseRandomProblem();
+            } catch (error) {
+                console.error("שגיאה בטעינת קובץ השאלות:", error);
+            }
         }
 
         chooseRandomProblem() {
@@ -127,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const greeting = this.userGender === 'male' ? "מעולה! נדבר בלשון זכר." : "נהדר! נדבר בלשון נקבה.";
                 this.postBotMessageWithAvatar(greeting, "avatar_confident.png");
                 setTimeout(() => {
-                    this.postBotMessageWithAvatar(`הנה הבעיה שלנו:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+                    this.postBotMessageWithAvatar(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, "avatar_confident.png");
                     this.dialogStage = 'asking_guiding_questions';
                     setTimeout(() => this.askGuidingQuestion(), 1500);
                 }, 1500);
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.currentProblem = this.chooseRandomProblem();
                     this.currentQuestionIndex = 0;
                     this.dialogStage = 'asking_guiding_questions';
-                    this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem}</b>`, "avatar_confident.png");
+                    this.postBotMessageWithAvatar(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, "avatar_confident.png");
                     setTimeout(() => this.askGuidingQuestion(), 1500);
                 } else {
                     this.postBotMessageWithAvatar("אין בעיה, נחזור מתי שתרצה. בהצלחה!", "avatar_support.png");
@@ -228,3 +229,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
