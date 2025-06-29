@@ -1,6 +1,8 @@
+/* ------------------------- */
+/* טיפוגרפיה וכלל העמוד    */
+/* ------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Heebo&family=Ometz&display=swap');
 
-/* טיפוגרפיה ודף כללי */
 body {
   font-family: 'Heebo', sans-serif;
   direction: rtl;
@@ -19,7 +21,9 @@ body.app-started {
   width: 100vw;
 }
 
-/* מסך פתיחה */
+/* ------------------------- */
+/* מסך פתיחה                */
+/* ------------------------- */
 #welcome-screen {
   display: flex;
   flex-direction: column;
@@ -46,7 +50,25 @@ body.app-started {
   animation: fadeInDown 1.5s ease forwards;
 }
 
-/* מבנה צ'אט */
+#welcome-screen button {
+  font-family: 'Heebo', sans-serif;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  background-color: #933bda;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#welcome-screen button:hover {
+  background-color: #7a2cc5;
+}
+
+/* ------------------------- */
+/* ממשק צ'אט                */
+/* ------------------------- */
 #app-main-container {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -66,6 +88,28 @@ body.app-started {
   color: white;
   font-weight: bold;
   border-radius: 0 0 8px 8px;
+  position: relative;
+}
+
+#stars-container {
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  display: flex;
+  gap: 10px;
+}
+
+.star {
+  width: 28px;
+  opacity: 0.4;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.star.earned {
+  opacity: 1;
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 6px gold);
+  animation: bounceIn 0.6s ease;
 }
 
 #chat-window {
@@ -79,7 +123,6 @@ body.app-started {
   scroll-behavior: smooth;
 }
 
-/* הודעות */
 .message {
   display: flex;
   align-items: flex-start;
@@ -94,13 +137,6 @@ body.app-started {
   flex-direction: row-reverse;
 }
 
-.avatar {
-  width: 50px;
-  height: auto;
-  border-radius: 50%;
-  margin: 0 10px;
-}
-
 .message-text {
   background-color: white;
   padding: 10px 16px;
@@ -111,7 +147,9 @@ body.app-started {
   animation: fadeInUp 0.4s ease;
 }
 
-/* קלט */
+/* ------------------------- */
+/* קלט                      */
+/* ------------------------- */
 #input-area {
   display: flex;
   gap: 10px;
@@ -144,7 +182,21 @@ body.app-started {
   background-color: #7a2cc5;
 }
 
-/* אווטאר ימני */
+/* ------------------------- */
+/* אווטאר צדדי + גדול       */
+/* ------------------------- */
+#floating-avatar {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  z-index: 100;
+}
+
+#floating-avatar img {
+  width: 100%;
+}
+
 #right-panel {
   display: flex;
   justify-content: center;
@@ -168,48 +220,11 @@ body.app-started {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* אווטאר צף */
-#floating-avatar {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 120px;
-  z-index: 100;
-}
-
-#floating-avatar img {
-  width: 100%;
-  height: auto;
-}
-
-/* כוכבים */
-#stars-container {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-  z-index: 50;
-}
-
-.star {
-  width: 40px;
-  height: 40px;
-  opacity: 0.3;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-.star.earned {
-  opacity: 1;
-  transform: scale(1.3);
-  filter: drop-shadow(0 0 8px gold);
-  animation: bounceIn 0.6s ease;
-}
-
-/* כפתורי בחירה */
+/* ------------------------- */
+/* כפתורים ואנימציות כלליות */
+/* ------------------------- */
 .choice-button {
-  margin: 5px;
+  margin: 6px;
   padding: 10px 16px;
   background-color: #e3d5f1;
   border: 2px solid #933bda;
@@ -223,15 +238,14 @@ body.app-started {
   background-color: #d0bbec;
 }
 
-/* אנימציות */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes bounceIn {
@@ -239,4 +253,3 @@ body.app-started {
   60% { transform: scale(1.3); opacity: 1; }
   100% { transform: scale(1); }
 }
-
