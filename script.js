@@ -23,6 +23,47 @@ document.addEventListener('DOMContentLoaded', () => {
         excited: "avatar_excited.png"
     };
 
+    const bonusSound = new Audio('./sounds/game-bonus.mp3');
+    const excitedSound = new Audio('./sounds/yeah.mp3');
+
+    function updateAvatar(expressionKey) {
+        const avatarFilename = avatarExpressions[expressionKey] || avatarExpressions['support'];
+        const largeAvatar = document.getElementById('large-avatar');
+        if (largeAvatar) {
+            largeAvatar.style.opacity = '0';
+            setTimeout(() => {
+                largeAvatar.src = `./avatars/${avatarFilename}`;
+                largeAvatar.style.opacity = '1';
+            }, 250);
+        }
+    }
+
+    function updateStars(count) {
+        for (let i = 1; i <= 3; i++) {
+            const star = document.getElementById(`star${i}`);
+            if (star) {
+                if (i <= count) {
+                    star.src = './icons/star_gold.png';
+                    star.classList.add('earned');
+                } else {
+                    star.src = './icons/star_empty.png';
+                    star.classList.remove('earned');
+                }
+            }
+        }
+
+        if (count > 0 && count < 3) {
+            bonusSound.currentTime = 0;
+            bonusSound.play();
+        }
+
+        if (count === 3) {
+            excitedSound.currentTime = 0;
+            excitedSound.play();
+            updateAvatar('excited');
+        }
+    }
+
     function addMessage(sender, text, avatarFileName, showButtons = false, buttons = []) {
         if (!chatWindow) return;
 
@@ -55,15 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
-        const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
-
-        const largeAvatar = document.getElementById("large-avatar");
-        if (largeAvatar) {
-            largeAvatar.src = `./avatars/${avatarFilename}`;
-        }
-
+        updateAvatar(emotion);
         bot.simulateBotTyping(() => {
-            addMessage('bot', message, avatarFilename, showButtons, buttons);
+            addMessage('bot', message, avatarExpressions[emotion], showButtons, buttons);
         });
     }
 
@@ -93,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 this.currentProblem = this.chooseRandomProblem();
             } catch (error) {
-                console.error("\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05d8\u05e2\u05d9\u05e0\u05ea \u05e7\u05d5\u05d1\u05e5 \u05d4\u05e9\u05d0\u05dc\u05d5\u05ea:", error);
+                console.error("שגיאה בטעינת קובץ השאלות:", error);
             }
         }
 
@@ -204,6 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 postBotMessageWithEmotion(feedback, 'compliment');
 
                 this.successfulAnswers++;
+                updateStars(this.successfulAnswers);
+
                 this.currentQuestionIndex++;
                 setTimeout(() => this.askGuidingQuestion(), 1500);
             }
