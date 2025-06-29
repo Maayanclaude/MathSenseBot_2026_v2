@@ -6,13 +6,13 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- אווטאר צדדי מתעדכן (צף בפינה) -->
-  <div id="floating-avatar">
-    <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי" />
-  </div>
-
   <!-- מסך פתיחה -->
   <div id="welcome-screen">
+    <!-- אווטאר קבוע למסך הפתיחה -->
+    <div class="avatar-opening">
+      <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי מברך" />
+    </div>
+
     <div class="welcome-content">
       <h1>הקסם מתחיל כאן</h1>
       <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
@@ -20,18 +20,10 @@
     </div>
   </div>
 
-  <!-- ממשק ראשי של האפליקציה -->
+  <!-- ממשק האפליקציה הראשי -->
   <div id="app-main-container" class="hidden">
-    
-    <!-- אווטאר שמאלי גדול -->
-    <div id="avatar-panel">
-      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
-    </div>
-
-    <!-- אזור צ'אט ותוכן -->
     <div id="left-panel">
-      
-      <!-- כותרת עליונה עם כוכבים -->
+      <!-- כותרת ושורת כוכבים -->
       <div id="chat-header">
         <span>Math Sense Bot - מתי</span>
         <div id="stars-container">
@@ -44,16 +36,20 @@
       <!-- חלון שיחה -->
       <div id="chat-window"></div>
 
-      <!-- אזור קלט משתמש -->
+      <!-- אזור קלט -->
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
         <button id="send-button">שלח</button>
         <div id="bot-status" class="bot-status-text">מתי ממתין...</div>
       </div>
     </div>
+
+    <!-- אווטאר מתחלף גדול בצד -->
+    <div id="right-panel">
+      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
+    </div>
   </div>
 
-  <!-- קובץ הסקריפט -->
   <script src="script.js"></script>
 </body>
 </html>
