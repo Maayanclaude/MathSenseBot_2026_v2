@@ -29,26 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender === 'bot' ? 'bot-message' : 'student-message');
 
-        const avatarImg = document.createElement('img');
-        avatarImg.classList.add('avatar');
-        avatarImg.src = `./avatars/${avatarFileName}`;
-        avatarImg.alt = sender + ' avatar';
-
         const textSpan = document.createElement('span');
         textSpan.classList.add('message-text');
         textSpan.innerHTML = text;
 
-        if (sender === 'bot') {
-            messageDiv.append(avatarImg, textSpan);
-        } else {
-            messageDiv.append(textSpan);
-            const studentAvatarImg = document.createElement('img');
-            studentAvatarImg.classList.add('avatar');
-            studentAvatarImg.src = `./avatars/student_avatar.png`;
-            studentAvatarImg.alt = 'Student avatar';
-            messageDiv.appendChild(studentAvatarImg);
-        }
-
+        messageDiv.appendChild(textSpan);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
 
@@ -71,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
         const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
+
+        const largeAvatar = document.getElementById("large-avatar");
+        if (largeAvatar) {
+            largeAvatar.src = `./avatars/${avatarFilename}`;
+        }
+
         bot.simulateBotTyping(() => {
             addMessage('bot', message, avatarFilename, showButtons, buttons);
         });
@@ -102,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 this.currentProblem = this.chooseRandomProblem();
             } catch (error) {
-                console.error("שגיאה בטעינת קובץ השאלות:", error);
+                console.error("\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05d8\u05e2\u05d9\u05e0\u05ea \u05e7\u05d5\u05d1\u05e5 \u05d4\u05e9\u05d0\u05dc\u05d5\u05ea:", error);
             }
         }
 
