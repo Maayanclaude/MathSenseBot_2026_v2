@@ -1,337 +1,41 @@
 body {
-    font-family: 'Heebo', sans-serif;
-    direction: rtl;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5;
-    min-height: 100vh;
-    overflow: hidden;
-    position: relative;
+  font-family: 'Heebo', sans-serif;
+  direction: rtl;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 
 body.app-started {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    grid-template-rows: 1fr;
-    height: 100vh;
-    width: 100vw;
-    position: static;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 1fr;
+  height: 100vh;
+  width: 100vw;
+  position: static;
 }
 
 /* מסך פתיחה */
 #welcome-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: linear-gradient(to bottom right, #f5f5ff, #e6e6f9);
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    font-family: 'Heebo', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(to bottom right, #f5f5ff, #e6e6f9);
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
 }
 
 #welcome-screen h1 {
-    font-size: 3.5rem;
-    color: #933bda;
-    text-shadow: 0 0 15px rgba(147, 59, 218, 0.3);
-    margin-bottom: 0.5em;
-}
-
-#welcome-screen h2 {
-    font-size: 2.5rem;
-    color: #7b1fa2;
-    font-weight: bold;
-}
-
-#welcome-screen img.character {
-    max-width: 250px;
-    height: auto;
-    position: absolute;
-    bottom: 20px;
-    right: 40px;
-}
-
-#start-button {
-    margin-top: 30px;
-    padding: 14px 30px;
-    background: linear-gradient(to right, #a1e3ff, #c7a6f8);
-    border: none;
-    border-radius: 30px;
-    font-size: 1.3rem;
-    color: #2c2c2c;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-}
-
-#start-button:hover {
-    background: linear-gradient(to right, #97dbff, #b187f5);
-    transform: scale(1.05);
-}
-
-body.app-started #welcome-screen {
-    display: none;
-}
-
-#app-main-container {
-    display: none;
-}
-
-body.app-started #app-main-container {
-    display: grid;
-}
-
-#left-panel {
-    background-color: #ffffff;
-    border-radius: 8px;
-    margin: 15px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-#right-panel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-}
-
-#large-avatar {
-    width: 90%;
-    max-width: 300px;
-    height: auto;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-#chat-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-#chat-window {
-    flex-grow: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #f9f9f9;
-}
-
-.message {
-    display: flex;
-    align-items: flex-end;
-    max-width: 80%;
-    position: relative;
-}
-
-.message-text {
-    padding: 10px 15px;
-    border-radius: 20px;
-    line-height: 1.5;
-    word-wrap: break-word;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 0 8px;
-    flex-shrink: 0;
-}
-
-.bot-message {
-    align-self: flex-start;
-    flex-direction: row-reverse;
-}
-
-.bot-message .message-text {
-    background-color: #e0e0e0;
-    color: #333;
-    border-bottom-right-radius: 5px;
-}
-
-.student-message {
-    align-self: flex-end;
-    flex-direction: row;
-}
-
-.student-message .message-text {
-    background-color: #dcf8c6;
-    color: #333;
-    border-bottom-left-radius: 5px;
-}
-
-.question-icon {
-    width: 25px;
-    height: 25px;
-    margin-left: 5px;
-    align-self: center;
-}
-
-#input-area {
-    display: flex;
-    padding: 15px;
-    background-color: #ffffff;
-    border-top: 1px solid #eee;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
-#user-input {
-    flex-grow: 1;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    margin-left: 10px;
-    font-size: 1rem;
-    outline: none;
-}
-
-#send-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-#send-button:hover {
-    background-color: #45a049;
-}
-
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-}
-
-.choice-button {
-    background-color: #008CBA;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-}
-
-.choice-button:hover {
-    background-color: #007bb5;
-}
-
-.bot-message.positive .message-text {
-    background-color: #d2f4dc;
-    color: #0b5e20;
-    font-weight: bold;
-}
-
-#new-problem-button {
-    margin-top: 10px;
-    padding: 10px 16px;
-    background-color: #FF9800;
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#new-problem-button:hover {
-    background-color: #fb8c00;
-}
-
-@media (max-width: 768px) {
-    body.app-started {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-    }
-
-    #left-panel {
-        order: 2;
-        padding: 10px;
-        margin: 10px;
-    }
-
-    #right-panel {
-        order: 1;
-        height: 200px;
-        padding: 10px;
-    }
-
-    #large-avatar {
-        width: 150px;
-        height: 150px;
-    }
-
-    #chat-header {
-        padding: 10px;
-    }
-
-    #input-area {
-        padding: 10px;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    #user-input {
-        margin-left: 0;
-        margin-bottom: 10px;
-    }
-
-    #send-button {
-        width: 100%;
-    }
-
-    .message {
-        max-width: 95%;
-    }
-}
-/* --- עיצוב משלים למסך הפתיחה --- */
-
-#welcome-screen .welcome-content {
-    max-width: 90%;
-    margin: auto;
-    text-align: center;
-}
-
-#welcome-screen p {
-    font-size: 1.4rem;
-    color: #444;
-    margin-top: 0;
-}
-
-/* עיצוב לאווטאר במסך הפתיחה בלבד */
-#welcome-screen .avatar {
-    max-width: 250px;
-    height: auto;
-    border-radius: 50%;
-    margin-top: 20px;
-}
+  font-size: 3.5rem;
+  color: #933bda;
+  text-shadow: 0 0 15px rgba(1
