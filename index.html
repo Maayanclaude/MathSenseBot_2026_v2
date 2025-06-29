@@ -6,26 +6,31 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- מסך פתיחה -->
   <div id="welcome-screen">
-  <div class="welcome-content">
-    <h1>הקסם מתחיל כאן</h1>
-    <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
-    <button id="start-button">נתחיל!?</button>
+    <div class="welcome-content">
+      <h1>הקסם מתחיל כאן</h1>
+      <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
+      <button id="start-button">נתחיל!?</button>
+    </div>
+    <img src="avatars/avatar_welcoming.png" alt="אווטאר ברוך הבא" class="avatar" />
   </div>
-  <img src="avatars/avatar_welcoming.png" alt="אווטאר ברוך הבא" class="avatar" />
-</div>
 
-
+  <!-- ממשק האפליקציה הראשי -->
   <div id="app-main-container" class="hidden">
     <div id="left-panel">
       <div id="chat-header">Math Sense Bot - מתי</div>
       <div id="chat-window"></div>
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
-  <button id="send-button">שלח</button>
+        <button id="send-button">שלח</button>
       </div>
     </div>
-    <div id="right-panel"></div>
+
+    <!-- כאן האווטאר הגדול של מתי -->
+    <div id="right-panel">
+      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
+    </div>
   </div>
 
   <script src="script.js"></script>
