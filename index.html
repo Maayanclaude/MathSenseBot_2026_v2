@@ -16,22 +16,36 @@
     <div class="welcome-content">
       <h1>הקסם מתחיל כאן</h1>
       <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
-      <!-- המשך... -->
+      <button id="start-button">התחל</button>
     </div>
   </div>
 
   <!-- ממשק האפליקציה הראשי -->
   <div id="app-main-container" class="hidden">
     <div id="left-panel">
-      <div id="chat-header">Math Sense Bot - מתי</div>
+      
+      <!-- כותרת ושורת כוכבים -->
+      <div id="chat-header">
+        <span>Math Sense Bot - מתי</span>
+        <div id="stars-container">
+          <img src="icons/star_empty.png" class="star-icon" />
+          <img src="icons/star_empty.png" class="star-icon" />
+          <img src="icons/star_empty.png" class="star-icon" />
+        </div>
+      </div>
+
+      <!-- חלון שיחה -->
       <div id="chat-window"></div>
+
+      <!-- אזור קלט -->
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
         <button id="send-button">שלח</button>
+        <div id="bot-status" class="bot-status-text">מתי ממתין...</div>
       </div>
     </div>
 
-    <!-- כאן האווטאר הגדול של מתי -->
+    <!-- אווטאר גדול בצד ימין -->
     <div id="right-panel">
       <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
     </div>
