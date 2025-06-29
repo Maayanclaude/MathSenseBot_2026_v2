@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- אווטאר צדדי מתעדכן -->
+  <!-- אווטאר צדדי מתעדכן (צף בפינה) -->
   <div id="floating-avatar">
     <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי" />
   </div>
@@ -20,10 +20,18 @@
     </div>
   </div>
 
-  <!-- ממשק האפליקציה הראשי -->
+  <!-- ממשק ראשי של האפליקציה -->
   <div id="app-main-container" class="hidden">
+    
+    <!-- אווטאר שמאלי גדול -->
+    <div id="avatar-panel">
+      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
+    </div>
+
+    <!-- אזור צ'אט ותוכן -->
     <div id="left-panel">
-      <!-- כותרת ושורת כוכבים -->
+      
+      <!-- כותרת עליונה עם כוכבים -->
       <div id="chat-header">
         <span>Math Sense Bot - מתי</span>
         <div id="stars-container">
@@ -36,20 +44,16 @@
       <!-- חלון שיחה -->
       <div id="chat-window"></div>
 
-      <!-- אזור קלט -->
+      <!-- אזור קלט משתמש -->
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
         <button id="send-button">שלח</button>
         <div id="bot-status" class="bot-status-text">מתי ממתין...</div>
       </div>
     </div>
-
-    <!-- אווטאר גדול בצד שמאל -->
-    <div id="right-panel">
-      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
-    </div>
   </div>
 
+  <!-- קובץ הסקריפט -->
   <script src="script.js"></script>
 </body>
 </html>
