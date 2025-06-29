@@ -314,3 +314,24 @@ body.app-started #app-main-container {
         max-width: 95%;
     }
 }
+/* --- עיצוב משלים למסך הפתיחה --- */
+
+#welcome-screen .welcome-content {
+    max-width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+#welcome-screen p {
+    font-size: 1.4rem;
+    color: #444;
+    margin-top: 0;
+}
+
+/* עיצוב לאווטאר במסך הפתיחה בלבד */
+#welcome-screen .avatar {
+    max-width: 250px;
+    height: auto;
+    border-radius: 50%;
+    margin-top: 20px;
+}
