@@ -165,7 +165,12 @@ body.app-started {
 #large-avatar {
   max-width: 90%;
   max-height: 90%;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
+  opacity: 1;
+}
+
+#large-avatar.excited-transition {
+  animation: pulseAvatar 0.5s ease;
 }
 
 /* ------------------------- */
@@ -265,6 +270,21 @@ body.app-started {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes pulseAvatar {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
