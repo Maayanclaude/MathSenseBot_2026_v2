@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>Math Sense Bot</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo&family=Ometz&display=swap" rel="stylesheet">
+  <!-- פונט Rubik -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -16,11 +16,14 @@
       <img src="avatars/avatar_welcoming.png" alt="מתי מברכת" />
     </div>
 
+    <!-- טקסט פתיחה וכפתור -->
     <div class="welcome-content">
-      <h1>הקסם מתחיל כאן</h1>
-      <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
-      <p class="motivational">מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!</p>
-      <button id="start-button">אני מוכן/ה להתחיל!</button>
+      <h1 style="font-family: 'Rubik', sans-serif;">פתאום זה קורה</h1>
+      <p style="font-family: 'Rubik', sans-serif;">מילים הופכות למספרים – בשלושה צעדים</p>
+      <p class="motivational" style="font-family: 'Rubik', sans-serif;">
+        מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!
+      </p>
+      <button id="start-button" class="start-button">נתחיל?</button>
     </div>
   </div>
 
@@ -54,6 +57,7 @@
     </div>
   </div>
 
+  <!-- קובץ JS -->
   <script src="script.js"></script>
 </body>
 </html>
