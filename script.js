@@ -31,11 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function addMessage(sender, text) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender === 'bot' ? 'bot-message' : 'student-message');
-
     const textSpan = document.createElement('span');
     textSpan.classList.add('message-text');
     textSpan.innerHTML = text;
-
     messageDiv.appendChild(textSpan);
     chatWindow.appendChild(messageDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -44,13 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
     const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
     if (largeAvatar) largeAvatar.src = `./avatars/${avatarFilename}`;
-
     bot.simulateBotTyping(() => {
       addMessage('bot', message);
       if (showButtons && buttons.length) {
         const buttonsDiv = document.createElement('div');
         buttonsDiv.classList.add('button-group');
-
         buttons.forEach(btnText => {
           const btn = document.createElement('button');
           btn.textContent = btnText;
@@ -62,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           buttonsDiv.appendChild(btn);
         });
-
         chatWindow.appendChild(buttonsDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
       }
@@ -121,34 +116,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     handleChoiceButtonClick(event) {
       const btnText = event.target.textContent;
-
       if (this.dialogStage === 'awaiting_gender') {
-        this.userGender =
-          btnText === "זכר" ? 'male' :
-          btnText === "נקבה" ? 'female' : 'neutral';
-
+        this.userGender = btnText === "זכר" ? 'male' : btnText === "נקבה" ? 'female' : 'neutral';
         this.updateGuidingQuestionsByGender();
-
         const greeting = this.userGender === 'male'
           ? "נהדר! נדבר בלשון זכר."
           : this.userGender === 'female'
           ? "נהדר! נדבר בלשון נקבה."
           : "נשתמש בלשון ניטרלית כדי שתרגיש/י בנוח.";
-
         postBotMessageWithEmotion(greeting, 'confident');
-
         setTimeout(() => {
           postBotMessageWithEmotion("מוכנ/ה? בוא/י נתחיל! 💪", 'inviting');
         }, 1500);
-
         setTimeout(() => {
           postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
           this.dialogStage = 'asking_guiding_questions';
           setTimeout(() => this.askGuidingQuestion(), 1500);
         }, 3500);
-      }
-
-      else if (this.dialogStage === 'continue_or_stop') {
+      } else if (this.dialogStage === 'continue_or_stop') {
         if (btnText === "כן") {
           if (this.successfulAnswers >= 3 && this.currentLevelIndex < this.levelOrder.length - 1) {
             this.currentLevelIndex++;
@@ -169,10 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGuidingQuestionsByGender() {
       const isMale = this.userGender === 'male';
       const isFemale = this.userGender === 'female';
-
-      const text = (male, female, neutral) =>
-        isMale ? male : isFemale ? female : neutral;
-
+      const text = (male, female, neutral) => isMale ? male : isFemale ? female : neutral;
       this.guidingQuestions = [
         { key: 'א', text: text("מה אני צריך למצוא?", "מה אני צריכה למצוא?", "מה צריך למצוא?"), icon: "magnifying_glass.png" },
         { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לנו?"), icon: "list.png" },
@@ -191,30 +173,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-   handleStudentInputLogic(input) {
-  addMessage('student', input);
-
-  if (this.dialogStage === 'asking_guiding_questions') {
-    const q = this.guidingQuestions[this.currentQuestionIndex];
-    this.studentGuidingAnswers[q.key] = input;
-
-    const keywords = this.currentProblem.keywords?.[q.key] || [];
-    const clarification = this.currentProblem.clarifications?.[q.key];
-
-    const isPartial = keywords.some(keyword => input.includes(keyword)) && input.length <= 14;
-
-    if (isPartial && clarification) {
-      postBotMessageWithEmotion(clarification, 'support');
-    } else {
-      const feedback = this.getRandomFeedback(q.key);
-      postBotMessageWithEmotion(feedback, 'compliment');
-      this.markStar(this.currentQuestionIndex);
-      this.successfulAnswers++;
-      this.currentQuestionIndex++;
-      setTimeout(() => this.askGuidingQuestion(), 1500);
-    }
-  }
-
+    handleStudentInputLogic(input) {
+      addMessage('student', input);
+      if (this.dialogStage === 'asking_guiding_questions') {
+        const q = this.guidingQuestions[this.currentQuestionIndex];
+        this.studentGuidingAnswers[q.key] = input;
+        const keywords = this.currentProblem.keywords?.[q.key] || [];
+        const clarification = this.currentProblem.clarifications?.[q.key];
+        const isPartial = keywords.some(keyword => input.includes(keyword)) && input.length <= 14;
+        if (isPartial && clarification) {
+          postBotMessageWithEmotion(clarification, 'support');
+        } else {
+          const feedback = this.getRandomFeedback(q.key);
+          postBotMessageWithEmotion(feedback, 'compliment');
+          this.markStar(this.currentQuestionIndex);
+          this.successfulAnswers++;
+          this.currentQuestionIndex++;
+          setTimeout(() => this.askGuidingQuestion(), 1500);
+        }
       }
     }
 
@@ -224,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         stars[index].classList.add('earned');
         successSound.play();
       }
-
       if (this.successfulAnswers === 3 && largeAvatar) {
         setTimeout(() => {
           largeAvatar.src = `./avatars/${avatarExpressions.excited}`;
