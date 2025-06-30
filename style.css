@@ -273,3 +273,9 @@ body.app-started {
   transform: scale(1.05);
   transition: all 0.2s ease;
 }
+.choice-button.selected {
+  background-color: #c4a4f3;
+  border-color: #933bda;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px #b286e5;
+}
