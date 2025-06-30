@@ -42,9 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
 
     if (largeAvatar) {
-      largeAvatar.classList.add('excited-transition');
       largeAvatar.src = `./avatars/${avatarFilename}`;
-      setTimeout(() => largeAvatar.classList.remove('excited-transition'), 500);
     }
 
     bot.simulateBotTyping(() => {
@@ -105,11 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     simulateBotTyping(callback, delay = 900) {
       isBotTyping = true;
-      if (botStatus) botStatus.textContent = 'מתי מקליד/ה...';
+      if (botStatus) botStatus.textContent = 'מתי מקלידה...';
       setTimeout(() => {
         callback();
         isBotTyping = false;
-        if (botStatus) botStatus.textContent = 'מתי ממתין...';
+        if (botStatus) botStatus.textContent = 'מתי ממתינה...';
       }, delay);
     }
 
@@ -118,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         postBotMessageWithEmotion("איך תרצה שאפנה אליך?", 'inviting', true, ["זכר", "נקבה", "לא משנה לי"]);
         this.dialogStage = 'awaiting_gender';
-      }, 1800);
+      }, 1500);
     }
 
     handleChoiceButtonClick(event) {
@@ -141,17 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
         postBotMessageWithEmotion(greeting, 'confident');
 
         setTimeout(() => {
-          postBotMessageWithEmotion(
-            "נפתור יחד בעיה חשבונית בעזרת שלושה שלבים פשוטים – עם שאלות מנחות שיעזרו לך לעשות סדר ולחשוב נכון.",
-            'inviting'
-          );
+          postBotMessageWithEmotion("נפתור יחד בעיה חשבונית בעזרת שלושה שלבים פשוטים – עם שאלות מנחות שיעזרו לך לעשות סדר ולחשוב נכון.", 'inviting');
         }, 1500);
 
         setTimeout(() => {
-          postBotMessageWithEmotion(
-            `הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`,
-            'confident'
-          );
+          postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
           this.dialogStage = 'asking_guiding_questions';
           setTimeout(() => this.askGuidingQuestion(), 1500);
         }, 4000);
@@ -169,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
           postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
           setTimeout(() => this.askGuidingQuestion(), 1500);
         } else {
-          postBotMessageWithEmotion("אין בעיה, נחזור מתי שתרצה. בהצלחה!", 'support');
+          postBotMessageWithEmotion("אין בעיה, נחזור כשתרצה. בהצלחה!", 'support');
           this.dialogStage = 'ended';
         }
       }
@@ -187,22 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לנו?"), icon: "list.png" },
         { key: 'ג', text: text("מה חסר לי לדעת כדי לפתור?", "מה חסר לי לדעת כדי לפתור?", "מה חסר כדי לפתור?"), icon: "Missing_puzzle.png" }
       ];
-    }
-
-    getRandomFeedback(type) {
-      const emotional = {
-        'א': ["איזה יופי, קלטת את השאלה המרכזית!", "נהדר! הבנת מה לבחון."],
-        'ב': ["מעולה! אספת את הנתונים הנכונים.", "נהדר, אתה בכיוון הנכון עם מה שידוע."],
-        'ג': ["כל הכבוד! סימנת את מה שעדיין חסר.", "מעולה! איתרת את החסר בתמונה."]
-      };
-      const neutral = {
-        'א': ["נראה שהבנת מה נדרש למצוא. עבודה טובה!", "תשובה ברורה – מצאת את הדרוש."],
-        'ב': ["הצלחת לזהות את הנתונים הקיימים.", "זיהית מה יש לנו – זה חשוב!"],
-        'ג': ["סימנת נכון את החסר. זה חשוב!", "התייחסת למה שחסר – כל הכבוד."]
-      };
-      const rand = Math.random();
-      const pool = rand < 0.5 ? emotional[type] : neutral[type];
-      return pool[Math.floor(Math.random() * pool.length)];
     }
 
     askGuidingQuestion() {
@@ -246,12 +222,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+
+    getRandomFeedback(type) {
+      const emotional = {
+        'א': ["איזה יופי, קלטת את השאלה המרכזית!", "נהדר! הבנת מה לבחון."],
+        'ב': ["מעולה! אספת את הנתונים הנכונים.", "נהדר, את בכיוון הנכון עם מה שידוע."],
+        'ג': ["כל הכבוד! סימנת את מה שעדיין חסר.", "מעולה! איתרת את החסר בתמונה."]
+      };
+      const neutral = {
+        'א': ["נראה שהבנת מה נדרש למצוא. עבודה טובה!", "תשובה ברורה – מצאת את הדרוש."],
+        'ב': ["הצלחת לזהות את הנתונים הקיימים.", "זיהית מה יש לנו – זה חשוב!"],
+        'ג': ["סימנת נכון את החסר. זה חשוב!", "התייחסת למה שחסר – כל הכבוד."]
+      };
+      const pool = Math.random() < 0.5 ? emotional[type] : neutral[type];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
   }
 
   const bot = new MathProblemGuidingBot();
 
+  // התחלה אוטומטית אם כבר התחילו
+  if (localStorage.getItem('chatStarted') === 'true') {
+    welcomeScreen.style.display = 'none';
+    appMainContainer.style.display = 'grid';
+    document.body.classList.add('app-started');
+    bot.startConversationLogic();
+  }
+
   if (startButton) {
     startButton.addEventListener('click', () => {
+      localStorage.setItem('chatStarted', 'true');
       welcomeScreen.style.display = 'none';
       appMainContainer.style.display = 'grid';
       document.body.classList.add('app-started');
@@ -275,4 +275,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
