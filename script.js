@@ -214,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => this.askGuidingQuestion(), 1500);
     }
   }
-}
 
       }
     }
