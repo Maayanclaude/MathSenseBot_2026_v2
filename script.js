@@ -1,4 +1,4 @@
-// script.js - גרסה מעודכנת ללא "יאללה", עם התאמה מגדרית ואייקונים
+// script.js - גרסה מעודכנת עם מודלינג, התאמה מגדרית, שמירת הקשר והפחתת עומס קוגניטיבי
 
 // --- משתנים כלליים ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,8 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const text = (male, female, neutral) => isMale ? male : isFemale ? female : neutral;
       this.guidingQuestions = [
         { key: 'א', text: text("מה אני צריך למצוא?", "מה אני צריכה למצוא?", "מה צריך למצוא?"), icon: "magnifying_glass.png" },
-        { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לנו?"), icon: "list.png" },
-        { key: 'ג', text: text("מה חסר לי לדעת כדי לפתור?", "מה חסר לי לדעת כדי לפתור?", "מה חסר כדי לפתור?"), icon: "Missing_puzzle.png" }
+        { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לי?"), icon: "list.png" },
+        { key: 'ג', text: text("מה חסר לי לדעת כדי לפתור?", "מה חסר לי לדעת כדי לפתור?", "מה חסר לי כדי לפתור?"), icon: "Missing_puzzle.png" }
       ];
     }
 
