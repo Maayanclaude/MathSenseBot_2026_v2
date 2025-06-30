@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async loadProblemsFromFile() {
-      const response = await fetch('questions_data (2).json');
+      // *** התיקון הקריטי נמצא בשורה הבאה: ***
+      const response = await fetch('questions_data.json'); 
       const data = await response.json();
       this.wordProblems = {
         level1: data.filter(q => q.level === 1),
@@ -225,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bot = new MathProblemGuidingBot();
 
+  // שמירה של מצב השיחה באמצעות LocalStorage
   if (localStorage.getItem('chatStarted') === 'true') {
     welcomeScreen.style.display = 'none';
     appMainContainer.style.display = 'grid';
