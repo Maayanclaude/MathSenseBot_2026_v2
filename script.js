@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async loadProblemsFromFile() {
-      const response = await fetch('questions_data.json');
+      const response = await fetch('questions_data (2).json');
       const data = await response.json();
       this.wordProblems = {
         level1: data.filter(q => q.level === 1),
