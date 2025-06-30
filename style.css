@@ -49,7 +49,6 @@ body.app-started {
   height: auto;
 }
 
-/* טיפוגרפיה בכותרת */
 #welcome-screen h1 {
   font-family: 'Ometz', sans-serif;
   font-size: 4rem;
@@ -130,6 +129,9 @@ body.app-started {
   filter: drop-shadow(0 0 8px gold);
 }
 
+/* ------------------------- */
+/* חלון שיחה                 */
+/* ------------------------- */
 #chat-window {
   flex-grow: 1;
   padding: 20px;
@@ -141,7 +143,6 @@ body.app-started {
   scroll-behavior: smooth;
 }
 
-/* הודעות */
 .message {
   display: flex;
   align-items: flex-start;
@@ -242,40 +243,23 @@ body.app-started {
   background-color: #d0bbec;
 }
 
-/* ------------------------- */
-/* אנימציות                  */
-/* ------------------------- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-/* אפקט נבחר לכפתור בחירה */
-.choice-button.selected {
-  background-color: #c4a4f3;
-  border-color: #933bda;
-  transform: scale(1.05);
-  transition: all 0.2s ease;
-}
 .choice-button.selected {
   background-color: #c4a4f3;
   border-color: #933bda;
   transform: scale(1.05);
   box-shadow: 0 0 8px #b286e5;
+  transition: all 0.2s ease;
+}
+
+/* ------------------------- */
+/* אנימציות                  */
+/* ------------------------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
