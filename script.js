@@ -1,3 +1,5 @@
+// script.js
+
 document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.getElementById('start-button');
   const welcomeScreen = document.getElementById('welcome-screen');
@@ -40,10 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
     const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
-
-    if (largeAvatar) {
-      largeAvatar.src = `./avatars/${avatarFilename}`;
-    }
+    if (largeAvatar) largeAvatar.src = `./avatars/${avatarFilename}`;
 
     bot.simulateBotTyping(() => {
       addMessage('bot', message);
@@ -124,31 +123,29 @@ document.addEventListener('DOMContentLoaded', () => {
       addMessage('student', `בחרתי: ${btnText}`);
 
       if (this.dialogStage === 'awaiting_gender') {
-        this.userGender =
-          btnText === "זכר" ? 'male' :
-          btnText === "נקבה" ? 'female' : 'neutral';
-
+        this.userGender = btnText === "זכר" ? 'male' : btnText === "נקבה" ? 'female' : 'neutral';
         this.updateGuidingQuestionsByGender();
 
-        const greeting = this.userGender === 'male'
-          ? "מעולה! נדבר בלשון זכר."
-          : this.userGender === 'female'
-          ? "נהדר! נדבר בלשון נקבה."
-          : "נשתמש בלשון ניטרלית כדי שתרגיש/י בנוח.";
+        const greeting = this.userGender === 'male' ? "מעולה! נדבר בלשון זכר." :
+                         this.userGender === 'female' ? "נהדר! נדבר בלשון נקבה." :
+                         "נשתמש בלשון ניטרלית כדי שתרגיש/י בנוח.";
 
         postBotMessageWithEmotion(greeting, 'confident');
 
         setTimeout(() => {
-          postBotMessageWithEmotion("נפתור יחד בעיה חשבונית בעזרת שלושה שלבים פשוטים – עם שאלות מנחות שיעזרו לך לעשות סדר ולחשוב נכון.", 'inviting');
+          postBotMessageWithEmotion("מוכנ/ה? בוא/י נתחיל! 💪", 'inviting', true, ["יאללה!"]); // כפתור מוטיבציה
+          this.dialogStage = 'motivation_ready';
         }, 1500);
+      }
+      else if (this.dialogStage === 'motivation_ready') {
+        postBotMessageWithEmotion("נפתור יחד בעיה חשבונית בעזרת שלושה שלבים פשוטים – עם שאלות מנחות שיעזרו לך לעשות סדר ולחשוב נכון.", 'inviting');
 
         setTimeout(() => {
           postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
           this.dialogStage = 'asking_guiding_questions';
           setTimeout(() => this.askGuidingQuestion(), 1500);
-        }, 4000);
+        }, 2000);
       }
-
       else if (this.dialogStage === 'continue_or_stop') {
         if (btnText === "כן") {
           if (this.successfulAnswers >= 3 && this.currentLevelIndex < this.levelOrder.length - 1) {
@@ -170,9 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGuidingQuestionsByGender() {
       const isMale = this.userGender === 'male';
       const isFemale = this.userGender === 'female';
-
-      const text = (male, female, neutral) =>
-        isMale ? male : isFemale ? female : neutral;
+      const text = (male, female, neutral) => isMale ? male : isFemale ? female : neutral;
 
       this.guidingQuestions = [
         { key: 'א', text: text("מה אני צריך למצוא?", "מה אני צריכה למצוא?", "מה צריך למצוא?"), icon: "magnifying_glass.png" },
@@ -202,8 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const feedback = this.getRandomFeedback(q.key);
         postBotMessageWithEmotion(feedback, 'compliment');
 
-        this.markStar(this.currentQuestionIndex);
         this.successfulAnswers++;
+        this.markStar(this.currentQuestionIndex);
         this.currentQuestionIndex++;
         setTimeout(() => this.askGuidingQuestion(), 1500);
       }
@@ -211,15 +206,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     markStar(index) {
       if (stars[index]) {
+        stars[index].src = 'icons-leading-questions/star_gold.png';
         stars[index].classList.add('earned');
         successSound.play();
       }
-      if (this.successfulAnswers === 3) {
-        if (largeAvatar) {
-          setTimeout(() => {
-            largeAvatar.src = `./avatars/${avatarExpressions.excited}`;
-          }, 700);
-        }
+      if (this.successfulAnswers === 3 && largeAvatar) {
+        setTimeout(() => {
+          largeAvatar.src = `./avatars/${avatarExpressions.excited}`;
+        }, 700);
       }
     }
 
@@ -241,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bot = new MathProblemGuidingBot();
 
-  // התחלה אוטומטית אם כבר התחילו
   if (localStorage.getItem('chatStarted') === 'true') {
     welcomeScreen.style.display = 'none';
     appMainContainer.style.display = 'grid';
