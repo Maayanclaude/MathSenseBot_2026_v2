@@ -1,29 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>Math Sense Bot</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo&family=Ometz&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <!-- מסך פתיחה -->
   <div id="welcome-screen">
-    <!-- אווטאר קבוע למסך הפתיחה -->
+    <!-- אווטאר במסך פתיחה -->
     <div class="avatar-opening">
-      <img src="avatars/avatar_welcoming.png" alt="אווטאר מתי מברך" />
+      <img src="avatars/avatar_welcoming.png" alt="מתי מברכת" />
     </div>
 
     <div class="welcome-content">
       <h1>הקסם מתחיל כאן</h1>
       <p>בואו להפוך מילים למספרים – שלב אחרי שלב</p>
-      <button id="start-button">התחל</button>
+      <p class="motivational">מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!</p>
+      <button id="start-button">אני מוכן/ה להתחיל!</button>
     </div>
   </div>
 
   <!-- ממשק האפליקציה הראשי -->
   <div id="app-main-container" class="hidden">
     <div id="left-panel">
-      <!-- כותרת ושורת כוכבים -->
+      <!-- כותרת + כוכבים -->
       <div id="chat-header">
         <span>Math Sense Bot - מתי</span>
         <div id="stars-container">
@@ -40,11 +44,11 @@
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
         <button id="send-button">שלח</button>
-        <div id="bot-status" class="bot-status-text">מתי ממתין...</div>
+        <div id="bot-status" class="bot-status-text">מתי ממתינה...</div>
       </div>
     </div>
 
-    <!-- אווטאר מתחלף גדול בצד -->
+    <!-- אווטאר גדול לצד שיחה -->
     <div id="right-panel">
       <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
     </div>
