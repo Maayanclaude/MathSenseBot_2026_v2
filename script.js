@@ -54,7 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
           const btn = document.createElement('button');
           btn.textContent = btnText;
           btn.classList.add('choice-button');
-          btn.addEventListener('click', (e) => bot.handleChoiceButtonClick(e));
+         btn.addEventListener('click', (e) => {
+  // מסיר את 'selected' מכל הכפתורים
+  document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+  
+  // מסמן את הכפתור שנלחץ
+  e.target.classList.add('selected');
+  
+  // מעביר את הלחיצה לבוט
+  bot.handleChoiceButtonClick(e);
+});
+
           buttonsDiv.appendChild(btn);
         });
 
