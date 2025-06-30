@@ -191,20 +191,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    handleStudentInputLogic(input) {
-      addMessage('student', input);
+   handleStudentInputLogic(input) {
+  addMessage('student', input);
 
-      if (this.dialogStage === 'asking_guiding_questions') {
-        const q = this.guidingQuestions[this.currentQuestionIndex];
-        this.studentGuidingAnswers[q.key] = input;
+  if (this.dialogStage === 'asking_guiding_questions') {
+    const q = this.guidingQuestions[this.currentQuestionIndex];
+    this.studentGuidingAnswers[q.key] = input;
 
-        const feedback = this.getRandomFeedback(q.key);
-        postBotMessageWithEmotion(feedback, 'compliment');
+    const keywords = this.currentProblem.keywords?.[q.key] || [];
+    const clarification = this.currentProblem.clarifications?.[q.key];
 
-        this.markStar(this.currentQuestionIndex);
-        this.successfulAnswers++;
-        this.currentQuestionIndex++;
-        setTimeout(() => this.askGuidingQuestion(), 1500);
+    const isPartial = keywords.some(keyword => input.includes(keyword)) && input.length <= 14;
+
+    if (isPartial && clarification) {
+      postBotMessageWithEmotion(clarification, 'support');
+    } else {
+      const feedback = this.getRandomFeedback(q.key);
+      postBotMessageWithEmotion(feedback, 'compliment');
+      this.markStar(this.currentQuestionIndex);
+      this.successfulAnswers++;
+      this.currentQuestionIndex++;
+      setTimeout(() => this.askGuidingQuestion(), 1500);
+    }
+  }
+}
+
       }
     }
 
