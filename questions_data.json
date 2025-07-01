@@ -1,310 +1,327 @@
-[
-  {
-    "id": 1,
-    "level": 1,
-    "question": "טליה ועופרי רוצים לקנות חטיפים למסיבה. חבילת חטיפים עולה 9 ש\"ח. כמה עולות 4 חבילות חטיפים?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
+// --- משתנים כלליים ---
+document.addEventListener('DOMContentLoaded', async () => {
+  const startButton = document.getElementById('start-button');
+  const welcomeScreen = document.getElementById('welcome-screen');
+  const appMainContainer = document.getElementById('app-main-container');
+  const chatWindow = document.getElementById('chat-window');
+  const userInput = document.getElementById('user-input');
+  const sendButton = document.getElementById('send-button');
+  const botStatus = document.getElementById('bot-status');
+  const stars = document.querySelectorAll('.star');
+  const largeAvatar = document.getElementById('large-avatar');
+  const resetButton = document.getElementById('reset-button');
+
+  const successSound = new Audio('sounds/success-chime.mp3');
+  let isBotTyping = false;
+
+  const avatarExpressions = {
+    welcoming: "avatar_welcoming.png",
+    inviting: "avatar_inviting_action.png",
+    confident: "avatar_confident.png",
+    compliment: "avatar_compliment.png",
+    thinking: "avatar_thinking.png",
+    support: "avatar_support.png",
+    confuse: "avatar_confuse.png",
+    empathic: "avatar_Empathic.png",
+    excited: "avatar_excited.png",
+    ready: "avatar_ready.png"
+  };
+
+  function addMessage(sender, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender === 'bot' ? 'bot-message' : 'student-message');
+    const textSpan = document.createElement('span');
+    textSpan.classList.add('message-text');
+    textSpan.innerHTML = text;
+    messageDiv.appendChild(textSpan);
+    chatWindow.appendChild(messageDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
+    const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
+    if (largeAvatar) largeAvatar.src = `./avatars/${avatarFilename}`;
+    bot.simulateBotTyping(() => {
+      addMessage('bot', message);
+      if (showButtons && buttons.length) {
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add('button-group');
+        buttons.forEach(btnText => {
+          const btn = document.createElement('button');
+          btn.textContent = btnText;
+          btn.classList.add('choice-button');
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+            e.target.classList.add('selected');
+            bot.handleChoiceButtonClick(e);
+          });
+          buttonsDiv.appendChild(btn);
+        });
+        chatWindow.appendChild(buttonsDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+    });
+  }
+
+  class MathProblemGuidingBot {
+    constructor() {
+      this.wordProblems = {};
+      this.levelOrder = ['level1', 'level2', 'level3'];
+      this.currentLevelIndex = 0;
+      this.currentProblem = null;
+      this.guidingQuestions = [];
+      this.currentQuestionIndex = 0;
+      this.studentGuidingAnswers = { 'א': '', 'ב': '', 'ג': '' };
+      this.dialogStage = 'start';
+      this.userGender = null;
+      this.userName = null;
+      this.completedProblems = 0;
+      this.successfulAnswers = 0;
     }
-  },
-  {
-    "id": 2,
-    "level": 1,
-    "question": "מיכל הולכת לפיקניק עם החברות. בקבוק שתייה עולה 6 ש\"ח. כמה תשלם על 5 בקבוקים?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
+
+    async loadProblemsFromFile() {
+      const response = await fetch('questions_data.json');
+      const data = await response.json();
+      this.wordProblems = {
+        level1: data.filter(q => q.level === 1),
+        level2: data.filter(q => q.level === 2),
+        level3: data.filter(q => q.level === 3)
+      };
+      this.currentProblem = this.chooseRandomProblem();
     }
-  },
-  {
-    "id": 3,
-    "level": 1,
-    "question": "רועי מנהל ערוץ יוטיוב. יש לו 850 עוקבים ונוספו לו עוד 175. כמה עוקבים יש לו כעת?",
-    "scaffolding": {
-      "whatToFind": "מה המספר הסופי של העוקבים?",
-      "whatDoYouKnow": "המספר ההתחלתי וכמות העוקבים שנוספו.",
-      "whatIsMissing": "איך לחשב את המספר לאחר ההוספה?",
-      "hint": "נחבר את מה שהיה למה שנוסף."
+
+    chooseRandomProblem() {
+      const currentLevel = this.levelOrder[this.currentLevelIndex];
+      const problems = this.wordProblems[currentLevel];
+      return problems[Math.floor(Math.random() * problems.length)];
     }
-  },
-  {
-    "id": 4,
-    "level": 1,
-    "question": "איתי מעלה סרטונים לאינסטגרם. יש לו 1,200 צפיות על סרטון אחד ו־980 על סרטון אחר. כמה צפיות קיבל בסך הכול?",
-    "scaffolding": {
-      "whatToFind": "כמה צפיות היו בסך הכול?",
-      "whatDoYouKnow": "הצפיות מכל סרטון.",
-      "whatIsMissing": "איך לחשב את הסך הכול?",
-      "hint": "נחבר את שתי הכמויות."
+
+    simulateBotTyping(callback, delay = 900) {
+      isBotTyping = true;
+      botStatus.textContent = 'מתי מקלידה...';
+      setTimeout(() => {
+        callback();
+        isBotTyping = false;
+        botStatus.textContent = 'מתי ממתינה...';
+      }, delay);
     }
-  },
-  {
-    "id": 5,
-    "level": 1,
-    "question": "תמר קונה בגדים לבית הספר. חולצה עולה 45 ש\"ח. כמה תעלה רכישת 3 חולצות?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
+
+    startConversationLogic() {
+      postBotMessageWithEmotion("שלום! אני מתי. נפתור יחד בעיות מילוליות במתמטיקה.", 'welcoming');
+      setTimeout(() => {
+        postBotMessageWithEmotion("איך קוראים לך?", 'inviting');
+        this.dialogStage = 'awaiting_name';
+      }, 1500);
     }
-  },
-  {
-    "id": 6,
-    "level": 1,
-    "question": "עופר קונה בגדים חדשים. מכנסיים עולים 120 ש\"ח וסוודר עולה 150 ש\"ח. כמה ישלם בסך הכול?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
+
+    handleChoiceButtonClick(event) {
+      const btnText = event.target.textContent;
+
+      if (this.dialogStage === 'awaiting_name') {
+        this.userName = userInput.value.trim(); // לקבל שם משדה קלט, לא מכפתור
+        postBotMessageWithEmotion(`נעים להכיר, ${this.userName}!`);
+        setTimeout(() => {
+          postBotMessageWithEmotion("איך תרצה שאפנה אליך?", 'inviting', true, ["זכר", "נקבה", "לא משנה לי"]);
+          this.dialogStage = 'awaiting_gender';
+        }, 1200);
+        return;
+      }
+
+      if (this.dialogStage === 'awaiting_gender') {
+        this.userGender = btnText === "זכר" ? 'male' : btnText === "נקבה" ? 'female' : 'neutral';
+        this.updateGuidingQuestionsByGender();
+        const greeting = this.userGender === 'male'
+          ? "נהדר! נדבר בלשון זכר."
+          : this.userGender === 'female'
+            ? "נהדר! נדבר בלשון נקבה."
+            : "נשתמש בלשון ניטרלית כדי שתרגיש/י בנוח.";
+        postBotMessageWithEmotion(greeting, 'confident');
+        setTimeout(() => {
+          postBotMessageWithEmotion("מוכנ/ה? בוא/י נתחיל! 💪", 'inviting');
+        }, 1500);
+        setTimeout(() => {
+          postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
+          this.dialogStage = 'asking_guiding_questions';
+          setTimeout(() => this.askGuidingQuestion(), 1500);
+        }, 3500);
+      } else if (this.dialogStage === 'continue_or_stop') {
+        if (btnText === "כן") {
+          this.completedProblems++;
+
+          if (this.completedProblems >= 5 && this.currentLevelIndex < this.levelOrder.length - 1) {
+            const name = this.userName ? ` ${this.userName}` : "";
+            postBotMessageWithEmotion(`וואו${name}! פתרת כבר 5 בעיות ברמה הזו 🎯`, 'excited');
+            setTimeout(() => {
+              postBotMessageWithEmotion("רוצה לעבור לרמה מתקדמת יותר?", 'inviting', true, ["כן, ברור!", "נשאר ברמה הזו"]);
+              this.dialogStage = 'offer_level_up';
+            }, 1800);
+            return;
+          }
+
+          if (this.successfulAnswers >= 3 && this.currentLevelIndex < this.levelOrder.length - 1) {
+            this.currentLevelIndex++;
+            this.successfulAnswers = 0;
+            this.completedProblems = 0;
+          }
+          this.currentProblem = this.chooseRandomProblem();
+          this.currentQuestionIndex = 0;
+          this.dialogStage = 'asking_guiding_questions';
+          postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
+          setTimeout(() => this.askGuidingQuestion(), 1500);
+        } else {
+          postBotMessageWithEmotion("אין בעיה, נחזור כשתרצה. בהצלחה!", 'support');
+          this.dialogStage = 'ended';
+        }
+      } else if (this.dialogStage === 'offer_level_up') {
+        if (btnText === "כן, ברור!") {
+          this.currentLevelIndex++;
+          this.completedProblems = 0;
+          this.successfulAnswers = 0;
+          this.currentProblem = this.chooseRandomProblem();
+          this.currentQuestionIndex = 0;
+          postBotMessageWithEmotion("מעולה! עוברים לרמה הבאה 💪", 'confident');
+          setTimeout(() => {
+            postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
+            this.dialogStage = 'asking_guiding_questions';
+            setTimeout(() => this.askGuidingQuestion(), 1500);
+          }, 1800);
+        } else {
+          postBotMessageWithEmotion("אין בעיה, נמשיך באותה רמה 😊", 'support');
+          this.currentProblem = this.chooseRandomProblem();
+          this.currentQuestionIndex = 0;
+          this.dialogStage = 'asking_guiding_questions';
+          setTimeout(() => {
+            postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
+            setTimeout(() => this.askGuidingQuestion(), 1500);
+          }, 1500);
+        }
+      }
     }
-  },
-  {
-    "id": 7,
-    "level": 1,
-    "question": "המשפחה קונה משקאות לשבת. כל בקבוק מיץ עולה 7 ש\"ח. כמה משלמים על 4 בקבוקי מיץ?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
+
+    updateGuidingQuestionsByGender() {
+      const isMale = this.userGender === 'male';
+      const isFemale = this.userGender === 'female';
+      const text = (male, female, neutral) => isMale ? male : isFemale ? female : neutral;
+      this.guidingQuestions = [
+        { key: 'א', text: text("מה אני צריך למצוא?", "מה אני צריכה למצוא?", "מה צריך למצוא?"), icon: "magnifying_glass.png" },
+        { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לי?"), icon: "list.png" },
+        { key: 'ג', text: text("מה חסר לי לדעת כדי לפתור?", "מה חסר לי לדעת כדי לפתור?", "מה חסר לי כדי לפתור?"), icon: "Missing_puzzle.png" }
+      ];
     }
-  },
-  {
-    "id": 8,
-    "level": 1,
-    "question": "אורי מזמין פיצה לחברים. מגש פיצה עולה 64 ש\"ח. כמה יעלה לקנות 2 מגשים?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
+
+    askGuidingQuestion() {
+      if (this.currentQuestionIndex < this.guidingQuestions.length) {
+        const q = this.guidingQuestions[this.currentQuestionIndex];
+        const html = `<div class="guided-question"><img src="./icons-leading-questions/${q.icon}" alt="icon" /> ${q.text}</div>`;
+        postBotMessageWithEmotion(html, 'support');
+      } else {
+        postBotMessageWithEmotion("רוצה להמשיך לפתור עוד בעיה?", 'inviting', true, ["כן", "לא"]);
+        this.dialogStage = 'continue_or_stop';
+      }
     }
-  },
-  {
-    "id": 9,
-    "level": 2,
-    "question": "כיתה ח' מארגנת מסיבת סיום. התקציב למסיבה הוא 200 ש\"ח. הם קנו 3 מגשים ב־58 ש\"ח כל אחד ועוד עוגה ב־35 ש\"ח. כמה כסף נשאר להם?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
+
+    handleStudentInputLogic(input) {
+      addMessage('student', input);
+      if (this.dialogStage === 'asking_guiding_questions') {
+        const q = this.guidingQuestions[this.currentQuestionIndex];
+        this.studentGuidingAnswers[q.key] = input;
+
+        const correctAnswers = this.currentProblem.correct_answers?.[q.key] || [];
+
+        // Check if the input contains any of the explicitly correct phrases
+        const isCorrect = correctAnswers.some(correctPhrase => input.includes(correctPhrase));
+
+        if (isCorrect) {
+          const feedback = this.getRandomFeedback(q.key);
+          postBotMessageWithEmotion(feedback, 'compliment');
+          this.markStar(this.currentQuestionIndex);
+          this.successfulAnswers++;
+          this.currentQuestionIndex++;
+          setTimeout(() => this.askGuidingQuestion(), 1500);
+        } else {
+          // If the answer is not recognized as correct, provide gender-specific "try again" feedback
+          const tryAgainMessage = this.userGender === 'male'
+            ? "בוא ננסה שוב. נסה לקרוא את הבעיה בעיון רב יותר."
+            : this.userGender === 'female'
+              ? "בואי ננסה שוב. נסי לקרוא את הבעיה בעיון רב יותר."
+              : "בוא/י ננסה שוב. נסה/י לקרוא את הבעיה בעיון רב יותר.";
+          postBotMessageWithEmotion(tryAgainMessage, 'confuse'); // Using 'confuse' emotion
+          // Do not mark star, do not increment successfulAnswers, do not advance question index
+          // The bot will wait for another user input for the same question.
+        }
+      }
     }
-  },
-  {
-    "id": 10,
-    "level": 2,
-    "question": "המורה מזמינה פיצה לכיתה. בכל מגש יש 12 פרוסות פיצה. כמה פרוסות יש ב־5 מגשים?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
+
+    markStar(index) {
+      if (stars[index]) {
+        stars[index].src = 'icons-leading-questions/star_gold.png';
+        stars[index].classList.add('earned');
+        successSound.play();
+      }
+      if (this.successfulAnswers === 3 && largeAvatar) {
+        setTimeout(() => {
+          largeAvatar.src = `./avatars/${avatarExpressions.excited}`;
+        }, 700);
+      }
     }
-  },
-  {
-    "id": 11,
-    "level": 2,
-    "question": "רועי עוקב אחר הגידול בערוץ שלו. השבוע הצטרפו 180 עוקבים, ובשבוע שעבר הצטרפו 220 עוקבים. מהו ממוצע העוקבים השבועי שרועי הוסיף בשבועות אלה?",
-    "scaffolding": {
-      "whatToFind": "מה המספר הסופי של העוקבים?",
-      "whatDoYouKnow": "המספר ההתחלתי וכמות העוקבים שנוספו.",
-      "whatIsMissing": "איך לחשב את המספר לאחר ההוספה?",
-      "hint": "נחבר את מה שהיה למה שנוסף."
-    }
-  },
-  {
-    "id": 12,
-    "level": 2,
-    "question": "איתי וטליה משווים את הפופולריות שלהם ברשתות החברתיות. לאיתי יש 1,500 עוקבים ולטליה 1,850 עוקבים. בכמה עוקבים יש לטליה יותר?",
-    "scaffolding": {
-      "whatToFind": "מה המספר הסופי של העוקבים?",
-      "whatDoYouKnow": "המספר ההתחלתי וכמות העוקבים שנוספו.",
-      "whatIsMissing": "איך לחשב את המספר לאחר ההוספה?",
-      "hint": "נחבר את מה שהיה למה שנוסף."
-    }
-  },
-  {
-    "id": 13,
-    "level": 2,
-    "question": "לירון הלכה לקניות במרכז המסחרי. היא קנתה שלושה פריטים ב־400 ש\"ח ונתנה לקופאית 500 ש\"ח. כמה עודף תקבל?",
-    "scaffolding": {
-      "whatToFind": "כמה עודף תקבל/י?",
-      "whatDoYouKnow": "כמה עלו הפריטים וכמה שילמת.",
-      "whatIsMissing": "מה ההפרש בין הסכום ששולם לבין ההוצאה.",
-      "hint": "נחסר את הסכום ששולם מהעלות."
-    }
-  },
-  {
-    "id": 14,
-    "level": 2,
-    "question": "מיכל חוסכת כסף לקניית בגדים חדשים. היא רוצה לקנות 4 חולצות ב־38 ש\"ח כל אחת. מה המחיר הכולל?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
-    }
-  },
-  {
-    "id": 15,
-    "level": 2,
-    "question": "קבוצת חברים מתכננת מסיבת פיצה. יש 5 ילדים וכל אחד רוצה 3 פרוסות פיצה. אם בכל מגש יש 8 פרוסות, כמה מגשים יצטרכו?",
-    "scaffolding": {
-      "whatToFind": "כמה מגשים נדרשים?",
-      "whatDoYouKnow": "כמה פרוסות נדרשות ומה יש בכל מגש.",
-      "whatIsMissing": "איך לחלק את הסה\"כ לפי מגשים.",
-      "hint": "נחלק ונעגל כלפי מעלה."
-    }
-  },
-  {
-    "id": 16,
-    "level": 2,
-    "question": "עופרי הלך לקניות למכולת. הוא קנה חטיפים ב־38 ש\"ח, שתייה ב־42 ש\"ח וירקות ב־33 ש\"ח. כמה שילם בסך הכול?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 17,
-    "level": 3,
-    "question": "כיתה ז' מתכננת מסיבת פיצה. בכיתה יש 25 תלמידים והם קנו 3 מגשים עם 40 פרוסות כל אחד. האם מספיק כדי שכל תלמיד יקבל לפחות שתי פרוסות?",
-    "scaffolding": {
-      "whatToFind": "האם התקציב מספיק או שיש חוסר?",
-      "whatDoYouKnow": "כמה כסף יש ומה ההוצאה.",
-      "whatIsMissing": "ההשוואה בין התקציב להוצאה.",
-      "hint": "נחסר את ההוצאה מהתקציב או נחשב את ההפרש."
-    }
-  },
-  {
-    "id": 18,
-    "level": 3,
-    "question": "ועד הכיתה אוסף כסף מההורים לפעילות כיתתית. בכיתה יש 27 תלמידים ותלמידות, והם ביקשו מכל אחד מהם 20 ש\"ח. עלות הפעילות הכיתתית היא 550 ש\"ח. האם הכסף שייאסף יספיק כדי לשלם על הפעילות?",
-    "scaffolding": {
-      "whatToFind": "האם התקציב מספיק או שיש חוסר?",
-      "whatDoYouKnow": "כמה כסף יש ומה ההוצאה.",
-      "whatIsMissing": "ההשוואה בין התקציב להוצאה.",
-      "hint": "נחסר את ההוצאה מהתקציב או נחשב את ההפרש."
-    }
-  },
-  {
-    "id": 19,
-    "level": 3,
-    "question": "שירה מקבלת פרסים על פי מספר העוקבים שלה. כל 100 עוקבים מזכים אותה בפרס קטן. כמה פרסים תקבל שירה עם 1,860 עוקבים?",
-    "scaffolding": {
-      "whatToFind": "מה המספר הסופי של העוקבים?",
-      "whatDoYouKnow": "המספר ההתחלתי וכמות העוקבים שנוספו.",
-      "whatIsMissing": "איך לחשב את המספר לאחר ההוספה?",
-      "hint": "נחבר את מה שהיה למה שנוסף."
-    }
-  },
-  {
-    "id": 20,
-    "level": 3,
-    "question": "דניאל עוקב אחר הביצועים של הסרטון החדש שלו. הסרטון עלה ב־8:00 בבוקר וקיבל 1,200 צפיות עד 12:00 בצהריים, ועוד 1,050 צפיות עד 16:00 אחר הצהריים. מהו קצב הצפיות הממוצע לשעה (לכל התקופה)?",
-    "scaffolding": {
-      "whatToFind": "כמה צפיות היו בסך הכול?",
-      "whatDoYouKnow": "הצפיות מכל סרטון.",
-      "whatIsMissing": "איך לחשב את הסך הכול?",
-      "hint": "נחבר את שתי הכמויות."
-    }
-  },
-  {
-    "id": 21,
-    "level": 3,
-    "question": "מיכל חוסכת לרכישת בגדים חדשים לתיכון. יש לה תקציב של 400 ש\"ח. האם תוכל לקנות ג'ינס ב־160 ש\"ח, סוודר ב־195 ש\"ח וחולצה ב־75 ש\"ח? אם לא, כמה כסף יישאר לה או כמה יחסר לה?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 22,
-    "level": 3,
-    "question": "רוני רואה מבצע מעניין בחנות נעליים. הזוג השני של נעליים ב־50% הנחה. כמה ישלם רוני על שני זוגות שמחירם 180 ש\"ח כל אחד?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 23,
-    "level": 3,
-    "question": "ועד ההורים מתכנן מסיבת סיום שנה. לכיתה יש תקציב של 250 ש\"ח למסיבת אוכל. כמה מגשי פיצה ב־62 ש\"ח כל אחד ניתן לקנות ולהישאר בתקציב (כלומר, לא לחרוג ממנו)?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 24,
-    "level": 3,
-    "question": "ההורים קונים משקאות למסיבת יום הולדת. הם קנו 3 בקבוקי שתייה של ליטר וחצי ו־4 בקבוקים של ליטר אחד. כמה ליטרים שתייה יש להם בסך הכול?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
-    }
-  },
-  {
-    "id": 25,
-    "level": 3,
-    "question": "במשחק מחשב, על כל ניצחון מקבלים 25 נקודות, ועל כל הפסד מורידים 10 נקודות. ליאור שיחק 8 משחקים, ניצח ב-5 מהם והפסיד ב-3. כמה נקודות צבר ליאור בסך הכל?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 26,
-    "level": 3,
-    "question": "משפחה מתכננת טיול של 5 ימים. בכל יום הם מתכננים לנסוע 120 ק\"מ, ובנוסף, ביום הראשון וביום האחרון הם נוסעים עוד 80 ק\"מ (כל פעם). מהו המרחק הכולל שהמשפחה תסע בטיול?",
-    "scaffolding": {
-      "whatToFind": "",
-      "whatDoYouKnow": "",
-      "whatIsMissing": "",
-      "hint": ""
-    }
-  },
-  {
-    "id": 27,
-    "level": 3,
-    "question": "בחנות בגדים יש מבצע: \"קנה 2 חולצות וקבל את החולצה השלישית חינם\". חולצה אחת עולה 60 ש\"ח. רותי רוצה לקנות 7 חולצות. כמה כסף תשלם רותי בסך הכל?",
-    "scaffolding": {
-      "whatToFind": "כמה תשלם/י בסך הכול?",
-      "whatDoYouKnow": "המחיר של פריט בודד וכמות הפריטים.",
-      "whatIsMissing": "מהו הסכום הכולל של כל הפריטים?",
-      "hint": "נכפיל את המחיר של יחידה בכמות."
-    }
-  },
-  {
-    "id": 28,
-    "level": 3,
-    "question": "אמא אופה עוגיות למכירה ביריד השכונתי. היא אופה 30 עוגיות בשעה, ועובדת 3 שעות בכל יום אפייה. היא אופה 4 ימים בשבוע. מתוך כל העוגיות שאופות בכל יום, כ-5 עוגיות נשברות או נשרפות ואי אפשר למכור אותן. כמה עוגיות תקינות אמא תכין ליריד במשך שבוע אחד?",
-    "scaffolding": {
-      "whatToFind": "כמה עוגיות תקינות יש בסך הכול?",
-      "whatDoYouKnow": "כמה נאפות ביום, כמה ימים, וכמה נשרפות.",
-      "whatIsMissing": "איך לחשב את הכמות התקינה בכל יום ואז שבועית.",
-      "hint": "נחשב כמה יוצאות תקינות ביום ונכפיל במספר הימים."
+
+    getRandomFeedback(type) {
+      const emotional = {
+        'א': ["איזה יופי, קלטת את השאלה המרכזית!", "נהדר! הבנת מה לבחון."],
+        'ב': ["מעולה! אספת את הנתונים הנכונים.", "נהדר, את בכיוון הנכון עם מה שידוע."],
+        'ג': ["כל הכבוד! סימנת את מה שעדיין חסר.", "מעולה! איתרת את החסר בתמונה."]
+      };
+      const neutral = {
+        'א': ["נראה שהבנת מה נדרש למצוא. עבודה טובה!", "תשובה ברורה – מצאת את הדרוש."],
+        'ב': ["הצלחת לזהות את הנתונים הקיימים.", "זיהית מה יש לנו – זה חשוב!"],
+        'ג': ["סימנת נכון את החסר. זה חשוב!", "התייחסת למה שחסר – כל הכבוד."]
+      };
+      const pool = Math.random() < 0.5 ? emotional[type] : neutral[type];
+      return pool[Math.floor(Math.random() * pool.length)];
     }
   }
-]
+
+  const bot = new MathProblemGuidingBot();
+  await bot.loadProblemsFromFile();
+
+  // שמירה של מצב השיחה באמצעות LocalStorage
+  if (localStorage.getItem('chatStarted') === 'true') {
+    welcomeScreen.style.display = 'none';
+    appMainContainer.style.display = 'grid';
+    document.body.classList.add('app-started');
+    bot.startConversationLogic();
+  } else {
+    welcomeScreen.style.display = 'flex';
+    appMainContainer.style.display = 'none';
+    document.body.classList.remove('app-started');
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      localStorage.removeItem('chatStarted');
+      window.location.reload();
+    });
+  }
+
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      localStorage.setItem('chatStarted', 'true');
+      welcomeScreen.style.display = 'none';
+      appMainContainer.style.display = 'grid';
+      document.body.classList.add('app-started');
+      bot.startConversationLogic();
+    });
+  }
+
+  sendButton.addEventListener('click', () => {
+    const input = userInput.value.trim();
+    if (!isBotTyping && input) {
+      bot.handleStudentInputLogic(input);
+      userInput.value = "";
+    }
+  });
+
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendButton.click();
+  });
+});
