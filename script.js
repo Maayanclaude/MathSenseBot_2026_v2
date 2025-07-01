@@ -1,7 +1,7 @@
 // script.js - גרסה מעודכנת עם מודלינג, התאמה מגדרית, שמירת הקשר והפחתת עומס קוגניטיבי
 
 // --- משתנים כלליים ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // *** שינוי: הוספתי async ***
   const startButton = document.getElementById('start-button');
   const welcomeScreen = document.getElementById('welcome-screen');
   const appMainContainer = document.getElementById('app-main-container');
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const botStatus = document.getElementById('bot-status');
   const stars = document.querySelectorAll('.star');
   const largeAvatar = document.getElementById('large-avatar');
+  const resetButton = document.getElementById('reset-button'); // משתנה עבור כפתור האיפוס
 
   const successSound = new Audio('sounds/success-chime.mp3');
   let isBotTyping = false;
@@ -76,12 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
       this.dialogStage = 'start';
       this.userGender = null;
       this.successfulAnswers = 0;
-      this.loadProblemsFromFile();
+      // *** שינוי: הוסר מכאן this.loadProblemsFromFile(); ***
+      // הטעינה מתבצעת כעת מחוץ לבנאי, ב-DOMContentLoaded, עם await.
     }
 
     async loadProblemsFromFile() {
-      // *** התיקון הקריטי נמצא בשורה הבאה: ***
-      const response = await fetch('questions_data.json'); 
+      const response = await fetch('questions_data.json');
       const data = await response.json();
       this.wordProblems = {
         level1: data.filter(q => q.level === 1),
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         level3: data.filter(q => q.level === 3)
       };
       this.currentProblem = this.chooseRandomProblem();
+      console.log('Problems loaded and current problem set:', this.currentProblem); // שורת דיבוג
     }
 
     chooseRandomProblem() {
@@ -225,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const bot = new MathProblemGuidingBot();
+  await bot.loadProblemsFromFile(); // *** שינוי: הוספתי await כאן כדי להמתין לטעינת השאלות ***
 
   // שמירה של מצב השיחה באמצעות LocalStorage
   if (localStorage.getItem('chatStarted') === 'true') {
@@ -232,6 +235,18 @@ document.addEventListener('DOMContentLoaded', () => {
     appMainContainer.style.display = 'grid';
     document.body.classList.add('app-started');
     bot.startConversationLogic();
+  } else { // *** שינוי: בלוק else חדש לאיתחול מסך הפתיחה ***
+    welcomeScreen.style.display = 'flex'; // וודא שמסך הפתיחה גלוי
+    appMainContainer.style.display = 'none'; // וודא שהאפליקציה הראשית מוסתרת
+    document.body.classList.remove('app-started'); // וודא שהקלאס מוסר אם קיים
+  }
+
+  // לוגיקה לכפתור האיפוס (אם הוספת אותו ב-index.html - מומלץ)
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      localStorage.removeItem('chatStarted'); // מוחק את הנתון מה-localStorage
+      window.location.reload(); // מרענן את הדף כדי להתחיל מחדש
+    });
   }
 
   if (startButton) {
