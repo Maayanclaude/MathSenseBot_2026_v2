@@ -141,8 +141,8 @@ body.app-started {
     border-radius: 10px;
     margin: 20px;
     scroll-behavior: smooth;
-    display: flex;
-    flex-direction: column;
+    display: flex; /* מאפשר סידור פריטים באמצעות flexbox */
+    flex-direction: column; /* מסדר את פריטי ה-flex (הודעות) אחד מתחת לשני */
 }
 
 .message {
@@ -272,13 +272,13 @@ body.app-started {
 
 .guided-question {
     font-size: 1.1em;
-    background-color: #e0f7fa;
+    background-color: transparent; /* שינה רקע לשקוף */
     padding: 10px 15px;
     border-radius: 18px;
     margin-bottom: 10px;
     align-self: flex-start;
     max-width: 80%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: none; /* הסרת הצל */
     direction: rtl;
     text-align: right;
 }
