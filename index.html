@@ -26,10 +26,21 @@
     <div class="welcome-content">
       <h1 style="font-family: 'Rubik', sans-serif;">פתאום זה קורה</h1>
       <p style="font-family: 'Rubik', sans-serif;">מילים הופכות למספרים – בשלושה צעדים</p>
-      <!-- המשפט הבא הוסר לבקשתך -->
-      <!-- <p class="motivational">מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!</p> -->
       <button id="start-button" class="start-button">נתחיל?</button>
     </div>
+  </div>
+
+  <div id="name-question" class="hidden">
+    <label for="user-name">איך קוראים לך?</label>
+    <input type="text" id="user-name" placeholder="הכנס את שמך" />
+    <button id="submit-name">שלח</button>
+  </div>
+
+  <div id="gender-question" class="hidden">
+    <p>איך תרצה שאפנה אליך?</p>
+    <button id="male">זכר</button>
+    <button id="female">נקבה</button>
+    <button id="neutral">לא משנה לי</button>
   </div>
 
   <div id="app-main-container" class="hidden">
@@ -61,3 +72,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
