@@ -3,34 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <title>Math Sense Bot</title>
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
+    img-src 'self' data:;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    script-src 'self';
+    media-src 'self';
+    connect-src 'self';
+  ">
   <link rel="stylesheet" href="style.css" />
-  <!-- פונט Rubik -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <!-- מסך פתיחה -->
   <div id="welcome-screen">
-    <!-- אווטאר במסך פתיחה -->
     <div class="avatar-opening">
       <img src="avatars/avatar_welcoming.png" alt="מתי מברכת" />
     </div>
 
-    <!-- טקסט פתיחה וכפתור -->
     <div class="welcome-content">
       <h1 style="font-family: 'Rubik', sans-serif;">פתאום זה קורה</h1>
       <p style="font-family: 'Rubik', sans-serif;">מילים הופכות למספרים – בשלושה צעדים</p>
-      <p class="motivational" style="font-family: 'Rubik', sans-serif;">
-        מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!
-      </p>
+      <!-- המשפט הבא הוסר לבקשתך -->
+      <!-- <p class="motivational">מרגישים מוכנים? קדימה – נתחיל לפתור ביחד!</p> -->
       <button id="start-button" class="start-button">נתחיל?</button>
     </div>
   </div>
 
-  <!-- ממשק האפליקציה הראשי -->
   <div id="app-main-container" class="hidden">
     <div id="left-panel">
-      <!-- כותרת + כוכבים -->
       <div id="chat-header">
         <span>Math Sense Bot - מתי</span>
         <div id="stars-container">
@@ -40,24 +43,21 @@
         </div>
       </div>
 
-      <!-- חלון שיחה -->
       <div id="chat-window"></div>
 
-      <!-- אזור קלט -->
       <div id="input-area">
         <input type="text" id="user-input" placeholder="כתבו כאן..." />
         <button id="send-button">שלח</button>
         <div id="bot-status" class="bot-status-text">מתי ממתינה...</div>
+        <button id="reset-button" class="choice-button" style="margin-top: 10px;">התחל מחדש</button>
       </div>
     </div>
 
-    <!-- אווטאר גדול לצד שיחה -->
     <div id="right-panel">
       <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
     </div>
   </div>
 
-  <!-- קובץ JS -->
   <script src="script.js"></script>
 </body>
 </html>
