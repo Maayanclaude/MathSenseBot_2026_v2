@@ -1,4 +1,4 @@
-const questionsData = [
+[
   {
     "id": 1,
     "level": 1,
@@ -307,4 +307,4 @@ const questionsData = [
       "hint": "נחשב כמה יוצאות תקינות ביום ונכפיל במספר הימים."
     }
   }
-];
+]
