@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => { // *** שינוי: �
       this.dialogStage = 'start';
       this.userGender = null;
       this.successfulAnswers = 0;
+      this.completedProblems = 0;
       // *** שינוי: הוסר מכאן this.loadProblemsFromFile(); ***
       // הטעינה מתבצעת כעת מחוץ לבנאי, ב-DOMContentLoaded, עם await.
     }
@@ -138,9 +139,22 @@ document.addEventListener('DOMContentLoaded', async () => { // *** שינוי: �
         }, 3500);
       } else if (this.dialogStage === 'continue_or_stop') {
         if (btnText === "כן") {
+          this.completedProblems++;
+
+          if (this.completedProblems >= 5 && this.currentLevelIndex < this.levelOrder.length - 1) {
+            const name = this.userName ? ` ${this.userName}` : "";
+            postBotMessageWithEmotion(`וואו${name}! פתרת כבר 5 בעיות ברמה הזו 🎯`, 'excited');
+            setTimeout(() => {
+              postBotMessageWithEmotion("רוצה לעבור לרמה מתקדמת יותר?", 'inviting', true, ["כן, ברור!", "נשאר ברמה הזו"]);
+              this.dialogStage = 'offer_level_up';
+            }, 1800);
+            return;
+          }
+
           if (this.successfulAnswers >= 3 && this.currentLevelIndex < this.levelOrder.length - 1) {
             this.currentLevelIndex++;
             this.successfulAnswers = 0;
+      this.completedProblems = 0;
           }
           this.currentProblem = this.chooseRandomProblem();
           this.currentQuestionIndex = 0;
@@ -271,3 +285,28 @@ document.addEventListener('DOMContentLoaded', async () => { // *** שינוי: �
     if (e.key === 'Enter') sendButton.click();
   });
 });
+
+
+      } else if (this.dialogStage === 'offer_level_up') {
+        if (btnText === "כן, ברור!") {
+          this.currentLevelIndex++;
+          this.completedProblems = 0;
+          this.successfulAnswers = 0;
+          this.currentProblem = this.chooseRandomProblem();
+          this.currentQuestionIndex = 0;
+          postBotMessageWithEmotion("מעולה! עוברים לרמה הבאה 💪", 'confident');
+          setTimeout(() => {
+            postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
+            this.dialogStage = 'asking_guiding_questions';
+            setTimeout(() => this.askGuidingQuestion(), 1500);
+          }, 1800);
+        } else {
+          postBotMessageWithEmotion("אין בעיה, נמשיך באותה רמה 😊", 'support');
+          this.currentProblem = this.chooseRandomProblem();
+          this.currentQuestionIndex = 0;
+          this.dialogStage = 'asking_guiding_questions';
+          setTimeout(() => {
+            postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
+            setTimeout(() => this.askGuidingQuestion(), 1500);
+          }, 1500);
+        }
