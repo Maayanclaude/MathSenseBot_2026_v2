@@ -1,75 +1,43 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>Math Sense Bot</title>
-
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
-    img-src 'self' data:;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    font-src 'self' https://fonts.gstatic.com;
-    script-src 'self';
-    media-src 'self';
-    connect-src 'self';
-  ">
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathSenseBot 2026 v2</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.png" type="image/png">
 </head>
-
 <body>
-  <div id="welcome-screen">
-    <div class="avatar-opening">
-      <img src="avatars/avatar_welcoming.png" alt="מתי מברכת" />
+    <div id="welcome-screen" class="welcome-screen">
+        <img src="avatars/avatar_welcoming.png" alt="MathSenseBot Avatar" class="large-avatar">
+        <h1>ברוכים הבאים ל-MathSenseBot!</h1>
+        <p>אני מתי, ואני כאן כדי לעזור לך/ה לפתור בעיות מילוליות במתמטיקה בכיף וביעילות.</p>
+        <button id="start-button">בוא/י נתחיל! 🎉</button>
     </div>
 
-    <div class="welcome-content">
-      <h1 style="font-family: 'Rubik', sans-serif;">פתאום זה קורה</h1>
-      <p style="font-family: 'Rubik', sans-serif;">מילים הופכות למספרים – בשלושה צעדים</p>
-      <button id="start-button" class="start-button">נתחיל?</button>
-    </div>
-  </div>
-
-  <div id="name-question" class="hidden">
-    <label for="user-name">איך קוראים לך?</label>
-    <input type="text" id="user-name" placeholder="הכנס את שמך" />
-    <button id="submit-name">שלח</button>
-  </div>
-
-  <div id="gender-question" class="hidden">
-    <p>איך תרצה שאפנה אליך?</p>
-    <button id="male">זכר</button>
-    <button id="female">נקבה</button>
-    <button id="neutral">לא משנה לי</button>
-  </div>
-
-  <div id="app-main-container" class="hidden">
-    <div id="left-panel">
-      <div id="chat-header">
-        <span>Math Sense Bot - מתי</span>
-        <div id="stars-container">
-          <img src="icons-leading-questions/star_empty.png" class="star" />
-          <img src="icons-leading-questions/star_empty.png" class="star" />
-          <img src="icons-leading-questions/star_empty.png" class="star" />
+    <div id="app-main-container" class="app-main-container hidden">
+        <div class="chat-header">
+            <div class="avatar-container">
+                <img id="large-avatar" src="avatars/avatar_support.png" alt="MathSenseBot Avatar" class="bot-avatar">
+                <span id="bot-status" class="bot-status">מתי ממתינה...</span>
+            </div>
+            <div class="stars-container">
+                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-0">
+                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-1">
+                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-2">
+            </div>
+             <button id="reset-button" class="reset-button">
+                <img src="icons-leading-questions/reset_button.png" alt="Reset">
+            </button>
         </div>
-      </div>
-
-      <div id="chat-window"></div>
-
-      <div id="input-area">
-        <input type="text" id="user-input" placeholder="כתבו כאן..." />
-        <button id="send-button">שלח</button>
-        <div id="bot-status" class="bot-status-text">מתי ממתינה...</div>
-        <button id="reset-button" class="choice-button" style="margin-top: 10px;">התחל מחדש</button>
-      </div>
+        <div id="chat-window" class="chat-window">
+            </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="הקלד/י את תשובתך כאן...">
+            <button id="send-button">שלח/י</button>
+        </div>
     </div>
 
-    <div id="right-panel">
-      <img id="large-avatar" src="avatars/avatar_ready.png" alt="הבוט מתי" />
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-
