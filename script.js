@@ -204,10 +204,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // זו המתודה שתטפל בלחיצות כפתורים *בתוך* חלון הצ'אט הראשי (למשל כפתורי מגדר, או "כן"/"לא" להמשך)
     handleChoiceButtonClick(event) {
       const btnText = event.target.textContent;
-      addMessage('student', btnText); // הצג את בחירת התלמיד (כפתור)
 
       // שלב שואל מגדר - מטופל רק באמצעות כפתורים
       if (this.dialogStage === 'awaiting_gender_input') {
+        // אין צורך להוסיף הודעה של הסטודנט כאן, הכפתור כבר מסמן את הבחירה.
         this.userGender = btnText === "זכר" ? 'male' : btnText === "נקבה" ? 'female' : 'neutral';
         localStorage.setItem('userGender', this.userGender); // שמור את המגדר
         this.updateGuidingQuestionsByGender(); // עדכן את השאלות המנחות לפי המגדר
@@ -222,18 +222,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // הודעת פתיחה משולבת - "נעים להכיר [שם], כעת נלמד..."
         setTimeout(() => {
           postBotMessageWithEmotion(`היי ${this.userName}! נעים להכיר, אני מתי ואנחנו נלמד ביחד איך מילים הופכות למספרים בשלושה שלבים.`, 'confident');
-        }, 1500); // לאחר ברכת המגדר
 
-        // הצגת הבעיה המילולית הראשונה ומעבר לשלב שאלות מנחות
-        setTimeout(() => {
-          postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
-          this.dialogStage = 'asking_guiding_questions'; // מעבר לשלב השאלות המנחות
-          localStorage.setItem('dialogStage', this.dialogStage);
-          setTimeout(() => this.askGuidingQuestion(), 1500); // שאלה מנחה ראשונה
-        }, 3500); // עיכוב זה הותאם כך שיגיע לאחר ההודעה החדשה
+          // הצגת הבעיה המילולית הראשונה ומעבר לשלב שאלות מנחות - מיד לאחר ההודעה הקודמת
+          setTimeout(() => {
+            postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
+            this.dialogStage = 'asking_guiding_questions'; // מעבר לשלב השאלות המנחות
+            localStorage.setItem('dialogStage', this.dialogStage);
+            setTimeout(() => this.askGuidingQuestion(), 1500); // שאלה מנחה ראשונה
+          }, 1500); // עיכוב זה הותאם כך שיגיע לאחר ההודעה החדשה
+
+        }, 1500); // לאחר ברכת המגדר
         // כאן אין toggleInput(true) כי askGuidingQuestion כבר יפעיל את הקלט
 
       } else if (this.dialogStage === 'continue_or_stop') {
+        addMessage('student', btnText); // הצג את בחירת התלמיד (כפתור)
         if (btnText === "כן") {
           this.completedProblems++;
 
@@ -266,6 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           toggleInput(false); // נטרל קלט בסיום השיחה
         }
       } else if (this.dialogStage === 'offer_level_up') {
+        addMessage('student', btnText); // הצג את בחירת התלמיד (כפתור)
         if (btnText === "כן, ברור!") {
           this.currentLevelIndex++;
           this.completedProblems = 0;
