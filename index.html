@@ -8,33 +8,33 @@
     <link rel="icon" href="favicon.png" type="image/png">
 </head>
 <body>
+    <!-- מסך פתיחה -->
     <div id="welcome-screen" class="welcome-screen">
-        <img src="avatars/avatar_welcoming.png" alt="MathSenseBot Avatar" class="large-avatar">
+        <img src="MatiCharacter/Mati_welcoming.png" alt="MathSenseBot Avatar" class="large-avatar">
         <h1>ברוכים הבאים ל-MathSenseBot!</h1>
         <p>אני מתי, ואני כאן כדי לעזור לך/ה לפתור בעיות מילוליות במתמטיקה בכיף וביעילות.</p>
         <button id="start-button">בוא/י נתחיל! 🎉</button>
     </div>
 
+    <!-- האפליקציה עצמה -->
     <div id="app-main-container" class="app-main-container hidden">
         <div class="chat-header">
             <div class="avatar-container">
-                <img id="large-avatar" src="avatars/avatar_support.png" alt="MathSenseBot Avatar" class="bot-avatar">
+                <img id="large-avatar" src="MatiCharacter/Mati_support.png" alt="MathSenseBot Avatar" class="bot-avatar">
                 <span id="bot-status" class="bot-status">מתי ממתינה...</span>
             </div>
             <div class="stars-container">
-                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-0">
-                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-1">
-                <img src="icons-leading-questions/star_grey.png" alt="star" class="star" id="star-2">
+                <img src="icons/star_empty.png" alt="star" class="star" id="star-0">
+                <img src="icons/star_empty.png" alt="star" class="star" id="star-1">
+                <img src="icons/star_empty.png" alt="star" class="star" id="star-2">
             </div>
-             <button id="reset-button" class="reset-button">
-                <img src="icons-leading-questions/reset_button.png" alt="Reset">
-            </button>
         </div>
-        <div id="chat-window" class="chat-window">
-            </div>
+
+        <div id="chat-window" class="chat-window"></div>
+
         <div class="input-area">
             <input type="text" id="user-input" placeholder="הקלד/י את תשובתך כאן...">
-            <button id="send-button">שלח/י</button>
+            <button id="send-button" type="button">שלח/י</button>
         </div>
     </div>
 
