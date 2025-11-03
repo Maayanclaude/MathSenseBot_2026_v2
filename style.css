@@ -1,28 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo&family=Ometz&display=swap');
-
 /* ------------------------- */
 /* טיפוגרפיה ודף כללי        */
 /* ------------------------- */
 body {
     font-family: 'Heebo', sans-serif;
-    direction: rtl; /* חשוב לעברית */
+    direction: rtl;
     margin: 0;
     padding: 0;
     background-color: #f0f2f5;
     min-height: 100vh;
-    overflow: hidden; /* מונע גלילה לא רצויה של הדף הראשי */
+    overflow: hidden;
     position: relative;
 }
 
+/* כשאפליקציה התחילה – הגוף הופך לממשק מלא */
 body.app-started {
-    display: grid;
-    grid-template-columns: 4fr 1fr; /* חלוקה של 4/5 לצ'אט ו-1/5 לסיידבר */
     height: 100vh;
     width: 100vw;
 }
 
+/* מחביאים אלמנטים */
 .hidden {
-    display: none !important; /* חשוב לוודא שהאלמנט מוסתר לחלוטין */
+    display: none !important;
 }
 
 /* ------------------------- */
@@ -39,19 +38,14 @@ body.app-started {
     padding: 2rem;
 }
 
-.avatar-opening {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-#welcome-screen .large-avatar { /* ספציפי לאווטאר במסך פתיחה */
+#welcome-screen .large-avatar {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
     border: 5px solid #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    animation: bounceIn 1s ease-out; /* אנימציה לכניסה */
+    animation: bounceIn 1s ease-out;
 }
 
 @keyframes bounceIn {
@@ -64,7 +58,6 @@ body.app-started {
     color: #4a4a4a;
     font-size: 2.5em;
     margin-bottom: 1rem;
-    font-family: 'Ometz', sans-serif; /* פונט שונה לכותרת */
     letter-spacing: 1px;
 }
 
@@ -77,7 +70,7 @@ body.app-started {
 }
 
 #start-button {
-    background-color: #7b4397; /* סגול כהה */
+    background-color: #7b4397;
     color: white;
     padding: 15px 30px;
     font-size: 1.2em;
@@ -90,10 +83,9 @@ body.app-started {
 }
 
 #start-button:hover {
-    background-color: #6a3a80; /* גוון כהה יותר בהובר */
+    background-color: #6a3a80;
     transform: translateY(-2px);
 }
-
 
 /* ------------------------- */
 /* מיכל האפליקציה הראשית      */
@@ -103,38 +95,26 @@ body.app-started {
     flex-direction: column;
     height: 100vh;
     background-color: #f7f7f7;
-    overflow: hidden; /* מונע גלילה של המיכל הראשי */
+    overflow: hidden;
 }
 
 /* ------------------------- */
-/* אזור הצ'אט והקלט           */
+/* כותרת הצ'אט                */
 /* ------------------------- */
-.chat-main {
-    grid-column: 1 / 2; /* ממקם בעמודה הראשונה של הגריד */
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-color: #ffffff;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-    padding: 20px;
-    box-sizing: border-box; /* כלול פדינג ברוחב/גובה */
-    position: relative; /* עבור כפתור האיפוס */
-}
-
-
 .chat-header {
     display: flex;
     align-items: center;
-    padding-bottom: 15px;
+    padding: 10px 16px 12px;
     border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
-    justify-content: space-between; /* מרווח בין האלמנטים */
-    position: relative;
+    justify-content: space-between;
+    gap: 16px;
+    background-color: #fff;
 }
 
 .chat-header .avatar-container {
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
 .chat-header .bot-avatar {
@@ -142,7 +122,6 @@ body.app-started {
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    margin-inline-end: 15px;
     border: 3px solid #7b4397;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -150,45 +129,18 @@ body.app-started {
 .chat-header .bot-status {
     font-weight: bold;
     color: #555;
-    font-size: 1.1em;
+    font-size: 1.05em;
 }
 
-/* כפתור איפוס בתוך הכותרת */
-.reset-button {
-    background-color: #f0f2f5;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: absolute; /* מיקום מוחלט בתוך הכותרת */
-    left: 20px; /* מיקום בצד שמאל */
-}
-
-.reset-button:hover {
-    background-color: #e0e2e5;
-}
-
-.reset-button img {
-    width: 20px;
-    height: 20px;
-}
-
-/* כוכבים בכותרת */
+/* כוכבים */
 .stars-container {
     display: flex;
-    gap: 5px;
-    margin-inline-start: auto; /* דוחף את הכוכבים לצד */
+    gap: 6px;
 }
 
 .stars-container .star {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     opacity: 0.6;
     transition: opacity 0.3s ease;
 }
@@ -203,54 +155,112 @@ body.app-started {
     100% { transform: scale(1); opacity: 1; }
 }
 
+/* ------------------------- */
+/* חלון הצ'אט                 */
+/* ------------------------- */
 #chat-window {
-    flex-grow: 1; /* תופס את כל השטח הפנוי */
-    overflow-y: auto; /* מאפשר גלילה רק כשצריך */
-    padding: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
     background-color: #fefefe;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    margin-bottom: 15px;
-    display: flex; /* לשיפור סידור הודעות */
+    margin: 10px 14px 0;
+    display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
+/* הודעות */
 .message {
     padding: 12px 18px;
     border-radius: 20px;
-    margin-bottom: 10px;
     max-width: 80%;
     line-height: 1.4;
-    position: relative;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    font-size: 0.98rem;
 }
 
 .bot-message {
-    background-color: #e6e6fa; /* סגול בהיר מאוד */
-    align-self: flex-start; /* יישור לשמאל */
-    border-bottom-left-radius: 5px; /* פינה ישרה בצד של הבוט */
+    background-color: #e6e6fa;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
 }
 
 .student-message {
-    background-color: #d1e7dd; /* ירוק בהיר */
-    align-self: flex-end; /* יישור לימין */
-    border-bottom-right-radius: 5px; /* פינה ישרה בצד של הסטודנט */
+    background-color: #d1e7dd;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
 }
 
-/* קלט משתמש וכפתור שליחה */
-.user-input-container {
+/* ------------------------- */
+/* שאלות מנחות                */
+/* ------------------------- */
+.guided-question {
     display: flex;
-    padding-top: 10px;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px 15px;
+    font-size: 1.05em;
+    color: #4a4a4a;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    gap: 10px;
+}
+
+.guided-question img {
+    width: 34px;
+    height: 34px;
+}
+
+/* כפתורים (זכר/נקבה, כן/לא) */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+    align-self: flex-end;
+    max-width: 80%;
+}
+
+.choice-button {
+    padding: 8px 18px;
+    background-color: #e3d5f1;
+    border: 2px solid #933bda;
+    border-radius: 18px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    color: #4a4a4a;
+}
+
+.choice-button:hover {
+    background-color: #d0bbec;
+}
+
+.choice-button.selected {
+    background-color: #c4a4f3;
+    border-color: #933bda;
+    transform: scale(1.03);
+    box-shadow: 0 0 8px #b286e5;
+}
+
+/* ------------------------- */
+/* אזור הקלט                  */
+/* ------------------------- */
+.input-area {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px 14px;
+    background-color: #fff;
     border-top: 1px solid #eee;
 }
 
 #user-input {
     flex-grow: 1;
-    padding: 12px 15px;
+    padding: 11px 14px;
     border: 1px solid #ccc;
     border-radius: 25px;
-    font-size: 1.05em;
-    margin-inline-end: 10px;
+    font-size: 1em;
     transition: border-color 0.3s ease;
 }
 
@@ -262,13 +272,13 @@ body.app-started {
 #send-button {
     background-color: #7b4397;
     color: white;
-    padding: 12px 25px;
+    padding: 11px 22px;
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    font-size: 1.05em;
+    font-size: 1em;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 #send-button:hover {
@@ -277,161 +287,47 @@ body.app-started {
 }
 
 #send-button:disabled {
-    background-color: #cccccc;
+    background-color: #ccc;
     cursor: not-allowed;
-    box-shadow: none;
     transform: none;
+    box-shadow: none;
 }
-
 
 /* ------------------------- */
-/* סיידבר / אזור האווטאר      */
+/* רספונסיביות                */
 /* ------------------------- */
-.sidebar {
-    grid-column: 2 / 3; /* ממקם בעמודה השנייה של הגריד */
-    background: linear-gradient(to top, #7b4397, #c181f0); /* גרדיאנט סגול */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* יישור לראש העמודה */
-    padding: 20px;
-    box-sizing: border-box;
-    color: white;
-    text-align: center;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar #large-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-    border: 4px solid #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    margin-top: 30px; /* מרווח מהחלק העליון */
-}
-
-.sidebar h2 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    font-family: 'Ometz', sans-serif;
-    color: white;
-}
-
-.sidebar p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-/* ------------------------------------- */
-/* כללים חדשים עבור השאלות המנחות והאייקונים */
-/* ------------------------------------- */
-.guided-question {
-    display: flex;
-    align-items: center;
-    background-color: transparent; /* שינה רקע לשקוף */
-    padding: 10px 15px;
-    font-size: 1.1em;
-    color: #4a4a4a;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    margin-top: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.guided-question img {
-    width: 36px; /* גודל רוחב קבוע לאייקונים */
-    height: 36px; /* גודל גובה קבוע לאייקונים */
-    vertical-align: middle;
-    margin-inline-end: 8px; /* מרווח בצד שמאל של האייקון עבור כיוון RTL */
-}
-
-/* סגנון כפתורי בחירה (כמו זכר/נקבה, כן/לא) */
-.button-group {
-    display: flex;
-    flex-wrap: wrap; /* מאפשר לכפתורים לעבור לשורה הבאה */
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-    align-self: flex-end; /* יישור לימין, כמו הודעות סטודנט */
-    max-width: 80%; /* כמו הודעות */
-    margin-inline-start: auto; /* מרכוז בתוך ה-max-width */
-}
-
-.choice-button {
-    padding: 10px 20px;
-    background-color: #e3d5f1; /* סגול בהיר */
-    border: 2px solid #933bda; /* גבול סגול */
-    border-radius: 18px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    color: #4a4a4a;
-    flex-shrink: 0; /* מונע מהכפתורים להתכווץ יותר מדי */
-}
-
-.choice-button:hover {
-    background-color: #d0bbec;
-}
-
-.choice-button.selected {
-    background-color: #c4a4f3;
-    border-color: #933bda;
-    transform: scale(1.05);
-    box-shadow: 0 0 8px #b286e5;
-    transition: all 0.2s ease;
-}
-
-/* מדיה קווריות להתאמה למסכים קטנים יותר */
 @media (max-width: 768px) {
-    body.app-started {
-        grid-template-columns: 1fr; /* טור אחד במסכים קטנים */
-    }
-
-    .sidebar {
-        height: auto; /* גובה אוטומטי */
-        padding: 15px;
-    }
-
-    .sidebar #large-avatar {
-        width: 100px;
-        height: 100px;
-        margin-top: 0;
-    }
-
-    .chat-main {
-        padding: 15px;
-    }
-
     #welcome-screen h1 {
         font-size: 2em;
     }
 
-    #start-button {
-        font-size: 1.1em;
-        padding: 12px 25px;
+    #app-main-container {
+        height: 100vh;
+    }
+
+    #chat-window {
+        margin: 6px 6px 0;
+    }
+
+    .chat-header {
+        gap: 8px;
     }
 
     .chat-header .bot-avatar {
-        width: 50px;
-        height: 50px;
+        width: 52px;
+        height: 52px;
     }
 
-    .chat-header .bot-status {
-        font-size: 1em;
+    .stars-container .star {
+        width: 26px;
+        height: 26px;
+    }
+
+    .input-area {
+        padding: 8px;
     }
 
     .message {
-        padding: 10px 15px;
-    }
-
-    #user-input {
-        padding: 10px 12px;
-    }
-
-    #send-button {
-        padding: 10px 20px;
+        max-width: 90%;
     }
 }
