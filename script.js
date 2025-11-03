@@ -1,4 +1,4 @@
-// --- משתנים גלובליים ואלמנטים מה-DOM ---
+// --- משתנים כלליים ---
 document.addEventListener('DOMContentLoaded', async () => {
   const startButton = document.getElementById('start-button');
   const welcomeScreen = document.getElementById('welcome-screen');
@@ -7,39 +7,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   const userInput = document.getElementById('user-input');
   const sendButton = document.getElementById('send-button');
   const botStatus = document.getElementById('bot-status');
-  const stars = document.querySelectorAll('.star'); // וודא שיש אלמנטים עם קלאס .star ב-HTML
-  const largeAvatar = document.getElementById('large-avatar'); // וודא שיש אלמנט עם ID large-avatar ב-HTML
-  const resetButton = document.getElementById('reset-button'); // וודא שיש אלמנט עם ID reset-button ב-HTML
+  const stars = document.querySelectorAll('.star');
+  const largeAvatar = document.getElementById('large-avatar'); // תשאירי את ה-id אם זה מה שיש ב-HTML
+  const resetButton = document.getElementById('reset-button');
 
-  const successSound = new Audio('sounds/success-chime.mp3'); // וודא שהנתיב לקובץ נכון
+  // סאונד חיזוק
+  const successSound = new Audio('sounds/success-chime.mp3');
   let isBotTyping = false;
 
-  const avatarExpressions = {
-    welcoming: "avatar_welcoming.png",
-    inviting: "avatar_inviting_action.png",
-    confident: "avatar_confident.png",
-    compliment: "avatar_compliment.png",
-    thinking: "avatar_thinking.png",
-    support: "avatar_support.png",
-    confuse: "avatar_confuse.png",
-    empathic: "avatar_Empathic.png",
-    excited: "avatar_excited.png",
-    ready: "avatar_ready.png"
+  // כל הבעות הדמות החדשה
+  const matiExpressions = {
+    welcoming: "mati-welcoming.png",
+    inviting: "mati-inviting-action.png",
+    confident: "mati-confident.png",
+    compliment: "mati-compliment.png",
+    thinking: "mati-thinking.png",
+    support: "mati-support.png",
+    confuse: "mati-confuse.png",
+    empathic: "mati-empathic.png",
+    excited: "mati-excited.png",
+    ready: "mati-ready.png"
   };
-
-  // --- פונקציות עזר לטיפול ב-UI ובהודעות ---
-
-  // פונקציית עזר להצגה/הסתרה של מסכים
-  function showScreen(screenElement) {
-    welcomeScreen.classList.add('hidden');
-    appMainContainer.classList.add('hidden');
-    document.body.classList.remove('app-started');
-
-    screenElement.classList.remove('hidden');
-    if (screenElement === appMainContainer) {
-      document.body.classList.add('app-started');
-    }
-  }
 
   function addMessage(sender, text) {
     const messageDiv = document.createElement('div');
@@ -52,49 +40,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
+  // הודעה של מתי + הבעה + כפתורים אם צריך
   function postBotMessageWithEmotion(message, emotion = 'support', showButtons = false, buttons = []) {
-    const avatarFilename = avatarExpressions[emotion] || avatarExpressions['support'];
-    if (largeAvatar) largeAvatar.src = `./avatars/${avatarFilename}`;
+    const avatarFilename = matiExpressions[emotion] || matiExpressions['support'];
+    if (largeAvatar) {
+      // מעכשיו זה מפנה לתיקייה MatiCharacter
+      largeAvatar.src = `./MatiCharacter/${avatarFilename}`;
+    }
     bot.simulateBotTyping(() => {
       addMessage('bot', message);
       if (showButtons && buttons.length) {
-        // וודא שהקלט וכפתור השליחה מנוטרלים כאשר מוצגים כפתורי בחירה
-        toggleInput(false);
         const buttonsDiv = document.createElement('div');
-        buttonsDiv.classList.add('button-group'); // וודא שיש עיצוב CSS לקלאס זה
+        buttonsDiv.classList.add('button-group');
         buttons.forEach(btnText => {
           const btn = document.createElement('button');
           btn.textContent = btnText;
-          btn.classList.add('choice-button'); // וודא שיש עיצוב CSS לקלאס זה
+          btn.classList.add('choice-button');
           btn.addEventListener('click', (e) => {
-            // הסר בחירה מכפתורים קודמים באותה קבוצה
-            document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected')); // וודא שיש עיצוב CSS לקלאס זה
-            e.target.classList.add('selected'); // סמן את הכפתור שנבחר
-            bot.handleChoiceButtonClick(e); // טפל בלחיצת הכפתור בלוגיקת הבוט
+            document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+            e.target.classList.add('selected');
+            bot.handleChoiceButtonClick(e);
           });
           buttonsDiv.appendChild(btn);
         });
         chatWindow.appendChild(buttonsDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-      } else {
-        // אם אין כפתורים, וודא שהקלט וכפתור השליחה מופעלים, אלא אם הבוט עדיין מקליד
-        if (!isBotTyping) { // הוספת תנאי שמונע הפעלה מוקדמת מידי
-          toggleInput(true);
-        }
       }
     });
   }
 
-  // פונקציה להפעלה/נטרול של תיבת הקלט וכפתור השליחה
-  function toggleInput(enable) {
-    userInput.disabled = !enable;
-    sendButton.disabled = !enable;
-    if (enable) {
-      userInput.focus(); // מיקוד על שדה הקלט כשהוא מופעל
-    }
-  }
-
-  // --- מחלקת הבוט MathProblemGuidingBot ---
   class MathProblemGuidingBot {
     constructor() {
       this.wordProblems = {};
@@ -104,48 +78,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       this.guidingQuestions = [];
       this.currentQuestionIndex = 0;
       this.studentGuidingAnswers = { 'א': '', 'ב': '', 'ג': '' };
-      this.dialogStage = 'start'; // שלב התחלתי
+      this.dialogStage = 'start';
       this.userGender = null;
       this.userName = null;
       this.completedProblems = 0;
       this.successfulAnswers = 0;
     }
 
+    // טעינת הבעיות מקובץ ה-JSON המעודכן שלך
     async loadProblemsFromFile() {
-      try {
-        const response = await fetch('questions_data.json'); // וודא שהנתיב לקובץ נכון
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        this.wordProblems = {
-          level1: data.filter(q => q.level === 1),
-          level2: data.filter(q => q.level === 2),
-          level3: data.filter(q => q.level === 3)
-        };
-        // בחר בעיה ראשונית רק אם זו לא טעינה מ-localStorage
-        if (!localStorage.getItem('chatStarted') || localStorage.getItem('dialogStage') === 'start') {
-          this.currentProblem = this.chooseRandomProblem();
-        }
-      } catch (error) {
-        console.error("Failed to load problems:", error);
-        alert("אירעה שגיאה בטעינת הבעיות. נסה/י לרענן את העמוד.");
-      }
+      const response = await fetch('questions_data.json');
+      const data = await response.json();
+      this.wordProblems = {
+        level1: data.filter(q => q.level === 1),
+        level2: data.filter(q => q.level === 2),
+        level3: data.filter(q => q.level === 3)
+      };
+      this.currentProblem = this.chooseRandomProblem();
     }
 
     chooseRandomProblem() {
       const currentLevel = this.levelOrder[this.currentLevelIndex];
       const problems = this.wordProblems[currentLevel];
-      if (!problems || problems.length === 0) {
-        console.warn(`No problems found for level: ${currentLevel}`);
-        return { question: "אין כרגע בעיות ברמה זו. נסה/י שוב מאוחר יותר.", keywords: {}, clarifications: {} };
-      }
       return problems[Math.floor(Math.random() * problems.length)];
     }
 
     simulateBotTyping(callback, delay = 900) {
       isBotTyping = true;
-      botStatus.textContent = 'מתי מקלידה...'; // וודא שיש אלמנט עם ID bot-status ב-HTML
+      botStatus.textContent = 'מתי מקלידה...';
       setTimeout(() => {
         callback();
         isBotTyping = false;
@@ -153,99 +113,47 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, delay);
     }
 
-    // מתודה חדשה לאתחול שיחה או המשך מ-localStorage
-    initiateOrResumeConversation() {
-      const storedName = localStorage.getItem('userName');
-      const storedGender = localStorage.getItem('userGender');
-      const storedStage = localStorage.getItem('dialogStage');
-
-      if (storedName && storedGender && storedStage) {
-        this.userName = storedName;
-        this.userGender = storedGender;
-        this.dialogStage = storedStage;
-        this.updateGuidingQuestionsByGender();
-
-        showScreen(appMainContainer);
-        // בדוק איזו בעיה המשתמש פתר לאחרונה, אם נדרש
-        // כרגע, פשוט מתחיל את הבעיה הנוכחית מהרמה הנוכחית
-        this.currentProblem = this.chooseRandomProblem(); // יבחר בעיה חדשה באותה רמה
-
-        // המשך מאיפה שהפסקנו
-        if (this.dialogStage === 'asking_guiding_questions' || this.dialogStage === 'start_problem') { // 'start_problem' stage added for clarity
-            postBotMessageWithEmotion(`היי ${this.userName}! ברוך/ה שוב. הנה הבעיה הנוכחית שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
-            setTimeout(() => this.askGuidingQuestion(), 1500);
-            toggleInput(true); // הפעל קלט אם מצפים לתשובה על שאלה מנחה
-        } else if (this.dialogStage === 'continue_or_stop' || this.dialogStage === 'offer_level_up') {
-            postBotMessageWithEmotion(`היי ${this.userName}! רוצה להמשיך?`, 'inviting', true, ["כן", "לא"]);
-            toggleInput(false); // נטרל קלט כשיש כפתורי בחירה
-        } else {
-            // אם מצב לא צפוי או שהמשתמש לא סיים את שלבי השם/מגדר, נתחיל את תהליך השאלות
-            this.startConversationLogic();
-        }
-
-      } else {
-        // אם אין מידע שמור, נתחיל את השיחה מההתחלה
-        this.startConversationLogic();
-      }
-    }
-
-    // מתודה זו תופעל להתחלת השיחה (שאלת שם) - הכל בתוך הצ'אט
     startConversationLogic() {
-      showScreen(appMainContainer); // עובר למסך הצ'אט הראשי
       postBotMessageWithEmotion("שלום! אני מתי. נפתור יחד בעיות מילוליות במתמטיקה.", 'welcoming');
       setTimeout(() => {
         postBotMessageWithEmotion("איך קוראים לך?", 'inviting');
-        this.dialogStage = 'awaiting_name_input'; // שינוי שלב הדיאלוג
-        localStorage.setItem('dialogStage', this.dialogStage);
-        toggleInput(true); // הפעל קלט עבור השם
+        this.dialogStage = 'awaiting_name';
       }, 1500);
     }
 
-    // זו המתודה שתטפל בלחיצות כפתורים *בתוך* חלון הצ'אט הראשי (למשל כפתורי מגדר, או "כן"/"לא" להמשך)
     handleChoiceButtonClick(event) {
       const btnText = event.target.textContent;
 
-      // שלב שואל מגדר - מטופל רק באמצעות כפתורים
-      if (this.dialogStage === 'awaiting_gender_input') {
-        // אין צורך להוסיף הודעה של הסטודנט כאן, הכפתור כבר מסמן את הבחירה.
+      // בחירת מגדר
+      if (this.dialogStage === 'awaiting_gender') {
         this.userGender = btnText === "זכר" ? 'male' : btnText === "נקבה" ? 'female' : 'neutral';
-        localStorage.setItem('userGender', this.userGender); // שמור את המגדר
-        this.updateGuidingQuestionsByGender(); // עדכן את השאלות המנחות לפי המגדר
-
+        this.updateGuidingQuestionsByGender();
         const greeting = this.userGender === 'male'
           ? "נהדר! נדבר בלשון זכר."
           : this.userGender === 'female'
             ? "נהדר! נדבר בלשון נקבה."
             : "נשתמש בלשון ניטרלית כדי שתרגיש/י בנוח.";
         postBotMessageWithEmotion(greeting, 'confident');
-
-        // הודעת פתיחה משולבת - "נעים להכיר [שם], כעת נלמד..."
         setTimeout(() => {
-          postBotMessageWithEmotion(`היי ${this.userName}! נעים להכיר, אני מתי ואנחנו נלמד ביחד איך מילים הופכות למספרים בשלושה שלבים.`, 'confident');
-
-          // הצגת הבעיה המילולית הראשונה ומעבר לשלב שאלות מנחות - מיד לאחר ההודעה הקודמת
-          setTimeout(() => {
-            postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
-            this.dialogStage = 'asking_guiding_questions'; // מעבר לשלב השאלות המנחות
-            localStorage.setItem('dialogStage', this.dialogStage);
-            setTimeout(() => this.askGuidingQuestion(), 1500); // שאלה מנחה ראשונה
-          }, 1500); // עיכוב זה הותאם כך שיגיע לאחר ההודעה החדשה
-
-        }, 1500); // לאחר ברכת המגדר
-        // כאן אין toggleInput(true) כי askGuidingQuestion כבר יפעיל את הקלט
+          postBotMessageWithEmotion("מוכנ/ה? בוא/י נתחיל! 💪", 'inviting');
+        }, 1500);
+        setTimeout(() => {
+          postBotMessageWithEmotion(`הנה הבעיה שלנו:<br><b>${this.currentProblem.question}</b>`, 'confident');
+          this.dialogStage = 'asking_guiding_questions';
+          setTimeout(() => this.askGuidingQuestion(), 1500);
+        }, 3500);
 
       } else if (this.dialogStage === 'continue_or_stop') {
-        addMessage('student', btnText); // הצג את בחירת התלמיד (כפתור)
         if (btnText === "כן") {
           this.completedProblems++;
 
+          // מעבר רמה לפי כמות בעיות
           if (this.completedProblems >= 5 && this.currentLevelIndex < this.levelOrder.length - 1) {
             const name = this.userName ? ` ${this.userName}` : "";
             postBotMessageWithEmotion(`וואו${name}! פתרת כבר 5 בעיות ברמה הזו 🎯`, 'excited');
             setTimeout(() => {
               postBotMessageWithEmotion("רוצה לעבור לרמה מתקדמת יותר?", 'inviting', true, ["כן, ברור!", "נשאר ברמה הזו"]);
               this.dialogStage = 'offer_level_up';
-              localStorage.setItem('dialogStage', this.dialogStage);
             }, 1800);
             return;
           }
@@ -258,17 +166,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           this.currentProblem = this.chooseRandomProblem();
           this.currentQuestionIndex = 0;
           this.dialogStage = 'asking_guiding_questions';
-          localStorage.setItem('dialogStage', this.dialogStage);
           postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
           setTimeout(() => this.askGuidingQuestion(), 1500);
         } else {
           postBotMessageWithEmotion("אין בעיה, נחזור כשתרצה. בהצלחה!", 'support');
           this.dialogStage = 'ended';
-          localStorage.setItem('dialogStage', this.dialogStage);
-          toggleInput(false); // נטרל קלט בסיום השיחה
         }
       } else if (this.dialogStage === 'offer_level_up') {
-        addMessage('student', btnText); // הצג את בחירת התלמיד (כפתור)
         if (btnText === "כן, ברור!") {
           this.currentLevelIndex++;
           this.completedProblems = 0;
@@ -279,7 +183,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           setTimeout(() => {
             postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
             this.dialogStage = 'asking_guiding_questions';
-            localStorage.setItem('dialogStage', this.dialogStage);
             setTimeout(() => this.askGuidingQuestion(), 1500);
           }, 1800);
         } else {
@@ -287,7 +190,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           this.currentProblem = this.chooseRandomProblem();
           this.currentQuestionIndex = 0;
           this.dialogStage = 'asking_guiding_questions';
-          localStorage.setItem('dialogStage', this.dialogStage);
           setTimeout(() => {
             postBotMessageWithEmotion(`הנה הבעיה:<br><b>${this.currentProblem.question}</b>`, 'confident');
             setTimeout(() => this.askGuidingQuestion(), 1500);
@@ -296,6 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
+    // התאמה למגדר + אייקונים מהסטוריבורד
     updateGuidingQuestionsByGender() {
       const isMale = this.userGender === 'male';
       const isFemale = this.userGender === 'female';
@@ -303,70 +206,76 @@ document.addEventListener('DOMContentLoaded', async () => {
       this.guidingQuestions = [
         { key: 'א', text: text("מה אני צריך למצוא?", "מה אני צריכה למצוא?", "מה צריך למצוא?"), icon: "magnifying_glass.png" },
         { key: 'ב', text: text("מה אני יודע מהבעיה?", "מה אני יודעת מהבעיה?", "מה ידוע לי?"), icon: "list.png" },
-        { key: 'ג', text: text("מה חסר לי לדעת כדי לפתור?", "מה חסר לי לדעת כדי לפתור?", "מה חסר לי כדי לפתור?"), icon: "Missing_puzzle.png" }
+        { key: 'ג', text: text("מה עליי לעשות כדי לפתור?", "מה עליי לעשות כדי לפתור?", "מה עלינו לעשות כדי לפתור?"), icon: "Missing_puzzle.png" }
       ];
     }
 
+    // שליחת השאלה המודרכת הבאה
     askGuidingQuestion() {
       if (this.currentQuestionIndex < this.guidingQuestions.length) {
         const q = this.guidingQuestions[this.currentQuestionIndex];
-        const html = `<div class="guided-question"><img src="./icons-leading-questions/${q.icon}" alt="icon" /> ${q.text}</div>`; // וודא עיצוב CSS ל-guided-question ולגודל התמונה
+        // שימי את האייקונים בתיקייה /icons
+        const html = `<div class="guided-question"><img src="./icons/${q.icon}" alt="icon" /> ${q.text}</div>`;
         postBotMessageWithEmotion(html, 'support');
-        toggleInput(true); // הפעל קלט עבור מענה על שאלות מנחות
       } else {
         postBotMessageWithEmotion("רוצה להמשיך לפתור עוד בעיה?", 'inviting', true, ["כן", "לא"]);
         this.dialogStage = 'continue_or_stop';
-        localStorage.setItem('dialogStage', this.dialogStage);
-        toggleInput(false); // נטרל קלט כשיש כפתורי בחירה
       }
     }
 
-    // מתודה לטיפול בקלט משתמש חופשי (כמו שם, או תשובות לשאלות מנחות)
+    // מה קורה כשהתלמיד/ה שולח/ת טקסט
     handleStudentInputLogic(input) {
-      addMessage('student', input); // הצג את קלט התלמיד
-      if (this.dialogStage === 'awaiting_name_input') {
+      addMessage('student', input);
+
+      // שם
+      if (this.dialogStage === 'awaiting_name') {
         this.userName = input;
-        localStorage.setItem('userName', this.userName); // שמור את השם
-        postBotMessageWithEmotion(`נעים להכיר, ${this.userName}!`, 'welcoming');
+        postBotMessageWithEmotion(`נעים להכיר, ${this.userName}!`);
         setTimeout(() => {
-          postBotMessageWithEmotion("איך תרצה/תרצי שאפנה אליך?", 'inviting', true, ["זכר", "נקבה", "לא משנה לי"]);
-          this.dialogStage = 'awaiting_gender_input';
-          localStorage.setItem('dialogStage', this.dialogStage);
-          toggleInput(false); // נטרל קלט כשיש כפתורי בחירה למגדר
+          postBotMessageWithEmotion("איך תרצה שאפנה אליך?", 'inviting', true, ["זכר", "נקבה", "לא משנה לי"]);
+          this.dialogStage = 'awaiting_gender';
         }, 1200);
-      } else if (this.dialogStage === 'asking_guiding_questions') {
+        return;
+      }
+
+      // שלבי הפיגום
+      if (this.dialogStage === 'asking_guiding_questions') {
         const q = this.guidingQuestions[this.currentQuestionIndex];
         this.studentGuidingAnswers[q.key] = input;
-        const keywords = this.currentProblem.keywords?.[q.key] || [];
-        const clarification = this.currentProblem.clarifications?.[q.key];
-        const isPartial = keywords.some(keyword => input.includes(keyword)) && input.length <= 14;
-        if (isPartial && clarification) {
-          postBotMessageWithEmotion(clarification, 'support');
-        } else {
+
+        const correctAnswers = this.currentProblem.correct_answers?.[q.key] || [];
+        const isCorrect = correctAnswers.some(correctPhrase => input.includes(correctPhrase));
+
+        if (isCorrect) {
           const feedback = this.getRandomFeedback(q.key);
           postBotMessageWithEmotion(feedback, 'compliment');
           this.markStar(this.currentQuestionIndex);
           this.successfulAnswers++;
           this.currentQuestionIndex++;
           setTimeout(() => this.askGuidingQuestion(), 1500);
+        } else {
+          const tryAgainMessage = this.userGender === 'male'
+            ? "בוא ננסה שוב. נסה לקרוא את הבעיה בעיון רב יותר."
+            : this.userGender === 'female'
+              ? "בואי ננסה שוב. נסי לקרוא את הבעיה בעיון רב יותר."
+              : "בוא/י ננסה שוב. נסה/י לקרוא את הבעיה בעיון רב יותר.";
+          postBotMessageWithEmotion(tryAgainMessage, 'confuse');
         }
-      } else {
-        // אם המשתמש מנסה להקליד כשהבוט לא מצפה לקלט בשלב זה
-        console.log("הבוט לא מצפה לקלט בשלב זה.");
-        // אפשר להוסיף הודעת שגיאה למשתמש
-        postBotMessageWithEmotion("אני ממתינה לתשובה ספציפית או לבחירה. אנא התמקד/י בשאלה הנוכחית.", 'confuse');
       }
     }
 
+    // צביעת כוכבים + סאונד
     markStar(index) {
       if (stars[index]) {
-        stars[index].src = 'icons-leading-questions/star_gold.png';
+        // שימי את הכוכב הזהוב בתיקייה /icons
+        stars[index].src = 'icons/star_gold.png';
         stars[index].classList.add('earned');
+        successSound.currentTime = 0;
         successSound.play();
       }
       if (this.successfulAnswers === 3 && largeAvatar) {
         setTimeout(() => {
-          largeAvatar.src = `./avatars/${avatarExpressions.excited}`;
+          largeAvatar.src = `./MatiCharacter/${matiExpressions.excited}`;
         }, 700);
       }
     }
@@ -387,52 +296,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // --- אתחול האפליקציה ---
   const bot = new MathProblemGuidingBot();
   await bot.loadProblemsFromFile();
 
-  // טיפול בכפתור האיפוס
+  // טעינה מחדש אם השיחה כבר התחילה
+  if (localStorage.getItem('chatStarted') === 'true') {
+    welcomeScreen.style.display = 'none';
+    appMainContainer.style.display = 'grid';
+    document.body.classList.add('app-started');
+    bot.startConversationLogic();
+  } else {
+    welcomeScreen.style.display = 'flex';
+    appMainContainer.style.display = 'none';
+    document.body.classList.remove('app-started');
+  }
+
   if (resetButton) {
     resetButton.addEventListener('click', () => {
-      localStorage.clear(); // נקה את כל ה-localStorage
-      window.location.reload(); // רענן את העמוד
+      localStorage.removeItem('chatStarted');
+      window.location.reload();
     });
   }
 
-  // לוגיקת אתחול האפליקציה: הצג מסך פתיחה או המשך שיחה
   if (startButton) {
     startButton.addEventListener('click', () => {
-      localStorage.setItem('chatStarted', 'true'); // סמן שהשיחה התחילה
-      bot.initiateOrResumeConversation();
+      localStorage.setItem('chatStarted', 'true');
+      welcomeScreen.style.display = 'none';
+      appMainContainer.style.display = 'grid';
+      document.body.classList.add('app-started');
+      bot.startConversationLogic();
     });
   }
-
-  // בהרצה ראשונית של העמוד (לאחר טעינת DOM וקובץ הבעיות)
-  if (localStorage.getItem('chatStarted') === 'true') {
-    // אם כבר התחילה שיחה בעבר, נסה לשחזר אותה
-    bot.initiateOrResumeConversation();
-  } else {
-    // אם זו הפעלה ראשונה, הצג מסך פתיחה ונטרל קלט עד לחיצה על "נתחיל?"
-    showScreen(welcomeScreen);
-    toggleInput(false);
-  }
-
-  // --- מטפלים לאירועי לחיצה ושליחה ---
 
   sendButton.addEventListener('click', () => {
     const input = userInput.value.trim();
-    if (!isBotTyping && input && !userInput.disabled) { // וודא שהקלט לא מנוטרל
+    if (!isBotTyping && input) {
       bot.handleStudentInputLogic(input);
       userInput.value = "";
-    } else if (userInput.disabled) {
-      console.log("Input is disabled, please wait for bot or select an option.");
-      // אפשר להוסיף הודעה למשתמש
     }
   });
 
   userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !userInput.disabled) { // וודא שהקלט לא מנוטרל
-      sendButton.click();
-    }
+    if (e.key === 'Enter') sendButton.click();
   });
 });
