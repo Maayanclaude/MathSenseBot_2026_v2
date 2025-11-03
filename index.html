@@ -1,62 +1,59 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MathSenseBot – מתי</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="favicon.png" type="image/png" />
+  <meta charset="UTF-8">
+  <title>MathSenseBot 2026 v2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- מסך פתיחה -->
   <div id="welcome-screen" class="welcome-screen">
-    <!-- אם יש לך קובץ של מתי – עדיף לשים אותו כאן -->
-    <img src="MatiCharacter/Mati_welcoming.png" alt="מתי אומרת שלום" class="large-avatar" />
-    <h1>ברוכים הבאים למתי 🟣</h1>
-    <p>נפתור יחד בעיות מילוליות במתמטיקה, צעד-אחר-צעד.</p>
-    <button id="start-button">בוא/י נתחיל! 🎉</button>
+    <!-- שביל -->
+    <img src="images/road.png" alt="דרך" class="welcome-road">
+    <!-- כותרת ראשית -->
+    <img src="images/main%20title.png" alt="מת-מתי" class="welcome-title">
+    <!-- כותרת משנה -->
+    <img src="images/subtitle.png" alt="מילים למספרים בשלושה צעדים" class="welcome-subtitle">
+    <!-- הדמות -->
+    <img src="MatiCharacter/Mati_ready.png" alt="מתי" class="welcome-mati">
+    <!-- כפתור -->
+    <button id="start-button" class="start-btn">נתחיל?</button>
   </div>
 
-  <!-- אפליקציה ראשית (מוסתרת בהתחלה) -->
+  <!-- האפליקציה עצמה -->
   <div id="app-main-container" class="app-main-container hidden">
-
-    <!-- כותרת עליונה -->
+    <!-- כותרת צ'אט -->
     <div class="chat-header">
       <div class="avatar-container">
-        <!-- זה מה שה-JS מחפש: id="large-avatar" -->
-        <img id="large-avatar" src="MatiCharacter/Mati_support.png" alt="מתי" class="bot-avatar" />
-        <span id="bot-status" class="bot-status">מתי ממתינה...</span>
+        <img id="large-avatar" src="MatiCharacter/Mati_support.png" alt="מתי" class="bot-avatar">
+        <span id="bot-status" class="bot-status">מתי ממתינה…</span>
       </div>
-
-      <!-- כוכבים -->
       <div class="stars-container">
-        <img src="icons/star_empty.png" alt="כוכב" class="star" id="star-0" />
-        <img src="icons/star_empty.png" alt="כוכב" class="star" id="star-1" />
-        <img src="icons/star_empty.png" alt="כוכב" class="star" id="star-2" />
+        <img src="icons/star_empty.png" class="star" id="star-0" alt="">
+        <img src="icons/star_empty.png" class="star" id="star-1" alt="">
+        <img src="icons/star_empty.png" class="star" id="star-2" alt="">
       </div>
     </div>
 
-    <!-- פתקית הבעיה המילולית -->
-    <div id="problem-note" class="problem-note">
-      <div class="pin"></div>
-      <div class="problem-text">כאן תופיע הבעיה המילולית</div>
+    <!-- פתקית הבעיה (מוסתרת בהתחלה) -->
+    <div id="problem-note" class="problem-note hidden">
+      <div class="problem-pin"></div>
+      <p id="problem-note-text">כאן תופיע הבעיה המילולית</p>
     </div>
 
-    <!-- חלון הצ'אט -->
-    <div id="chat-window" class="chat-window">
-      <!-- ההודעות של מתי ושל התלמיד/ה ייכנסו לכאן מה-JS -->
-    </div>
+    <!-- חלון צ'אט -->
+    <div id="chat-window" class="chat-window"></div>
 
-    <!-- אזור קלט -->
+    <!-- קלט -->
     <div class="input-area">
-      <input type="text" id="user-input" placeholder="הקלד/י את תשובתך כאן..." autocomplete="off" />
-      <button id="send-button">שלח/י</button>
+      <input id="user-input" type="text" placeholder="הקלד/י את תשובתך כאן...">
+      <button id="send-button">שלחי</button>
     </div>
-
   </div>
 
-  <!-- סקריפט הראשי -->
   <script src="script.js"></script>
 </body>
 </html>
