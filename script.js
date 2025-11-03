@@ -329,19 +329,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // יצירת מופע בוט וטעינת שאלות
+    // יצירת מופע בוט וטעינת שאלות
   const bot = new MathProblemGuidingBot();
   await bot.loadProblemsFromFile();
 
   // אם כבר התחילו בעבר – להיכנס ישר לאפליקציה
   if (localStorage.getItem('chatStarted') === 'true') {
-    welcomeScreen.style.display = 'none';
-    appMainContainer.style.display = 'grid';
+    // מסתירים את מסך הפתיחה ומראים את האפליקציה
+    welcomeScreen.classList.add('hidden');
+    appMainContainer.classList.remove('hidden');
     document.body.classList.add('app-started');
     bot.startConversationLogic();
   } else {
-    welcomeScreen.style.display = 'flex';
-    appMainContainer.style.display = 'none';
+    // מצב התחלתי
+    welcomeScreen.classList.remove('hidden');
+    appMainContainer.classList.add('hidden');
     document.body.classList.remove('app-started');
   }
 
@@ -349,8 +351,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (startButton) {
     startButton.addEventListener('click', () => {
       localStorage.setItem('chatStarted', 'true');
-      welcomeScreen.style.display = 'none';
-      appMainContainer.style.display = 'grid';
+      welcomeScreen.classList.add('hidden');
+      appMainContainer.classList.remove('hidden');
       document.body.classList.add('app-started');
       bot.startConversationLogic();
     });
