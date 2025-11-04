@@ -10,100 +10,110 @@ body {
   min-height: 100vh;
 }
 
+/* מוסתר */
 .hidden {
   display: none !important;
 }
 
 /* ------------------------- */
-/* מסך פתיחה כמו בסטוריבורד */
+/* מסך פתיחה (כמו הסטוריבורד) */
 /* ------------------------- */
 #welcome-screen {
   position: relative;
   height: 100vh;
-  background: #ede6f6;
+  background: #ece3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
-/* כותרת ראשית – במרכז למעלה */
-.welcome-title {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 370px;
-  max-width: 80vw;
-  z-index: 2;
-}
-
-/* כותרת משנה – מתחת לראשית */
-.welcome-subtitle {
-  position: absolute;
-  top: 150px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 330px;
-  max-width: 70vw;
-  z-index: 2;
-}
-
-/* השביל – מלמטה */
+/* השביל */
 .welcome-road {
   position: absolute;
-  bottom: -60px;
-  left: -40px;
-  width: 70vw;
-  max-width: 720px;
-  opacity: 0.95;
-  z-index: 1;
+  bottom: 0;
+  left: 0;
+  width: 60vw;
+  max-width: 750px;
+  opacity: 0.45;
 }
 
-/* מתי – בצד ימין למטה */
+/* כותרת ראשית – גדולה יותר */
+.welcome-title {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  width: 430px;
+}
+
+/* כותרת משנה – בדיוק מתחת */
+.welcome-subtitle {
+  position: absolute;
+  top: 180px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  width: 360px;
+}
+
+/* מתי בצד ימין – גדולה יותר */
 .welcome-mati {
   position: absolute;
-  right: 6%;
-  bottom: 0;
-  width: 190px;
+  bottom: 20px;
+  right: 80px;
+  width: 210px;     /* היה 190 – הגדלנו */
   z-index: 3;
 }
 
-/* כפתור "נתחיל?" – באמצע למטה */
-.start-btn {
+/* כפתור "נתחיל" – גדול יותר וממורכז */
+#start-button {
   position: absolute;
-  left: 50%;
-  bottom: 55px;
-  transform: translateX(-50%);
+  bottom: 50px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
   background: linear-gradient(to right, #9c6ef3, #7b50e0);
   color: #fff;
   border: none;
-  padding: 14px 42px;
+  padding: 15px 55px;
   border-radius: 9999px;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   transition: transform .2s ease;
-  z-index: 4;
-}
-.start-btn:hover {
-  transform: translateX(-50%) scale(1.04);
+  opacity: 0;
+  animation: fadeInButton 1s ease-in forwards;
+  animation-delay: 1.3s;
 }
 
-/* fade-out למסך הפתיחה */
+#start-button:hover {
+  transform: scale(1.04);
+}
+
+@keyframes fadeInButton {
+  from { opacity: 0; transform: translateY(15px);}
+  to   { opacity: 1; transform: translateY(0);}
+}
+
+/* אנימציית היעלמות למסך הפתיחה */
 .fade-out {
-  animation: fadeOut .5s ease-out forwards;
+  animation: fadeOut 0.6s ease-out forwards;
 }
 @keyframes fadeOut {
   from { opacity: 1; }
-  to { opacity: 0; visibility: hidden; }
+  to   { opacity: 0; visibility: hidden; }
 }
 
 /* ------------------------- */
-/* אפליקציה ראשית           */
+/* מיכל האפליקציה           */
 /* ------------------------- */
-.app-main-container {
+#app-main-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f7f7f7;
+  background-color: #f7f7f7;
 }
 
 /* כותרת הצ'אט */
@@ -115,11 +125,13 @@ body {
   background: #fff;
   border-bottom: 1px solid #eee;
 }
+
 .avatar-container {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .bot-avatar {
   width: 62px;
   height: 62px;
@@ -127,10 +139,13 @@ body {
   object-fit: cover;
   border: 3px solid #c7a1ff;
 }
+
 .bot-status {
   font-weight: 600;
   color: #555;
 }
+
+/* כוכבים */
 .stars-container {
   display: flex;
   gap: 6px;
@@ -139,21 +154,22 @@ body {
   width: 30px;
   height: 30px;
   opacity: .4;
-  transition: opacity .2s ease;
 }
 .stars-container .star.earned {
   opacity: 1;
 }
 
-/* פתקית הבעיה */
+/* ------------------------- */
+/* פתקית הבעיה               */
+/* ------------------------- */
 .problem-note {
   position: relative;
-  margin: 16px auto 0 auto;
+  margin: 12px auto 0 auto;
   background: #ffe57f;
   border-radius: 18px;
   padding: 14px 22px 16px 22px;
   min-width: 320px;
-  max-width: 720px;
+  max-width: 740px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);
   border: 2px solid #f9d65f;
   display: flex;
@@ -165,6 +181,7 @@ body {
   font-weight: 600;
   color: #5a4605;
   text-align: center;
+  font-size: 1.05rem;
 }
 .problem-pin {
   position: absolute;
@@ -178,7 +195,9 @@ body {
   transform: translateX(-50%);
 }
 
-/* חלון הצ'אט */
+/* ------------------------- */
+/* חלון הצ'אט                */
+/* ------------------------- */
 .chat-window {
   flex: 1;
   overflow-y: auto;
@@ -189,35 +208,39 @@ body {
   background: #fefefe;
 }
 
-/* הודעות */
+/* בועות */
 .message {
   padding: 12px 18px;
   border-radius: 20px;
   max-width: 70%;
   line-height: 1.5;
-  font-size: 1rem;
 }
 .bot-message {
   background: #e6e6fa;
   align-self: flex-start;
+  font-size: 1.05rem;       /* הגדלנו לבוט */
 }
 .student-message {
   background: #d1e7dd;
   align-self: flex-end;
 }
 
-/* שאלות מנחות עם אייקון */
+/* שאלות מודרכות עם אייקון */
 .guided-question {
   display: flex;
   align-items: center;
-  gap: 10px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 8px 12px;
 }
 .guided-question img {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
+  margin-left: 8px;
 }
 
-/* אזור קלט */
+/* קלט */
 .input-area {
   display: flex;
   gap: 10px;
@@ -230,7 +253,6 @@ body {
   padding: 10px 14px;
   border-radius: 9999px;
   border: 1px solid #ccc;
-  font-size: 1rem;
 }
 #send-button {
   background: #7b4397;
@@ -239,15 +261,13 @@ body {
   border-radius: 9999px;
   padding: 10px 18px;
   cursor: pointer;
-  font-weight: 600;
 }
 
-/* כפתורי בחירה (זכר/נקבה/לא משנה) */
+/* כפתורי בחירה */
 .button-group {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  margin-top: 6px;
 }
 .choice-button {
   background: #eadeff;
@@ -259,24 +279,4 @@ body {
 .choice-button.selected {
   background: #c792ff;
   color: #fff;
-}
-
-/* רספונסיבי */
-@media (max-width: 768px) {
-  .welcome-mati {
-    right: 2%;
-    width: 150px;
-  }
-  .welcome-title {
-    top: 35px;
-    width: 300px;
-  }
-  .welcome-subtitle {
-    top: 130px;
-    width: 280px;
-  }
-  .welcome-road {
-    width: 100%;
-    left: -100px;
-  }
 }
