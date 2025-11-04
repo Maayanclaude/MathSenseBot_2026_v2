@@ -9,15 +9,15 @@
 </head>
 <body>
 
-  <!-- מסך פתיחה -->
+  <!-- מסך פתיחה (סטוריבורד) -->
   <div id="welcome-screen" class="welcome-screen">
     <!-- שביל -->
     <img src="images/road.png" alt="דרך" class="welcome-road">
     <!-- כותרת ראשית -->
-    <img src="images/main%20title.png" alt="מת-מתי" class="welcome-title">
+    <img src="images/main title.png" alt="מת-מתי" class="welcome-title">
     <!-- כותרת משנה -->
     <img src="images/subtitle.png" alt="מילים למספרים בשלושה צעדים" class="welcome-subtitle">
-    <!-- הדמות -->
+    <!-- מתי -->
     <img src="MatiCharacter/Mati_ready.png" alt="מתי" class="welcome-mati">
     <!-- כפתור -->
     <button id="start-button" class="start-btn">נתחיל?</button>
@@ -25,7 +25,7 @@
 
   <!-- האפליקציה עצמה -->
   <div id="app-main-container" class="app-main-container hidden">
-    <!-- כותרת צ'אט -->
+    <!-- כותרת הצ'אט -->
     <div class="chat-header">
       <div class="avatar-container">
         <img id="large-avatar" src="MatiCharacter/Mati_support.png" alt="מתי" class="bot-avatar">
@@ -38,16 +38,16 @@
       </div>
     </div>
 
-    <!-- פתקית הבעיה (מוסתרת בהתחלה) -->
+    <!-- פתקית הבעיה – מוסתרת עד שמתי מציגה אותה -->
     <div id="problem-note" class="problem-note hidden">
       <div class="problem-pin"></div>
-      <p id="problem-note-text">כאן תופיע הבעיה המילולית</p>
+      <p id="problem-text">כאן תופיע הבעיה המילולית</p>
     </div>
 
-    <!-- חלון צ'אט -->
+    <!-- חלון שיחה -->
     <div id="chat-window" class="chat-window"></div>
 
-    <!-- קלט -->
+    <!-- אזור קלט -->
     <div class="input-area">
       <input id="user-input" type="text" placeholder="הקלד/י את תשובתך כאן...">
       <button id="send-button">שלחי</button>
