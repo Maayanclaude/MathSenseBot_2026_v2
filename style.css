@@ -1,220 +1,82 @@
-/* ------------------------- */
-/* טיפוגרפיה כללית ודף      */
-/* ------------------------- */
-body {
-  font-family: 'Heebo', sans-serif;
-  direction: rtl;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f2f5;
-  min-height: 100vh;
-}
-.hidden { display: none !important; }
-
-/* ------------------------- */
-/* מסך פתיחה                */
-/* ------------------------- */
+/* ========================= */
+/* מסך פתיחה מעודכן */
+/* ========================= */
 #welcome-screen {
   position: relative;
   height: 100vh;
-  background: linear-gradient(to bottom right, #f3ecff, #e8e2ff);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background: #ece5f7;
   overflow: hidden;
-  text-align: center;
 }
 
+/* שביל רקע */
 .welcome-road {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  opacity: 0.8;
+  bottom: -10%;
+  left: 0;
+  width: 75%;
+  max-width: 1100px;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 1;
 }
 
+/* כותרת עליונה */
 .welcome-title {
-  width: 480px;
-  margin-bottom: 10px;
-}
-
-.welcome-subtitle {
-  width: 360px;
-  margin-bottom: 30px;
-}
-
-.welcome-mati {
   position: absolute;
-  bottom: 25px;
-  right: 8%;
-  width: 200px;
-}
-
-#start-button {
-  background: linear-gradient(to right, #b46cf3, #8b4ae2);
-  color: #fff;
-  border: none;
-  padding: 14px 48px;
-  border-radius: 9999px;
-  font-size: 1.25rem;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  transition: transform 0.25s ease;
-  margin-top: 10px;
-}
-#start-button:hover {
-  transform: scale(1.08);
-}
-
-/* ------------------------- */
-/* אפליקציה ראשית           */
-/* ------------------------- */
-#app-main-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #f7f7f7;
-}
-
-/* כותרת */
-.chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-}
-.avatar-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.bot-avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #c7a1ff;
-}
-.bot-status {
-  font-weight: 600;
-  color: #555;
-}
-.stars-container {
-  display: flex;
-  gap: 6px;
-}
-.stars-container .star {
-  width: 32px;
-  height: 32px;
-  opacity: 0.4;
-}
-.stars-container .star.earned {
-  opacity: 1;
-}
-
-/* ------------------------- */
-/* הפתקית הקבועה מעל הצ'אט */
-/* ------------------------- */
-.problem-note {
-  position: relative;
-  margin: 10px auto 0 auto;
-  background: #fff3b0;
-  border-radius: 18px;
-  padding: 16px 22px;
-  max-width: 720px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-  border: 2px solid #f7d35f;
-  text-align: center;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #5a4605;
-}
-
-.problem-pin {
-  position: absolute;
-  top: -14px;
-  width: 26px;
-  height: 26px;
-  background: #ff9966;
-  border-radius: 50%;
-  border: 3px solid #fff6d5;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
+  width: 520px; /* יותר גדול */
+  z-index: 2;
 }
 
-/* ------------------------- */
-/* חלון צ'אט מתחת לפתקית   */
-/* ------------------------- */
-.chat-window {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  background: #fff;
-  box-sizing: border-box;
+/* כותרת משנה */
+.welcome-subtitle {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 380px; /* מעט קטן יותר מהראשית */
+  z-index: 2;
 }
 
-/* בועות הודעה */
-.message {
-  padding: 14px 18px;
-  border-radius: 20px;
-  max-width: 75%;
-  line-height: 1.5;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-.bot-message {
-  background: #ede2ff;
-  align-self: flex-start;
-}
-.student-message {
-  background: #d1e7dd;
-  align-self: flex-end;
+/* מתי – גדולה יותר (בערך חצי מסך בגובה) */
+.welcome-mati {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  height: 48vh; /* מתי בגובה חצי מסך */
+  z-index: 3;
 }
 
-/* אזור קלט */
-.input-area {
-  display: flex;
-  gap: 10px;
-  padding: 12px 16px;
-  background: #fff;
-  border-top: 1px solid #eee;
-}
-#user-input {
-  flex: 1;
-  padding: 12px 15px;
-  border-radius: 9999px;
-  border: 1px solid #ccc;
-  font-size: 1.05rem;
-}
-#send-button {
-  background: #7b4397;
+/* כפתור התחלה */
+#start-button.start-btn {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #8455d7, #7040c8);
   color: #fff;
   border: none;
+  padding: 18px 80px; /* יותר גדול */
   border-radius: 9999px;
-  padding: 10px 22px;
+  font-size: 1.3rem;
   cursor: pointer;
-  font-weight: 600;
+  z-index: 4;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  transition: transform .2s ease;
+}
+#start-button.start-btn:hover {
+  transform: translateX(-50%) scale(1.04);
 }
 
-/* כפתורי בחירה */
-.button-group {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+/* אנימציית היעלמות */
+.fade-out {
+  animation: fadeOut .6s ease forwards;
 }
-.choice-button {
-  background: #eadeff;
-  border: 1px solid #c792ff;
-  border-radius: 9999px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.choice-button.selected {
-  background: #c792ff;
-  color: #fff;
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
