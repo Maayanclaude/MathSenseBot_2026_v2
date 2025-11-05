@@ -40,13 +40,28 @@
   z-index: 2;
 }
 
-/* מתי – גדולה יותר (בערך חצי מסך בגובה) */
+/* הדמות במסך הפתיחה – בגובה חצי מסך, פרופורציונלית */
 .welcome-mati {
   position: absolute;
-  right: 5%;
   bottom: 0;
-  height: 48vh; /* מתי בגובה חצי מסך */
+  right: 4%;
+  height: 48vh;        /* גובה יחסי למסך */
+  max-height: 420px;   /* לא לעבור מזה */
+  width: auto;
+  object-fit: contain;
+  pointer-events: none;
   z-index: 3;
+}
+
+/* לא לאפשר גלילה לצדדים */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ביטחון נוסף על מסך הפתיחה */
+#welcome-screen {
+  overflow: hidden;
 }
 
 /* כפתור התחלה */
@@ -66,6 +81,7 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   transition: transform .2s ease;
 }
+
 #start-button.start-btn:hover {
   transform: translateX(-50%) scale(1.04);
 }
@@ -74,6 +90,7 @@
 .fade-out {
   animation: fadeOut .6s ease forwards;
 }
+
 @keyframes fadeOut {
   to {
     opacity: 0;
