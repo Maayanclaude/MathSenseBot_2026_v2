@@ -1,11 +1,36 @@
 /* ========================= */
-/* מסך פתיחה מעודכן */
+/* בסיס כללי */
+/* ========================= */
+* {
+  box-sizing: border-box;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden; /* לא לגלול הצידה */
+}
+body {
+  font-family: 'Heebo', sans-serif;
+  direction: rtl;
+  margin: 0;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+.hidden {
+  display: none !important;
+}
+
+/* ========================= */
+/* מסך פתיחה */
 /* ========================= */
 #welcome-screen {
-  position: relative;
+  position: fixed;           /* שכבה מעל הכול */
+  top: 0;
+  right: 0;
+  width: 100vw;
   height: 100vh;
   background: #ece5f7;
   overflow: hidden;
+  z-index: 1000;
 }
 
 /* שביל רקע */
@@ -20,13 +45,13 @@
   z-index: 1;
 }
 
-/* כותרת עליונה */
+/* כותרת עליונה (התמונה של הכותרת) */
 .welcome-title {
   position: absolute;
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 520px; /* יותר גדול */
+  width: 520px; /* הגדלנו */
   z-index: 2;
 }
 
@@ -36,32 +61,21 @@
   top: 220px;
   left: 50%;
   transform: translateX(-50%);
-  width: 380px; /* מעט קטן יותר מהראשית */
+  width: 380px;
   z-index: 2;
 }
 
-/* הדמות במסך הפתיחה – בגובה חצי מסך, פרופורציונלית */
+/* מתי במסך פתיחה – צד ימין, חצי מסך */
 .welcome-mati {
   position: absolute;
   bottom: 0;
   right: 4%;
-  height: 48vh;        /* גובה יחסי למסך */
-  max-height: 420px;   /* לא לעבור מזה */
+  height: 48vh;        /* בערך חצי מסך */
+  max-height: 420px;   /* תקרה */
   width: auto;
   object-fit: contain;
   pointer-events: none;
   z-index: 3;
-}
-
-/* לא לאפשר גלילה לצדדים */
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* ביטחון נוסף על מסך הפתיחה */
-#welcome-screen {
-  overflow: hidden;
 }
 
 /* כפתור התחלה */
@@ -73,7 +87,7 @@ html, body {
   background: linear-gradient(90deg, #8455d7, #7040c8);
   color: #fff;
   border: none;
-  padding: 18px 80px; /* יותר גדול */
+  padding: 18px 80px;
   border-radius: 9999px;
   font-size: 1.3rem;
   cursor: pointer;
@@ -81,19 +95,214 @@ html, body {
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   transition: transform .2s ease;
 }
-
 #start-button.start-btn:hover {
   transform: translateX(-50%) scale(1.04);
 }
 
-/* אנימציית היעלמות */
+/* אנימציית היעלמות למסך הפתיחה */
 .fade-out {
   animation: fadeOut .6s ease forwards;
 }
-
 @keyframes fadeOut {
   to {
     opacity: 0;
     visibility: hidden;
   }
 }
+
+/* ========================= */
+/* האפליקציה אחרי שנכנסים */
+/* ========================= */
+.app-main-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f7f7fb;
+}
+
+/* כותרת הצ'אט */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e8e6f0;
+}
+.avatar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bot-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #cda9ff;
+}
+.bot-status {
+  font-weight: 600;
+  color: #4b3f5c;
+}
+.stars-container {
+  display: flex;
+  gap: 6px;
+}
+.stars-container .star {
+  width: 28px;
+  height: 28px;
+  opacity: 0.5;
+}
+.stars-container .star.earned {
+  opacity: 1;
+}
+
+/* פתקית הבעיה – קבועה למעלה */
+.problem-note {
+  position: sticky;
+  top: 0;
+  margin: 8px auto 0 auto;
+  background: #ffe082;
+  border-radius: 18px;
+  padding: 12px 22px 16px;
+  min-width: 340px;
+  max-width: 700px;
+  border: 2px solid #f9cf57;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  z-index: 5;
+}
+.problem-note p {
+  margin: 0;
+  font-weight: 600;
+  color: #4c3b0d;
+  line-height: 1.5;
+}
+.problem-pin {
+  position: absolute;
+  top: -13px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 26px;
+  height: 26px;
+  background: #ff9966;
+  border-radius: 50%;
+  border: 3px solid #fff7dc;
+}
+
+/* חלון הצ'אט */
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fefefe;
+}
+.message {
+  padding: 11px 16px;
+  border-radius: 16px;
+  max-width: 65%;
+  line-height: 1.5;
+  font-size: 0.96rem;
+}
+.bot-message {
+  background: #e8e7fb;
+  align-self: flex-start;
+}
+.student-message {
+  background: #d6efe2;
+  align-self: flex-end;
+}
+
+/* שאלות מנחות עם אייקון */
+.guided-question {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e3ddff;
+  border-radius: 14px;
+  padding: 8px 12px;
+}
+.guided-question img {
+  width: 32px;
+  height: 32px;
+}
+
+/* אזור קלט */
+.input-area {
+  padding: 12px 16px 14px;
+  background: #fff;
+  border-top: 1px solid #e9e6f1;
+  display: flex;
+  gap: 10px;
+}
+#user-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 9999px;
+  padding: 10px 14px;
+  font-size: 1rem;
+}
+#user-input:focus {
+  outline: none;
+  border-color: #8455d7;
+}
+#send-button {
+  background: #7b4397;
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* כפתורי בחירה (מגדר, כן/לא) */
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.choice-button {
+  background: #eadfff;
+  border: 1px solid #c9a9ff;
+  border-radius: 999px;
+  padding: 7px 15px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.choice-button.selected {
+  background: #c096ff;
+  color: #fff;
+}
+
+/* התאמה לנייד */
+@media (max-width: 768px) {
+  .welcome-title {
+    width: 78%;
+    top: 55px;
+  }
+  .welcome-subtitle {
+    top: 170px;
+    width: 70%;
+  }
+  .welcome-mati {
+    right: 2%;
+    height: 40vh;
+  }
+  #start-button.start-btn {
+    padding: 14px 50px;
+  }
+  .problem-note {
+    max-width: 95%;
+  }
+  .message {
+    max-width: 85%;
+  }
+}
+
