@@ -1,5 +1,5 @@
 // ==========================================
-// הגדרות חיבור לגוגל (מעודכן לטופס החדש!)
+// הגדרות חיבור לגוגל (מעודכן לטופס החדש והתקין!)
 // ==========================================
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfTQC9KVZYRcPCvzSK5bDNM3uM1PM1pBHt8bJvl6DXjAFfGpg/formResponse";
 const GOOGLE_ENTRY_ID = "entry.518023803";
@@ -8,7 +8,7 @@ const GOOGLE_ENTRY_ID = "entry.518023803";
 // מצב עבודה (המתג שלך!)
 // ==========================================
 // true  = מצב פיתוח: מדלג על כניסה, לא שולח לגוגל. (שימי כאן בזמן שאת עובדת)
-// false = מצב מחקר: מבקש כניסה, שולח נתונים לגוגל. (שימי כאן לפני שאת שולחת לילדים)
+// false = מצב מחקר: מבקש כניסה, שולח נתונים לגוגל. (שימי כאן לבדיקת הטופס ולפני שליחה לילדים)
 const IS_TEST_MODE = true; 
 
 
@@ -81,7 +81,7 @@ class MathProblemGuidingBot {
         const timestamp = new Date().toLocaleTimeString('he-IL');
         const problemID = this.currentProblem ? this.currentProblem.id : 'intro';
         
-        // הפורמט שנשלח לגוגל: [שעה] | [משתמש] | [בעיה] | [שלב] | [קלט] | [תוצאה]
+        // הפורמט שנשלח לגוגל
         const logData = `${timestamp} | User: ${currentUserID} | P-${problemID} | ${this.currentStep} | "${inputContent}" | ${resultStatus}`;
 
         const formData = new FormData();
