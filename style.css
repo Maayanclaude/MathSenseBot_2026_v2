@@ -4,228 +4,227 @@
 * {
   box-sizing: border-box;
 }
+
 html, body {
   max-width: 100%;
-  overflow-x: hidden; /* לא לגלול הצידה */
+  height: 100%;
+  overflow: hidden; /* מונע גלילה */
 }
+
 body {
   font-family: 'Heebo', sans-serif;
   direction: rtl;
   margin: 0;
-  background: #f0f2f5; /* אפור בהיר רקע כללי */
-  min-height: 100vh;
+  background: #F3E5F5; /* סגול בהיר מאוד */
 }
+
 .hidden {
   display: none !important;
 }
 
 /* ========================= */
-/* מסך פתיחה */
+/* מסך פתיחה (Welcome Screen) */
 /* ========================= */
-#welcome-screen {
-  position: fixed;           /* שכבה מעל הכול */
-  top: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #ece5f7; /* סגול לילך בהיר */
-  overflow: hidden;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
+.welcome-screen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* רקע סגול מדורג עדין */
+    background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
+    text-align: center;
 }
 
-.welcome-road {
-  position: absolute;
-  bottom: -10%;
-  left: 0;
-  width: 75%;
-  max-width: 1100px;
-  opacity: 0.45;
-  pointer-events: none;
-  z-index: 1;
+/* --- כותרות (למעלה) --- */
+.header-section {
+    margin-top: 40px; /* רווח מהתקרה */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10; /* מעל הכל */
 }
 
-.welcome-title, .welcome-subtitle {
-    z-index: 2;
-    max-width: 90%;
+.title-img {
+    max-width: 75%; /* גודל הכותרת הראשית */
+    height: auto;
+    margin-bottom: 10px;
 }
-.welcome-title { margin-bottom: 10px; }
-.welcome-subtitle { margin-bottom: 30px; }
 
-.welcome-mati {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 40px;
-    z-index: 2;
+.subtitle-img {
+    max-width: 55%; /* גודל כותרת המשנה */
+    height: auto;
+}
+
+/* --- שביל ודמות (למטה) --- */
+.visuals-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%; /* תופס את החצי התחתון */
+    pointer-events: none; /* כדי לא להפריע ללחיצות */
+}
+
+.road-img {
+    position: absolute;
+    bottom: -2%; /* טיפה מתחת לקו הסיום כדי שיראה טבעי */
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.mati-welcome {
+    position: absolute;
+    bottom: 30px; /* המיקום של מתי על השביל */
+    right: 10%;   /* מתי עומדת בצד ימין */
+    height: 220px; /* הגובה של מתי - אפשר לשחק עם זה */
+    width: auto;
+    z-index: 5; /* מתי מעל השביל */
+}
+
+/* --- כפתור התחלה --- */
+.btn-container {
+    position: absolute;
+    bottom: 50px;
+    z-index: 20;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .start-btn {
-  z-index: 2;
-  background: #7b4397; /* סגול כהה */
-  color: #fff;
-  border: none;
-  border-radius: 9999px;
-  padding: 15px 35px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.3s;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: #7B1FA2; /* סגול חזק */
+    color: white;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 12px 45px;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    pointer-events: auto; /* מאפשר לחיצה למרות ה-container */
 }
 
 .start-btn:hover {
-  background: #6a3485;
+    background: #4A148C;
+    transform: scale(1.05);
 }
 
 /* ========================= */
-/* אפליקציה ראשית */
+/* האפליקציה עצמה (Chat) */
 /* ========================= */
 .app-main-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 700px;
-  margin: 20px auto;
-  height: calc(100vh - 40px);
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+    max-width: 700px;
+    height: 90vh;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
-/* כותרת הצ'אט (מתי והכוכבים) */
+/* כותרת הצ'אט */
 .chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background: #e3ddff; /* רקע עדין לכותרת */
-  border-bottom: 1px solid #d8bfd8;
+    padding: 15px;
+    background-color: #EDE7F6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #D1C4E9;
 }
 
-.avatar-container {
-  display: flex;
-  align-items: center;
-}
+.avatar-container { display: flex; align-items: center; gap: 10px; }
+.bot-avatar { width: 50px; height: 50px; }
+.bot-status { font-weight: bold; color: #4527A0; }
 
-.bot-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-left: 10px;
-}
+.stars-container { display: flex; gap: 5px; }
+.star { width: 24px; height: 24px; }
 
-.bot-status {
-  font-size: 0.9rem;
-  color: #4A148C;
-}
-
-.stars-container {
-  display: flex;
-  gap: 5px;
-}
-
-.star {
-  width: 24px;
-  height: 24px;
-}
-
-/* פתקית הבעיה המילולית */
+/* פתקית הבעיה */
 .problem-note {
-  position: relative;
-  background: #fff4e1; /* צבע נייר/קרם לפתק */
-  padding: 15px 20px;
-  border-bottom: 1px solid #f0e0c9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: #FFF8E1;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px dashed #FBC02D;
+    color: #333;
+    font-size: 1.1rem;
+    line-height: 1.5;
 }
 
-.problem-note-text {
-  margin: 0;
-  font-weight: 400;
-  font-size: 1.1rem;
-  color: #4A148C;
-}
-
-/* חלון הצ'אט הראשי */
+/* חלון הצ'אט */
 .chat-window {
-  flex-grow: 1;
-  padding: 15px;
-  overflow-y: auto;
-  background: #fdfdff; /* רקע צ'אט בהיר */
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #FAFAFA;
 }
 
 .chat-message {
-  margin-bottom: 15px;
-  max-width: 85%;
-  padding: 10px 15px;
-  border-radius: 18px;
-  line-height: 1.5;
-  clear: both; /* לניקוי לצד ההודעה הקודמת */
+    margin-bottom: 15px;
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    line-height: 1.4;
+    position: relative;
+    clear: both;
 }
 
 .bot-message {
-  float: right;
-  background-color: #e6e6fa; /* לבנדר בהיר */
-  color: #4A148C;
-  border-bottom-left-radius: 0;
+    float: right;
+    background-color: #E1BEE7; /* סגול בהיר */
+    color: #4A148C;
+    border-bottom-right-radius: 2px;
 }
 
 .user-message {
-  float: left;
-  background-color: #dcf8c6; /* ירוק בהיר/תכלת */
-  color: #383838;
-  border-bottom-right-radius: 0;
+    float: left;
+    background-color: #C5CAE9; /* כחלחל בהיר */
+    color: #1A237E;
+    border-bottom-left-radius: 2px;
 }
 
-/* שאלות מנחות (Guided Questions) */
+/* שאלות מנחות (כפתורים בתוך הצ'אט) */
 .guided-question {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border: 1px solid #e3ddff;
-  border-radius: 14px;
-  padding: 8px 12px;
-  font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid #BA68C8;
+    padding: 10px;
+    border-radius: 10px;
+    color: #6A1B9A;
+    font-weight: bold;
 }
-.guided-question img {
-  width: 32px;
-  height: 32px;
+.guided-question img { width: 30px; height: 30px; }
+
+/* אזור הקלט */
+.input-area {
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
 }
 
-/* אזור קלט */
-.input-area {
-  padding: 12px 16px 14px;
-  background: #fff;
-  border-top: 1px solid #e9e6f1;
-  display: flex;
-  gap: 10px;
-}
 #user-input {
-  flex: 1;
-  border: 1px solid #ddd;
-  border-radius: 9999px;
-  padding: 10px 14px;
-  font-size: 1rem;
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1rem;
 }
-#user-input:focus {
-  outline: none;
-  border-color: #8455d7;
-}
+
 #send-button {
-  background: #7b4397;
-  color: #fff;
-  border: none;
-  border-radius: 9999px;
-  padding: 10px 18px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-}
-#send-button:hover {
-  background: #6a3485;
+    background: #7B1FA2;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
 }
