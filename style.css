@@ -1,9 +1,7 @@
 /* ========================= */
 /* בסיס כללי */
 /* ========================= */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
   max-width: 100%;
@@ -18,213 +16,131 @@ body {
   background: #F3E5F5; /* סגול בהיר מאוד */
 }
 
-.hidden {
-  display: none !important;
+.hidden { display: none !important; }
+
+/* ========================= */
+/* מסך כניסה (Login) - חדש! */
+/* ========================= */
+.login-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    background: #F3E5F5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 2000; /* מעל הכל */
 }
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.login-box h2 { color: #4A148C; margin-top: 0; }
+.login-box p { font-size: 1.1rem; color: #6A1B9A; margin-bottom: 20px; }
+
+#participant-id-input {
+    padding: 12px; font-size: 1.2rem; border-radius: 10px;
+    border: 2px solid #BA68C8; margin-bottom: 20px; 
+    text-align: center; width: 100%; outline: none;
+}
+#participant-id-input:focus { border-color: #7B1FA2; }
+
+#login-btn {
+    background: #7B1FA2; color: white; border: none; padding: 12px 30px;
+    border-radius: 25px; font-size: 1.2rem; cursor: pointer; font-weight: bold;
+    width: 100%; transition: background 0.3s;
+}
+#login-btn:hover { background: #4A148C; }
+
 
 /* ========================= */
 /* מסך פתיחה (Welcome Screen) */
 /* ========================= */
 .welcome-screen {
     position: relative;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* רקע סגול מדורג עדין */
-    background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
+    width: 100%; height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    background-color: #F3E5F5; 
     text-align: center;
 }
 
-/* --- כותרות (למעלה) --- */
+/* --- כותרות --- */
 .header-section {
-    margin-top: 40px; /* רווח מהתקרה */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 10; /* מעל הכל */
+    margin-top: 40px; display: flex; flex-direction: column;
+    align-items: center; z-index: 10;
 }
+.title-img { max-width: 75%; height: auto; margin-bottom: 10px; }
+.subtitle-img { max-width: 55%; height: auto; }
 
-.title-img {
-    max-width: 75%; /* גודל הכותרת הראשית */
-    height: auto;
-    margin-bottom: 10px;
-}
-
-.subtitle-img {
-    max-width: 55%; /* גודל כותרת המשנה */
-    height: auto;
-}
-
-/* --- שביל ודמות (למטה) --- */
+/* --- שביל ודמות --- */
 .visuals-container {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60%; /* תופס את החצי התחתון */
-    pointer-events: none; /* כדי לא להפריע ללחיצות */
+    position: absolute; bottom: 0; width: 100%; height: 60%;
+    pointer-events: none;
 }
-
 .road-img {
-    position: absolute;
-    bottom: -2%; /* טיפה מתחת לקו הסיום כדי שיראה טבעי */
-    left: 0;
-    width: 100%;
-    z-index: 1;
+    position: absolute; bottom: -2%; left: 0; width: 100%; z-index: 1;
 }
-
 .mati-welcome {
-    position: absolute;
-    bottom: 30px; /* המיקום של מתי על השביל */
-    right: 10%;   /* מתי עומדת בצד ימין */
-    height: 220px; /* הגובה של מתי - אפשר לשחק עם זה */
-    width: auto;
-    z-index: 5; /* מתי מעל השביל */
+    position: absolute; bottom: 30px; right: 10%;
+    height: 220px; width: auto; z-index: 5;
 }
 
 /* --- כפתור התחלה --- */
 .btn-container {
-    position: absolute;
-    bottom: 50px;
-    z-index: 20;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    position: absolute; bottom: 50px; z-index: 20;
+    width: 100%; display: flex; justify-content: center;
 }
-
 .start-btn {
-    background: #7B1FA2; /* סגול חזק */
-    color: white;
-    font-size: 1.4rem;
-    font-weight: bold;
-    padding: 12px 45px;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
-    pointer-events: auto; /* מאפשר לחיצה למרות ה-container */
+    background: #7B1FA2; color: white; font-size: 1.4rem; font-weight: bold;
+    padding: 12px 45px; border: none; border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
+    transition: transform 0.2s, background 0.3s; pointer-events: auto;
 }
-
-.start-btn:hover {
-    background: #4A148C;
-    transform: scale(1.05);
-}
+.start-btn:hover { background: #4A148C; transform: scale(1.05); }
 
 /* ========================= */
 /* האפליקציה עצמה (Chat) */
 /* ========================= */
 .app-main-container {
-    max-width: 700px;
-    height: 90vh;
-    margin: 20px auto;
-    background: #fff;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    overflow: hidden;
+    max-width: 700px; height: 90vh; margin: 20px auto; background: #fff;
+    border-radius: 20px; display: flex; flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;
 }
 
-/* כותרת הצ'אט */
 .chat-header {
-    padding: 15px;
-    background-color: #EDE7F6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #D1C4E9;
+    padding: 15px; background-color: #EDE7F6; display: flex;
+    justify-content: space-between; align-items: center; border-bottom: 2px solid #D1C4E9;
 }
-
 .avatar-container { display: flex; align-items: center; gap: 10px; }
 .bot-avatar { width: 50px; height: 50px; }
 .bot-status { font-weight: bold; color: #4527A0; }
-
 .stars-container { display: flex; gap: 5px; }
 .star { width: 24px; height: 24px; }
 
-/* פתקית הבעיה */
 .problem-note {
-    background: #FFF8E1;
-    padding: 15px;
-    margin: 10px;
-    border-radius: 10px;
-    border: 1px dashed #FBC02D;
-    color: #333;
-    font-size: 1.1rem;
-    line-height: 1.5;
+    background: #FFF8E1; padding: 15px; margin: 10px; border-radius: 10px;
+    border: 1px dashed #FBC02D; color: #333; font-size: 1.1rem; line-height: 1.5;
 }
 
-/* חלון הצ'אט */
-.chat-window {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    background-color: #FAFAFA;
-}
-
+.chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: #FAFAFA; }
 .chat-message {
-    margin-bottom: 15px;
-    max-width: 80%;
-    padding: 12px 16px;
-    border-radius: 15px;
-    line-height: 1.4;
-    position: relative;
-    clear: both;
+    margin-bottom: 15px; max-width: 80%; padding: 12px 16px; border-radius: 15px;
+    line-height: 1.4; position: relative; clear: both;
 }
+.bot-message { float: right; background-color: #E1BEE7; color: #4A148C; border-bottom-right-radius: 2px; }
+.user-message { float: left; background-color: #C5CAE9; color: #1A237E; border-bottom-left-radius: 2px; }
 
-.bot-message {
-    float: right;
-    background-color: #E1BEE7; /* סגול בהיר */
-    color: #4A148C;
-    border-bottom-right-radius: 2px;
-}
-
-.user-message {
-    float: left;
-    background-color: #C5CAE9; /* כחלחל בהיר */
-    color: #1A237E;
-    border-bottom-left-radius: 2px;
-}
-
-/* שאלות מנחות (כפתורים בתוך הצ'אט) */
 .guided-question {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: white;
-    border: 1px solid #BA68C8;
-    padding: 10px;
-    border-radius: 10px;
-    color: #6A1B9A;
-    font-weight: bold;
+    display: inline-flex; align-items: center; gap: 10px; background: white;
+    border: 1px solid #BA68C8; padding: 10px; border-radius: 10px; color: #6A1B9A; font-weight: bold;
 }
 .guided-question img { width: 30px; height: 30px; }
 
-/* אזור הקלט */
-.input-area {
-    padding: 15px;
-    background: white;
-    border-top: 1px solid #eee;
-    display: flex;
-    gap: 10px;
-}
-
-#user-input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    font-size: 1rem;
-}
-
-#send-button {
-    background: #7B1FA2;
-    color: white;
-    border: none;
-    padding: 0 25px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-}
+.input-area { padding: 15px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; }
+#user-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 25px; font-size: 1rem; }
+#send-button { background: #7B1FA2; color: white; border: none; padding: 0 25px; border-radius: 25px; cursor: pointer; font-weight: bold; }

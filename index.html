@@ -10,17 +10,24 @@
 
 <body>
 
-  <div id="welcome-screen" class="welcome-screen">
+  <div id="login-screen" class="login-screen">
+      <div class="login-box">
+          <h2>ברוכים הבאים למחקר</h2>
+          <p>נא להזין את קוד המשתתף שקיבלת:</p>
+          <input type="text" id="participant-id-input" placeholder="לדוגמה: 101">
+          <button id="login-btn">היכנס</button>
+      </div>
+  </div>
+
+  <div id="welcome-screen" class="welcome-screen hidden">
     
     <div class="header-section">
         <img src="images/main title.png" alt="מת-מתי" class="title-img">
-        
         <img src="images/subtitle.png" alt="ממילים למתמטיקה" class="subtitle-img">
     </div>
 
     <div class="visuals-container">
         <img src="images/road.png" alt="שביל" class="road-img">
-        
         <img src="MatiCharacter/Mati_ready.png" alt="מתי" class="mati-welcome">
     </div>
 
@@ -29,6 +36,7 @@
     </div>
 
   </div>
+
   <div id="app-main-container" class="app-main-container hidden">
 
     <div class="chat-header">
