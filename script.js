@@ -1,15 +1,15 @@
 // ==========================================
-// הגדרות חיבור לגוגל
+// הגדרות חיבור לגוגל (מעודכן לטופס החדש!)
 // ==========================================
-const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfTQC9KVZYRcPCvzSK5bDNM3uM1PM1pBHt8bJvl6DXjAFfGpg/formResponse"; 
-const GOOGLE_ENTRY_ID = "entry.518023803"; 
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfTQC9KVZYRcPCvzSK5bDNM3uM1PM1pBHt8bJvl6DXjAFfGpg/formResponse";
+const GOOGLE_ENTRY_ID = "entry.518023803";
 
 // ==========================================
 // מצב עבודה (המתג שלך!)
 // ==========================================
 // true  = מצב פיתוח: מדלג על כניסה, לא שולח לגוגל. (שימי כאן בזמן שאת עובדת)
 // false = מצב מחקר: מבקש כניסה, שולח נתונים לגוגל. (שימי כאן לפני שאת שולחת לילדים)
-const IS_TEST_MODE = false; 
+const IS_TEST_MODE = true; 
 
 
 // ==========================================
@@ -80,6 +80,8 @@ class MathProblemGuidingBot {
 
         const timestamp = new Date().toLocaleTimeString('he-IL');
         const problemID = this.currentProblem ? this.currentProblem.id : 'intro';
+        
+        // הפורמט שנשלח לגוגל: [שעה] | [משתמש] | [בעיה] | [שלב] | [קלט] | [תוצאה]
         const logData = `${timestamp} | User: ${currentUserID} | P-${problemID} | ${this.currentStep} | "${inputContent}" | ${resultStatus}`;
 
         const formData = new FormData();
@@ -228,17 +230,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bot = new MathProblemGuidingBot();
   await bot.loadProblemsFromFile();
 
-  // --- בדיקת מצב (החלק החדש!) ---
+  // --- לוגיקה של מסכים ---
   
   if (IS_TEST_MODE) {
-      // אם אנחנו בבדיקה: מדלגים על הכל ישר למסך הפתיחה
-      console.log("מצב בדיקה פעיל: דילוג על מסך כניסה.");
-      currentUserID = "Tester"; // שם זמני
+      // מצב בדיקה: מדלג על כניסה
+      console.log("מצב בדיקה פעיל: מדלג על לוגין");
+      currentUserID = "Tester"; 
       if (loginScreen) loginScreen.classList.add('hidden');
       if (welcomeScreen) welcomeScreen.classList.remove('hidden');
       
   } else {
-      // אם אנחנו במחקר אמיתי: בודקים משתמש
+      // מצב מחקר: בודק משתמש
       if (currentUserID) {
           if (loginScreen) loginScreen.classList.add('hidden');
           if (welcomeScreen) welcomeScreen.classList.remove('hidden');
@@ -274,6 +276,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // צ'אט
   if (sendButton) {
     sendButton.addEventListener('click', () => {
       const reply = userInput.value.trim();
