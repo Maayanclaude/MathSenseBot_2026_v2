@@ -1,8 +1,9 @@
 // ==========================================
 // הגדרות חיבור לגוגל (מעודכן לטופס החדש והתקין!)
 // ==========================================
-const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfTQC9KVZYRcPCvzSK5bDNM3uM1PM1pBHt8bJvl6DXjAFfGpg/formResponse";
-const GOOGLE_ENTRY_ID = "entry.518023803";
+// הכתובת הזו שייכת לטופס "Mati log -test" החדש שלך
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
+const GOOGLE_ENTRY_ID = "entry.1044193202";
 
 // ==========================================
 // מצב עבודה (המתג שלך!)
@@ -234,59 +235,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (IS_TEST_MODE) {
       // מצב בדיקה: מדלג על כניסה
-      console.log("מצב בדיקה פעיל: מדלג על לוגין");
-      currentUserID = "Tester"; 
-      if (loginScreen) loginScreen.classList.add('hidden');
-      if (welcomeScreen) welcomeScreen.classList.remove('hidden');
-      
-  } else {
-      // מצב מחקר: בודק משתמש
-      if (currentUserID) {
-          if (loginScreen) loginScreen.classList.add('hidden');
-          if (welcomeScreen) welcomeScreen.classList.remove('hidden');
-      } else {
-          if (loginScreen) loginScreen.classList.remove('hidden');
-          if (welcomeScreen) welcomeScreen.classList.add('hidden');
-      }
-  }
-  
-  if (appMainContainer) appMainContainer.classList.add('hidden');
-
-  // כפתור כניסה
-  if (loginBtn) {
-      loginBtn.addEventListener('click', () => {
-          const idVal = participantInput.value.trim();
-          if (idVal.length > 0) {
-              currentUserID = idVal;
-              localStorage.setItem('mati_participant_id', currentUserID);
-              loginScreen.classList.add('hidden');
-              welcomeScreen.classList.remove('hidden');
-          } else {
-              alert("נא להזין קוד משתתף");
-          }
-      });
-  }
-
-  // כפתור התחלה
-  if (startButton) {
-    startButton.addEventListener('click', () => {
-      welcomeScreen.classList.add('hidden');
-      appMainContainer.classList.remove('hidden');
-      bot.startConversationLogic();
-    });
-  }
-
-  // צ'אט
-  if (sendButton) {
-    sendButton.addEventListener('click', () => {
-      const reply = userInput.value.trim();
-      if (reply) bot.handleUserReply(reply);
-    });
-  }
-  
-  if (userInput) {
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendButton.click();
-    });
-  }
-});
+      console.log("
