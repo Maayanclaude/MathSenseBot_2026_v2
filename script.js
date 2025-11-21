@@ -1,15 +1,14 @@
 // ==========================================
-// הגדרות חיבור לגוגל (מעודכן לטופס החדש והתקין!)
+// הגדרות חיבור לגוגל (הכתובת הסופית והנכונה!)
 // ==========================================
-// הכתובת הזו שייכת לטופס "Mati log -test" החדש שלך
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 
 // ==========================================
 // מצב עבודה (המתג שלך!)
 // ==========================================
-// true  = מצב פיתוח: מדלג על כניסה, לא שולח לגוגל. (שימי כאן בזמן שאת עובדת)
-// false = מצב מחקר: מבקש כניסה, שולח נתונים לגוגל. (שימי כאן לבדיקת הטופס ולפני שליחה לילדים)
+// true  = מצב פיתוח: מדלג על כניסה (לעבודה מהירה)
+// false = מצב מחקר: מבקש כניסה ושולח נתונים (לבדיקה ולתלמידים)
 const IS_TEST_MODE = false; 
 
 
@@ -73,7 +72,6 @@ class MathProblemGuidingBot {
 
     // --- שליחה לגוגל ---
     sendToGoogle(actionType, inputContent, resultStatus) {
-        // אם אנחנו במצב בדיקה - רק מדפיס למסך ולא שולח
         if (IS_TEST_MODE) {
             console.log(`[TEST MODE - User: ${currentUserID}] Log:`, actionType, inputContent, resultStatus);
             return;
@@ -81,8 +79,6 @@ class MathProblemGuidingBot {
 
         const timestamp = new Date().toLocaleTimeString('he-IL');
         const problemID = this.currentProblem ? this.currentProblem.id : 'intro';
-        
-        // הפורמט שנשלח לגוגל
         const logData = `${timestamp} | User: ${currentUserID} | P-${problemID} | ${this.currentStep} | "${inputContent}" | ${resultStatus}`;
 
         const formData = new FormData();
@@ -231,8 +227,55 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bot = new MathProblemGuidingBot();
   await bot.loadProblemsFromFile();
 
-  // --- לוגיקה של מסכים ---
-  
   if (IS_TEST_MODE) {
-      // מצב בדיקה: מדלג על כניסה
-      console.log("
+      currentUserID = "Tester"; 
+      if (loginScreen) loginScreen.classList.add('hidden');
+      if (welcomeScreen) welcomeScreen.classList.remove('hidden');
+  } else {
+      if (currentUserID) {
+          if (loginScreen) loginScreen.classList.add('hidden');
+          if (welcomeScreen) welcomeScreen.classList.remove('hidden');
+      } else {
+          if (loginScreen) loginScreen.classList.remove('hidden');
+          if (welcomeScreen) welcomeScreen.classList.add('hidden');
+      }
+  }
+  
+  if (appMainContainer) appMainContainer.classList.add('hidden');
+
+  // כאן הקוד החשוב שמפעיל את הכפתור
+  if (loginBtn) {
+      loginBtn.addEventListener('click', () => {
+          const idVal = participantInput.value.trim();
+          if (idVal.length > 0) {
+              currentUserID = idVal;
+              localStorage.setItem('mati_participant_id', currentUserID);
+              loginScreen.classList.add('hidden');
+              welcomeScreen.classList.remove('hidden');
+          } else {
+              alert("נא להזין קוד משתתף");
+          }
+      });
+  }
+
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      welcomeScreen.classList.add('hidden');
+      appMainContainer.classList.remove('hidden');
+      bot.startConversationLogic();
+    });
+  }
+
+  if (sendButton) {
+    sendButton.addEventListener('click', () => {
+      const reply = userInput.value.trim();
+      if (reply) bot.handleUserReply(reply);
+    });
+  }
+  
+  if (userInput) {
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendButton.click();
+    });
+  }
+});
