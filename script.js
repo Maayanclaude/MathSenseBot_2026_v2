@@ -1,14 +1,10 @@
 // ==========================================
-// הגדרות חיבור לגוגל (הכתובת הסופית והנכונה!)
+// הגדרות חיבור לגוגל (סופי)
 // ==========================================
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 
-// ==========================================
-// מצב עבודה (המתג שלך!)
-// ==========================================
-// true  = מצב פיתוח: מדלג על כניסה (לעבודה מהירה)
-// false = מצב מחקר: מבקש כניסה ושולח נתונים (לבדיקה ולתלמידים)
+// false = המערכת עובדת "על אמת" (כולל כניסה ושליחה לגוגל)
 const IS_TEST_MODE = false; 
 
 
@@ -20,6 +16,7 @@ let loginBtn, participantInput;
 let isBotTyping = false;
 
 let currentUserID = localStorage.getItem('mati_participant_id');
+let studentName = ""; 
 
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
@@ -28,7 +25,8 @@ const matiExpressions = {
     compliment: "Mati_compliment.png",
     thinking: "Mati_thinking.png",
     support: "Mati_support.png",
-    frustration: "Mati_frustration.png"
+    frustration: "Mati_frustration.png",
+    happy: "Mati_inviting_action.png" // הוספתי כדי שיהיה להבעה מחייכת
 };
 
 // ==========================================
@@ -50,11 +48,11 @@ function displayMessage(text, sender, expression = 'neutral') {
     if (sender === 'bot') { updateAvatar(expression); }
     messageElement.innerHTML = text; 
     chatWindow.appendChild(messageElement);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
 // ==========================================
-// מחלקת הבוט
+// מחלקת הבוט (הלוגיקה)
 // ==========================================
 class MathProblemGuidingBot {
     constructor() {
@@ -64,31 +62,24 @@ class MathProblemGuidingBot {
         this.errorCount = 0; 
         
         this.stepMapping = {
-            'q1_ask': { text: "מעולה. בוא/י נתחיל. **שאלה 1: מהי השאלה המרכזית בבעיה / על מה שואלים אותי?**", code: 'א', next: 'q1_answer', icon: 'magnifier_icon.png' },
-            'q2_ask': { text: "יופי! עכשיו **שאלה 2: מה אני יודע/ת? (כלומר, אילו נתונים רלוונטיים קיימים?)**", code: 'ב', next: 'q2_answer', icon: 'list_icon.png' },
-            'q3_ask': { text: "כמעט סיימנו עם שלב התרגום! **שאלה 3: איזה מידע/פעולה חסר/ה לי כדי לפתור / כדי לענות?**", code: 'ג', next: 'q3_answer', icon: 'puzzle_icon.png' }
+            'q1_ask': { text: "מעולה. בוא/י נתחיל.<br><strong>שאלה 1: מהי השאלה המרכזית בבעיה / על מה שואלים אותי?</strong>", code: 'א', next: 'q1_answer', icon: 'magnifier_icon.png' },
+            'q2_ask': { text: "יופי! עכשיו <strong>שאלה 2: מה אני יודע/ת? (כלומר, אילו נתונים רלוונטיים קיימים?)</strong>", code: 'ב', next: 'q2_answer', icon: 'list_icon.png' },
+            'q3_ask': { text: "כמעט סיימנו עם שלב התרגום!<br><strong>שאלה 3: איזה מידע/פעולה חסר/ה לי כדי לפתור / כדי לענות?</strong>", code: 'ג', next: 'q3_answer', icon: 'puzzle_icon.png' }
         };
     }
 
-    // --- שליחה לגוגל ---
     sendToGoogle(actionType, inputContent, resultStatus) {
         if (IS_TEST_MODE) {
-            console.log(`[TEST MODE - User: ${currentUserID}] Log:`, actionType, inputContent, resultStatus);
+            console.log(`[TEST] ${actionType} | ${inputContent} | ${resultStatus}`);
             return;
         }
-
         const timestamp = new Date().toLocaleTimeString('he-IL');
         const problemID = this.currentProblem ? this.currentProblem.id : 'intro';
-        const logData = `${timestamp} | User: ${currentUserID} | P-${problemID} | ${this.currentStep} | "${inputContent}" | ${resultStatus}`;
-
+        const userInfo = studentName ? `${currentUserID} (${studentName})` : currentUserID;
+        const logData = `${timestamp} | User: ${userInfo} | Step: ${this.currentStep} | Input: "${inputContent}" | Status: ${resultStatus}`;
         const formData = new FormData();
         formData.append(GOOGLE_ENTRY_ID, logData);
-
-        fetch(GOOGLE_FORM_URL, {
-            method: "POST",
-            mode: "no-cors",
-            body: formData
-        }).then(() => console.log("Sent to Google:", logData)).catch(err => console.error("Error:", err));
+        fetch(GOOGLE_FORM_URL, { method: "POST", mode: "no-cors", body: formData }).catch(err => console.error(err));
     }
 
     async loadProblemsFromFile() {
@@ -103,16 +94,13 @@ class MathProblemGuidingBot {
     
     startConversationLogic() {
         if (!this.currentProblem) return;
-        problemNoteText.innerText = this.currentProblem.question;
-        problemNote.classList.remove('hidden');
-        displayMessage(`שלום! אני מתי, בוא/י נפתור את הבעיה המילולית הזו יחד:`, 'bot', 'welcoming');
         
-        this.sendToGoogle('system', 'Session Started', 'N/A');
-
-        setTimeout(() => {
-            this.currentStep = 'q1_ask';
-            this._displayCurrentGuidingQuestion();
-        }, 3000); 
+        // --- כאן השינוי לפי הסטוריבורד שלך ---
+        // הטקסט המדויק מהתמונה
+        displayMessage("היי, אני מתי<br>יחד נפתור בעיות מילוליות<br>בשלושה שלבים.<br>אשמח לדעת, איך קוראים לך?", 'bot', 'welcoming');
+        
+        this.currentStep = 'wait_for_name'; 
+        this.sendToGoogle('system', 'Chat Started', 'Waiting for name');
     }
     
     _displayCurrentGuidingQuestion() {
@@ -128,12 +116,29 @@ class MathProblemGuidingBot {
         if (isBotTyping) return; 
         displayMessage(reply, 'user');
         userInput.value = '';
-        const currentQuestionCode = this._getCurrentQuestionCode();
         
+        // שלב קבלת השם
+        if (this.currentStep === 'wait_for_name') {
+            studentName = reply;
+            this.sendToGoogle('intro', reply, 'name_received');
+            
+            displayMessage(`נעים להכיר, ${studentName}! 😊<br>בוא/י נסתכל על הבעיה שלפנינו:`, 'bot', 'happy');
+            
+            problemNoteText.innerText = this.currentProblem.question;
+            problemNote.classList.remove('hidden');
+
+            setTimeout(() => {
+                this.currentStep = 'q1_ask';
+                this._displayCurrentGuidingQuestion();
+            }, 2500);
+            return;
+        }
+
+        const currentQuestionCode = this._getCurrentQuestionCode();
         if (currentQuestionCode) {
             this._processAnswer(currentQuestionCode, reply);
         } else if (this.currentStep === 'done') {
-            displayMessage("סיימנו בהצלחה את שלב התרגום!", 'bot', 'confident');
+            displayMessage("סיימנו בהצלחה את שלב התרגום! עכשיו אפשר לפתור את התרגיל.", 'bot', 'confident');
             this.sendToGoogle('system', 'Problem Finished', 'Success');
         }
     }
@@ -165,7 +170,7 @@ class MathProblemGuidingBot {
             if (this.errorCount >= 2) {
                 this.sendToGoogle('answer', reply, 'wrong_hint_shown');
                 const clarificationText = this.currentProblem.clarifications[questionCode];
-                displayMessage(`**אני כאן לעזור!** בוא/י ננסה רמז: ${clarificationText}`, 'bot', 'thinking');
+                displayMessage(`**אני כאן לעזור!**<br>בוא/י ננסה רמז: ${clarificationText}`, 'bot', 'thinking');
                 this.errorCount = 0; 
             } else {
                 this.sendToGoogle('answer', reply, 'wrong');
@@ -190,14 +195,14 @@ class MathProblemGuidingBot {
     generateFeedback(questionCode, type) {
         const feedbackMessages = {
           positive: {
-            'א': ["ישר ולעניין! בדיוק זו השאלה המרכזית!"],
-            'ב': ["מעולה! אספת את הנתונים הרלוונטיים."],
-            'ג': ["הבנה מבריקה! הצלחת לנסח מה חסר."]
+            'א': ["מצוין! זיהית בדיוק את השאלה."],
+            'ב': ["כל הכבוד! מצאת את כל הנתונים."],
+            'ג': ["הבנה מעולה! עלית על הפעולה הנכונה."]
           },
           negative: {
-            'א': ["זה בסדר, נסה לחפש את סימן השאלה."],
-            'ב': ["אולי יש עוד נתונים? חפש מספרים."],
-            'ג': ["בוא נחשוב איזו פעולה תעזור לנו."]
+            'א': ["זה לא בדיוק זה. נסה לחפש את סימן השאלה."],
+            'ב': ["אולי חסר משהו? חפש מספרים בסיפור."],
+            'ג': ["בוא נחשוב שוב, האם המחיר יגדל או יקטן?"]
           }
         };
         const pool = feedbackMessages[type][questionCode];
@@ -205,9 +210,6 @@ class MathProblemGuidingBot {
     }
 }
 
-// ==========================================
-// אתחול והרצה
-// ==========================================
 document.addEventListener('DOMContentLoaded', async () => {
   startButton = document.getElementById('start-button');
   welcomeScreen = document.getElementById('welcome-screen');
@@ -220,7 +222,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   largeAvatar = document.getElementById('large-avatar');
   problemNote = document.getElementById('problem-note');
   problemNoteText = document.getElementById('problem-note-text');
-  
   loginBtn = document.getElementById('login-btn');
   participantInput = document.getElementById('participant-id-input');
 
@@ -240,10 +241,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (welcomeScreen) welcomeScreen.classList.add('hidden');
       }
   }
-  
   if (appMainContainer) appMainContainer.classList.add('hidden');
 
-  // כאן הקוד החשוב שמפעיל את הכפתור
   if (loginBtn) {
       loginBtn.addEventListener('click', () => {
           const idVal = participantInput.value.trim();
