@@ -5,7 +5,7 @@
   <title>מת-מתי: ממילים למתמטיקה</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -23,7 +23,8 @@
     
     <div class="header-section">
         <img src="images/main title.png" alt="מת-מתי" class="title-img">
-        <img src="images/subtitle.png" alt="ממילים למתמטיקה" class="subtitle-img">
+        
+        <h2 class="subtitle-text">ממילים למספרים בשלושה צעדים</h2>
     </div>
 
     <div class="visuals-container">
@@ -39,28 +40,32 @@
 
   <div id="app-main-container" class="app-main-container hidden">
 
-    <div class="chat-header">
-      <div class="avatar-container">
-        <img id="large-avatar" src="MatiCharacter/Mati_ready.png" alt="מתי" class="bot-avatar">
-        <span id="bot-status" class="bot-status">מתי ממתינה...</span>
-      </div>
-
-      <div class="stars-container">
-        <img src="icons/star_empty.png" class="star" id="star-0" alt="כוכב 1">
-        <img src="icons/star_empty.png" class="star" id="star-1" alt="כוכב 2">
-        <img src="icons/star_empty.png" class="star" id="star-2" alt="כוכב 3">
-      </div>
+    <div class="right-panel">
+        <img id="large-avatar" src="MatiCharacter/Mati_inviting_action.png" alt="מתי" class="large-character">
+        <div id="bot-status" class="status-bubble">מתי ממתינה...</div>
     </div>
 
-    <div id="problem-note" class="problem-note hidden">
-      <p id="problem-note-text">כאן תופיע הבעיה המילולית</p>
-    </div>
+    <div class="left-panel">
+        
+        <div class="top-bar">
+            <div class="stars-container">
+                <img src="icons/star_empty.png" class="star" id="star-0">
+                <img src="icons/star_empty.png" class="star" id="star-1">
+                <img src="icons/star_empty.png" class="star" id="star-2">
+            </div>
+        </div>
 
-    <div id="chat-window" class="chat-window"></div>
+        <div id="problem-note" class="problem-note hidden">
+            <div class="pin">📍</div> <p id="problem-note-text">כאן תופיע הבעיה...</p>
+        </div>
 
-    <div class="input-area">
-      <input type="text" id="user-input" placeholder="כתוב/י את תשובתך כאן...">
-      <button id="send-button">שלח/י</button>
+        <div id="chat-window" class="chat-window"></div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="כתוב/י את תשובתך כאן..." autocomplete="off">
+            <button id="send-button">שלח/י</button>
+        </div>
+
     </div>
 
   </div>

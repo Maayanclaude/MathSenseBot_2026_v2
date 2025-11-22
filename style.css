@@ -1,146 +1,219 @@
-/* ========================= */
-/* בסיס כללי */
-/* ========================= */
-* { box-sizing: border-box; }
-
-html, body {
-  max-width: 100%;
-  height: 100%;
-  overflow: hidden; /* מונע גלילה */
+:root {
+    --primary-color: #6A1B9A; /* סגול עמוק יותר */
+    --secondary-color: #BA68C8; /* סגול בהיר */
+    --accent-color: #FDD835; /* צהוב בולט */
+    --bg-color: #F3E5F5; /* רקע כללי */
+    --chat-bg: #ffffff;
+    --font-family: 'Heebo', sans-serif;
 }
 
+* { box-sizing: border-box; }
+
 body {
-  font-family: 'Heebo', sans-serif;
-  direction: rtl;
-  margin: 0;
-  background: #F3E5F5; /* סגול בהיר מאוד */
+    font-family: var(--font-family);
+    direction: rtl;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .hidden { display: none !important; }
 
-/* ========================= */
-/* מסך כניסה (Login) - חדש! */
-/* ========================= */
+/* --- מסך כניסה --- */
 .login-screen {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100vh;
-    background: #F3E5F5;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 2000; /* מעל הכל */
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
 }
-
 .login-box {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
+    text-align: center; padding: 40px;
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 2px solid var(--secondary-color);
 }
+.login-box input { padding: 10px; font-size: 18px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; width: 80%; text-align: center; }
+.login-box button { padding: 10px 30px; background: var(--primary-color); color: white; border: none; border-radius: 20px; font-size: 18px; cursor: pointer; }
 
-.login-box h2 { color: #4A148C; margin-top: 0; }
-.login-box p { font-size: 1.1rem; color: #6A1B9A; margin-bottom: 20px; }
-
-#participant-id-input {
-    padding: 12px; font-size: 1.2rem; border-radius: 10px;
-    border: 2px solid #BA68C8; margin-bottom: 20px; 
-    text-align: center; width: 100%; outline: none;
-}
-#participant-id-input:focus { border-color: #7B1FA2; }
-
-#login-btn {
-    background: #7B1FA2; color: white; border: none; padding: 12px 30px;
-    border-radius: 25px; font-size: 1.2rem; cursor: pointer; font-weight: bold;
-    width: 100%; transition: background 0.3s;
-}
-#login-btn:hover { background: #4A148C; }
-
-
-/* ========================= */
-/* מסך פתיחה (Welcome Screen) */
-/* ========================= */
+/* --- מסך פתיחה (ברוכים הבאים) --- */
 .welcome-screen {
-    position: relative;
-    width: 100%; height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    background-color: #F3E5F5; 
-    text-align: center;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 1000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between;
+    padding-top: 20px;
 }
 
-/* --- כותרות --- */
-.header-section {
-    margin-top: 40px; display: flex; flex-direction: column;
-    align-items: center; z-index: 10;
-}
-.title-img { max-width: 75%; height: auto; margin-bottom: 10px; }
-.subtitle-img { max-width: 55%; height: auto; }
+.header-section { text-align: center; margin-top: 20px; }
+.title-img { width: 350px; max-width: 90%; }
 
-/* --- שביל ודמות --- */
+/* הכותרת החדשה שביקשת */
+.subtitle-text {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-top: -10px;
+    font-weight: 900;
+    text-shadow: 2px 2px 0px #E1BEE7;
+}
+
 .visuals-container {
-    position: absolute; bottom: 0; width: 100%; height: 60%;
-    pointer-events: none;
+    position: relative;
+    width: 100%;
+    height: 400px; /* גובה קבוע לאזור התמונות */
+    display: flex; justify-content: center; align-items: flex-end;
 }
-.road-img {
-    position: absolute; bottom: -2%; left: 0; width: 100%; z-index: 1;
-}
-.mati-welcome {
-    position: absolute; bottom: 30px; right: 10%;
-    height: 220px; width: auto; z-index: 5;
-}
+.road-img { position: absolute; bottom: 0; width: 100%; max-height: 200px; object-fit: cover; z-index: 1; }
+.mati-welcome { position: relative; height: 350px; z-index: 2; margin-bottom: 20px; }
 
-/* --- כפתור התחלה --- */
-.btn-container {
-    position: absolute; bottom: 50px; z-index: 20;
-    width: 100%; display: flex; justify-content: center;
-}
+.btn-container { margin-bottom: 50px; z-index: 10; }
 .start-btn {
-    background: #7B1FA2; color: white; font-size: 1.4rem; font-weight: bold;
-    padding: 12px 45px; border: none; border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
-    transition: transform 0.2s, background 0.3s; pointer-events: auto;
+    background: var(--primary-color); color: white;
+    border: none; padding: 15px 60px;
+    font-size: 24px; border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(106, 27, 154, 0.4);
+    cursor: pointer; font-weight: bold;
+    transition: transform 0.2s;
 }
-.start-btn:hover { background: #4A148C; transform: scale(1.05); }
+.start-btn:hover { transform: scale(1.1); }
 
-/* ========================= */
-/* האפליקציה עצמה (Chat) */
-/* ========================= */
+/* --- המסך הראשי (חלוקה ל-2) --- */
 .app-main-container {
-    max-width: 700px; height: 90vh; margin: 20px auto; background: #fff;
-    border-radius: 20px; display: flex; flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;
+    width: 95%; max-width: 1200px; height: 90vh;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    display: flex;
+    overflow: hidden;
 }
 
-.chat-header {
-    padding: 15px; background-color: #EDE7F6; display: flex;
-    justify-content: space-between; align-items: center; border-bottom: 2px solid #D1C4E9;
+/* צד ימין - מתי */
+.right-panel {
+    flex: 1; /* תופס שליש */
+    background: #F8BBD0; /* ורוד עדין/סגול בהיר לרקע של מתי */
+    background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end;
+    position: relative;
+    padding-bottom: 0;
 }
-.avatar-container { display: flex; align-items: center; gap: 10px; }
-.bot-avatar { width: 50px; height: 50px; }
-.bot-status { font-weight: bold; color: #4527A0; }
-.stars-container { display: flex; gap: 5px; }
-.star { width: 24px; height: 24px; }
 
+.large-character {
+    width: 100%; max-width: 350px; /* מתי גדולה */
+    height: auto;
+    object-fit: contain;
+    margin-bottom: -10px; /* שתעמוד ממש על הקצה */
+    transition: src 0.3s ease;
+}
+
+.status-bubble {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(255,255,255,0.9);
+    padding: 8px 15px; border-radius: 20px;
+    font-size: 14px; color: var(--primary-color);
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* צד שמאל - התוכן */
+.left-panel {
+    flex: 2; /* תופס שני שליש */
+    display: flex; flex-direction: column;
+    background: #fafafa;
+    position: relative;
+}
+
+/* שורה עליונה - כוכבים */
+.top-bar {
+    height: 60px;
+    display: flex; align-items: center;
+    padding: 0 30px;
+    background: white;
+    border-bottom: 2px solid #eee;
+}
+.stars-container { display: flex; gap: 10px; }
+.star { width: 35px; height: 35px; }
+
+/* פתקית הבעיה - סטיקי נוט */
 .problem-note {
-    background: #FFF8E1; padding: 15px; margin: 10px; border-radius: 10px;
-    border: 1px dashed #FBC02D; color: #333; font-size: 1.1rem; line-height: 1.5;
+    background-color: #FFF59D; /* צהוב פתקית */
+    width: 90%; margin: 20px auto 10px auto;
+    padding: 25px;
+    border-radius: 2px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.15);
+    font-size: 1.3rem; /* כתב גדול וברור */
+    font-weight: 500;
+    color: #333;
+    position: relative;
+    transform: rotate(-1deg); /* הטיה קלה */
+    transition: all 0.5s ease;
+}
+.pin { position: absolute; top: -15px; right: 50%; font-size: 30px; }
+
+/* חלון הצ'אט */
+.chat-window {
+    flex: 1;
+    padding: 20px 40px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 15px;
 }
 
-.chat-window { flex: 1; padding: 20px; overflow-y: auto; background-color: #FAFAFA; }
+/* בועות דיבור */
 .chat-message {
-    margin-bottom: 15px; max-width: 80%; padding: 12px 16px; border-radius: 15px;
-    line-height: 1.4; position: relative; clear: both;
+    max-width: 80%;
+    padding: 15px 20px;
+    border-radius: 20px;
+    font-size: 18px;
+    line-height: 1.5;
+    animation: slideIn 0.3s ease;
 }
-.bot-message { float: right; background-color: #E1BEE7; color: #4A148C; border-bottom-right-radius: 2px; }
-.user-message { float: left; background-color: #C5CAE9; color: #1A237E; border-bottom-left-radius: 2px; }
 
-.guided-question {
-    display: inline-flex; align-items: center; gap: 10px; background: white;
-    border: 1px solid #BA68C8; padding: 10px; border-radius: 10px; color: #6A1B9A; font-weight: bold;
+.bot-message {
+    background: white;
+    border: 2px solid var(--secondary-color);
+    border-top-right-radius: 0;
+    align-self: flex-start;
+    color: #333;
 }
-.guided-question img { width: 30px; height: 30px; }
 
-.input-area { padding: 15px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; }
-#user-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 25px; font-size: 1rem; }
-#send-button { background: #7B1FA2; color: white; border: none; padding: 0 25px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+.user-message {
+    background: var(--secondary-color); /* סגול */
+    color: white;
+    border-top-left-radius: 0;
+    align-self: flex-end;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* אזור הקלדה */
+.input-area {
+    padding: 20px; background: white;
+    border-top: 1px solid #ddd;
+    display: flex; gap: 15px;
+}
+.input-area input {
+    flex: 1; padding: 15px; border-radius: 30px;
+    border: 1px solid #ccc; font-size: 16px;
+    outline: none;
+}
+.input-area button {
+    padding: 0 30px; border-radius: 30px;
+    background: var(--primary-color); color: white;
+    border: none; font-size: 18px; font-weight: bold; cursor: pointer;
+}
+
+/* כפתורי בחירה (בן/בת) */
+.choice-btn-container { display: flex; gap: 15px; justify-content: center; margin: 10px 0; }
+.choice-btn {
+    background: white; border: 2px solid var(--primary-color);
+    color: var(--primary-color); padding: 10px 25px;
+    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
+    transition: 0.2s;
+}
+.choice-btn:hover { background: var(--primary-color); color: white; }
+.guided-question { display: flex; align-items: center; gap: 15px; }
+.guided-question img { width: 40px; height: 40px; }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
