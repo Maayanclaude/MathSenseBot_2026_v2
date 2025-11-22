@@ -8,7 +8,6 @@
 
 * { box-sizing: border-box; }
 
-/* נועל את גובה המסך כדי למנוע גלילה */
 html, body {
     height: 100%;
     margin: 0;
@@ -38,91 +37,86 @@ body {
     background: #fff; border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     border: 2px solid var(--secondary-color);
+    width: 90%; max-width: 400px;
 }
 .login-box input { padding: 10px; font-size: 18px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; width: 80%; text-align: center; }
 .login-box button { padding: 10px 30px; background: var(--primary-color); color: white; border: none; border-radius: 20px; font-size: 18px; cursor: pointer; }
 
 
-/* --- מסך פתיחה (התיקון הגדול) --- */
+/* --- מסך פתיחה (עיצוב לפי הסטוריבורד) --- */
 .welcome-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: white; z-index: 1000;
     display: flex; flex-direction: column;
-    
-    /* זה הסוד: מפזר את האלמנטים (כותרת למעלה, כפתור למטה) */
-    justify-content: space-between; 
-    align-items: center;
-    padding: 10px 0 30px 0; /* מרווחים קטנים למעלה ולמטה */
+    align-items: center; 
+    justify-content: center; /* מירכוז כללי */
+    padding: 20px;
 }
 
 .header-section {
     text-align: center;
-    flex-shrink: 0; /* כותרת לא מתכווצת */
-    margin-top: 10px;
+    margin-bottom: 20px;
+    z-index: 10;
 }
 
 .title-img {
-    width: 80%; /* קצת פחות מרוחב מלא */
-    max-width: 350px; /* לא ענק */
+    width: 80%; 
+    max-width: 350px; 
     height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .subtitle-text {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     color: var(--primary-color);
-    margin: 5px 0 0 0;
+    margin: 10px 0 0 0;
     font-weight: 900;
 }
 
-/* האזור של התמונות - לוקח את כל המקום הפנוי באמצע */
+/* הקונטיינר של התמונה - בונה את הסצנה */
 .visuals-container {
-    position: relative;
+    position: relative; /* חשוב למיקום השכבות */
     width: 100%;
-    max-width: 600px;
-    flex-grow: 1; /* תופס את כל הגובה הפנוי */
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* מיישר את מתי והכביש לתחתית */
-    overflow: hidden; /* חותך שאריות */
-    margin-bottom: 10px;
+    max-width: 500px; /* רוחב הסצנה */
+    height: 350px; /* גובה הסצנה */
+    margin-bottom: 20px;
 }
 
-/* הכביש - תמיד בתחתית הקונטיינר */
+/* הכביש - השכבה התחתונה */
 .road-img {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: auto;
-    max-height: 50%; /* הכביש לא יעלה על חצי מסך */
-    object-fit: cover;
     z-index: 1;
 }
 
 /* מתי - עומדת על הכביש */
 .mati-welcome {
-    position: relative;
-    z-index: 2;
-    height: auto;
-    max-height: 90%; /* מתי לא תהיה גבוהה יותר מ-90% מהאזור הפנוי */
+    position: absolute;
+    bottom: 40px; /* מרימים אותה קצת למעלה שתעמוד על השביל */
+    right: 20%; /* ממקמים אותה קצת ימינה/מרכז */
+    height: 65%; /* הגודל שלה ביחס לסצנה */
     width: auto;
-    max-width: 80%;
+    z-index: 2; /* מעל הכביש */
 }
 
 .btn-container {
     z-index: 10;
-    flex-shrink: 0; /* כפתור לא נעלם */
+    margin-top: 10px;
 }
 
 .start-btn {
     background: var(--primary-color); color: white;
-    border: none; padding: 12px 50px;
-    font-size: 22px; border-radius: 50px;
+    border: none; padding: 15px 60px;
+    font-size: 24px; border-radius: 50px;
     box-shadow: 0 5px 15px rgba(106, 27, 154, 0.4);
     cursor: pointer; font-weight: bold;
     transition: transform 0.2s;
 }
-.start-btn:hover { transform: scale(1.1); }
+.start-btn:hover { transform: scale(1.05); }
 
 
 /* --- המסך הראשי (צ'אט ופתקית) --- */
