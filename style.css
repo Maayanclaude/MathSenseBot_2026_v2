@@ -1,25 +1,24 @@
 :root {
-    --primary-color: #6A1B9A; /* סגול עמוק יותר */
-    --secondary-color: #BA68C8; /* סגול בהיר */
-    --accent-color: #FDD835; /* צהוב בולט */
-    --bg-color: #F3E5F5; /* רקע כללי */
-    --chat-bg: #ffffff;
+    --primary-color: #6A1B9A;
+    --secondary-color: #BA68C8;
+    --accent-color: #FDD835;
+    --bg-color: #F3E5F5;
     --font-family: 'Heebo', sans-serif;
 }
 
 * { box-sizing: border-box; }
 
+/* נועל את גובה המסך כדי למנוע גלילה */
 html, body {
-    max-width: 100%;
     height: 100%;
-    overflow: hidden; /* מונע גלילה של כל הדף */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
 }
 
 body {
     font-family: var(--font-family);
     direction: rtl;
-    margin: 0;
-    padding: 0;
     background: var(--bg-color);
     display: flex;
     justify-content: center;
@@ -43,79 +42,82 @@ body {
 .login-box input { padding: 10px; font-size: 18px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; width: 80%; text-align: center; }
 .login-box button { padding: 10px 30px; background: var(--primary-color); color: white; border: none; border-radius: 20px; font-size: 18px; cursor: pointer; }
 
-/* --- מסך פתיחה (ברוכים הבאים) - מתוקן וסופי --- */
+
+/* --- מסך פתיחה (התיקון הגדול) --- */
 .welcome-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: white; z-index: 1000;
     display: flex; flex-direction: column;
-    align-items: center; justify-content: flex-start; /* מתחילים מלמעלה */
-    padding: 20px;
-    overflow-y: auto; /* גלילה אם המסך נמוך */
+    
+    /* זה הסוד: מפזר את האלמנטים (כותרת למעלה, כפתור למטה) */
+    justify-content: space-between; 
+    align-items: center;
+    padding: 10px 0 30px 0; /* מרווחים קטנים למעלה ולמטה */
 }
 
 .header-section {
     text-align: center;
-    margin-bottom: 20px;
-    flex-shrink: 0;
+    flex-shrink: 0; /* כותרת לא מתכווצת */
+    margin-top: 10px;
 }
 
 .title-img {
-    width: 100%;
-    max-width: 400px;
+    width: 80%; /* קצת פחות מרוחב מלא */
+    max-width: 350px; /* לא ענק */
     height: auto;
 }
 
 .subtitle-text {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: var(--primary-color);
-    margin-top: 5px;
+    margin: 5px 0 0 0;
     font-weight: 900;
 }
 
-/* הקונטיינר של התמונות (הכביש ומתי) */
+/* האזור של התמונות - לוקח את כל המקום הפנוי באמצע */
 .visuals-container {
     position: relative;
     width: 100%;
     max-width: 600px;
-    height: 40vh; /* גמיש: 40% מהמסך */
-    min-height: 200px;
+    flex-grow: 1; /* תופס את כל הגובה הפנוי */
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    margin-bottom: 30px;
-    flex-grow: 1;
+    align-items: flex-end; /* מיישר את מתי והכביש לתחתית */
+    overflow: hidden; /* חותך שאריות */
+    margin-bottom: 10px;
 }
 
+/* הכביש - תמיד בתחתית הקונטיינר */
 .road-img {
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
     height: auto;
-    max-height: 100%;
-    object-fit: contain;
+    max-height: 50%; /* הכביש לא יעלה על חצי מסך */
+    object-fit: cover;
     z-index: 1;
 }
 
+/* מתי - עומדת על הכביש */
 .mati-welcome {
     position: relative;
     z-index: 2;
     height: auto;
-    max-height: 95%; /* מתאים את עצמו לגובה */
+    max-height: 90%; /* מתי לא תהיה גבוהה יותר מ-90% מהאזור הפנוי */
     width: auto;
     max-width: 80%;
-    margin-bottom: 5px;
 }
 
 .btn-container {
-    margin-bottom: 30px;
     z-index: 10;
-    flex-shrink: 0;
+    flex-shrink: 0; /* כפתור לא נעלם */
 }
 
 .start-btn {
     background: var(--primary-color); color: white;
-    border: none; padding: 15px 60px;
-    font-size: 24px; border-radius: 50px;
+    border: none; padding: 12px 50px;
+    font-size: 22px; border-radius: 50px;
     box-shadow: 0 5px 15px rgba(106, 27, 154, 0.4);
     cursor: pointer; font-weight: bold;
     transition: transform 0.2s;
@@ -123,140 +125,48 @@ body {
 .start-btn:hover { transform: scale(1.1); }
 
 
-/* --- המסך הראשי (חלוקה ל-2) --- */
+/* --- המסך הראשי (צ'אט ופתקית) --- */
 .app-main-container {
-    width: 95%; max-width: 1200px; height: 90vh;
+    width: 95%; max-width: 1200px; height: 95vh;
     background: white;
-    border-radius: 30px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.1);
     display: flex;
     overflow: hidden;
 }
 
-/* צד ימין - מתי */
 .right-panel {
-    flex: 1; /* תופס שליש */
-    background: #F8BBD0;
-    background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: flex-end;
-    position: relative;
-    padding-bottom: 0;
-}
-
-.large-character {
-    width: 100%; max-width: 350px;
-    height: auto;
-    object-fit: contain;
-    margin-bottom: -10px;
-    transition: src 0.3s ease;
-}
-
-.status-bubble {
-    position: absolute; top: 20px; right: 20px;
-    background: rgba(255,255,255,0.9);
-    padding: 8px 15px; border-radius: 20px;
-    font-size: 14px; color: var(--primary-color);
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* צד שמאל - התוכן */
-.left-panel {
-    flex: 2; /* תופס שני שליש */
-    display: flex; flex-direction: column;
-    background: #fafafa;
+    flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
     position: relative;
 }
+.large-character { width: 100%; max-width: 350px; height: auto; object-fit: contain; margin-bottom: -10px; }
+.status-bubble { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); padding: 8px 15px; border-radius: 20px; font-size: 14px; color: var(--primary-color); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-/* שורה עליונה - כוכבים */
-.top-bar {
-    height: 60px;
-    display: flex; align-items: center;
-    padding: 0 30px;
-    background: white;
-    border-bottom: 2px solid #eee;
-}
+.left-panel { flex: 2; display: flex; flex-direction: column; background: #fafafa; position: relative; }
+.top-bar { height: 60px; display: flex; align-items: center; padding: 0 30px; background: white; border-bottom: 2px solid #eee; }
 .stars-container { display: flex; gap: 10px; }
-.star { width: 35px; height: 35px; }
+.star { width: 30px; height: 30px; }
 
-/* פתקית הבעיה - סטיקי נוט */
 .problem-note {
-    background-color: #FFF59D; /* צהוב פתקית */
-    width: 90%; margin: 20px auto 10px auto;
-    padding: 25px;
-    border-radius: 2px;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.15);
-    font-size: 1.3rem;
-    font-weight: 500;
-    color: #333;
-    position: relative;
-    transform: rotate(-1deg);
-    transition: all 0.5s ease;
+    background-color: #FFF59D; width: 90%; margin: 15px auto 5px auto;
+    padding: 20px; border-radius: 2px; box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
+    font-size: 1.2rem; font-weight: 500; color: #333;
+    position: relative; transform: rotate(-1deg);
 }
-.pin { position: absolute; top: -15px; right: 50%; font-size: 30px; }
+.pin { position: absolute; top: -15px; right: 50%; font-size: 24px; }
 
-/* חלון הצ'אט */
-.chat-window {
-    flex: 1;
-    padding: 20px 40px;
-    overflow-y: auto;
-    display: flex; flex-direction: column; gap: 15px;
-}
+.chat-window { flex: 1; padding: 20px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+.chat-message { max-width: 80%; padding: 12px 18px; border-radius: 20px; font-size: 16px; line-height: 1.5; }
+.bot-message { background: white; border: 2px solid var(--secondary-color); border-top-right-radius: 0; align-self: flex-start; }
+.user-message { background: var(--secondary-color); color: white; border-top-left-radius: 0; align-self: flex-end; }
 
-/* בועות דיבור */
-.chat-message {
-    max-width: 80%;
-    padding: 15px 20px;
-    border-radius: 20px;
-    font-size: 18px;
-    line-height: 1.5;
-    animation: slideIn 0.3s ease;
-}
+.input-area { padding: 15px; background: white; border-top: 1px solid #ddd; display: flex; gap: 10px; }
+.input-area input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid #ccc; font-size: 16px; outline: none; }
+.input-area button { padding: 0 25px; border-radius: 30px; background: var(--primary-color); color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-.bot-message {
-    background: white;
-    border: 2px solid var(--secondary-color);
-    border-top-right-radius: 0;
-    align-self: flex-start;
-    color: #333;
-}
-
-.user-message {
-    background: var(--secondary-color);
-    color: white;
-    border-top-left-radius: 0;
-    align-self: flex-end;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* אזור הקלדה */
-.input-area {
-    padding: 20px; background: white;
-    border-top: 1px solid #ddd;
-    display: flex; gap: 15px;
-}
-.input-area input {
-    flex: 1; padding: 15px; border-radius: 30px;
-    border: 1px solid #ccc; font-size: 16px;
-    outline: none;
-}
-.input-area button {
-    padding: 0 30px; border-radius: 30px;
-    background: var(--primary-color); color: white;
-    border: none; font-size: 18px; font-weight: bold; cursor: pointer;
-}
-
-/* כפתורי בחירה (בן/בת) */
-.choice-btn-container { display: flex; gap: 15px; justify-content: center; margin: 10px 0; }
-.choice-btn {
-    background: white; border: 2px solid var(--primary-color);
-    color: var(--primary-color); padding: 10px 25px;
-    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
-    transition: 0.2s;
-}
+.choice-btn-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
+.choice-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 25px; font-size: 15px; cursor: pointer; font-weight: bold; }
 .choice-btn:hover { background: var(--primary-color); color: white; }
-.guided-question { display: flex; align-items: center; gap: 15px; }
-.guided-question img { width: 40px; height: 40px; }
-
-@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.guided-question { display: flex; align-items: center; gap: 10px; }
+.guided-question img { width: 30px; height: 30px; }
