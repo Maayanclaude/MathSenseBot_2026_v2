@@ -24,6 +24,7 @@ const matiExpressions = {
 
 function updateAvatar(expressionKey) {
     if (matiExpressions[expressionKey] && largeAvatar) {
+        // שימוש בתיקייה MatiCharacter
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
     if (botStatus) {
@@ -238,87 +239,4 @@ class MathProblemGuidingBot {
     generateFeedback(questionCode, type) {
         const feedbackMessages = {
           positive: {
-            'א': { boy: "מצוין! זיהית בדיוק מה צריך למצוא.", girl: "מצוינת! זיהית בדיוק מה צריך למצוא." },
-            'ב': { boy: "כל הכבוד! מצאת את כל הנתונים.", girl: "כל הכבוד! מצאת את כל הנתונים." },
-            'ג': { boy: "הבנה מעולה!", girl: "הבנה מעולה!" }
-          },
-          negative: {
-            'א': { boy: "זה לא בדיוק זה. מה צריך למצוא?", girl: "זה לא בדיוק זה. מה צריך למצוא?" },
-            'ב': { boy: "אולי חסר משהו? חפש מספרים.", girl: "אולי חסר משהו? חפשי מספרים." },
-            'ג': { boy: "בוא נחשוב שוב.", girl: "בואי נחשוב שוב." }
-          }
-        };
-        return feedbackMessages[type][questionCode];
-    }
-}
-
-window.bot = null;
-
-document.addEventListener('DOMContentLoaded', async () => {
-  startButton = document.getElementById('start-button');
-  welcomeScreen = document.getElementById('welcome-screen');
-  loginScreen = document.getElementById('login-screen');
-  appMainContainer = document.getElementById('app-main-container');
-  chatWindow = document.getElementById('chat-window');
-  userInput = document.getElementById('user-input');
-  sendButton = document.getElementById('send-button');
-  botStatus = document.getElementById('bot-status');
-  largeAvatar = document.getElementById('large-avatar');
-  problemNote = document.getElementById('problem-note');
-  problemNoteText = document.getElementById('problem-note-text');
-  loginBtn = document.getElementById('login-btn');
-  participantInput = document.getElementById('participant-id-input');
-
-  window.bot = new MathProblemGuidingBot();
-  await window.bot.loadProblemsFromFile();
-
-  if (IS_TEST_MODE) {
-      currentUserID = "Tester"; 
-      if (loginScreen) loginScreen.classList.add('hidden');
-      if (welcomeScreen) welcomeScreen.classList.remove('hidden');
-  } else {
-      if (currentUserID) {
-          if (participantInput) participantInput.value = currentUserID;
-          
-          if (loginScreen) loginScreen.classList.remove('hidden');
-          if (welcomeScreen) welcomeScreen.classList.add('hidden');
-      } else {
-          if (loginScreen) loginScreen.classList.remove('hidden');
-          if (welcomeScreen) welcomeScreen.classList.add('hidden');
-      }
-  }
-  if (appMainContainer) appMainContainer.classList.add('hidden');
-
-  if (loginBtn) {
-      loginBtn.addEventListener('click', () => {
-          const idVal = participantInput.value.trim();
-          if (idVal.length > 0) {
-              currentUserID = idVal;
-              localStorage.setItem('mati_participant_id', currentUserID);
-              loginScreen.classList.add('hidden');
-              welcomeScreen.classList.remove('hidden');
-          } else { alert("נא להזין קוד משתתף"); }
-      });
-  }
-
-  if (startButton) {
-    startButton.addEventListener('click', () => {
-      welcomeScreen.classList.add('hidden');
-      appMainContainer.classList.remove('hidden');
-      window.bot.startConversationLogic();
-    });
-  }
-
-  if (sendButton) {
-    sendButton.addEventListener('click', () => {
-      const reply = userInput.value.trim();
-      if (reply) window.bot.handleUserReply(reply);
-    });
-  }
-  
-  if (userInput) {
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendButton.click();
-    });
-  }
-});
+            'א': { boy: "מצוין! זיהית בדיוק מה צריך למצוא.", girl: "
