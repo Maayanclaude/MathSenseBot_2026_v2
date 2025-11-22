@@ -1,3 +1,5 @@
+console.log("Script loaded: The code is running!");
+
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 const IS_TEST_MODE = false; 
@@ -11,7 +13,6 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// הגדרת הבעות הפנים (תיקייה: MatiCharacter)
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
     inviting: "Mati_inviting_action.png",
@@ -69,21 +70,24 @@ class MathProblemGuidingBot {
             'q1_ask': {
                 boy: "מעולה. בוא נתחיל.<br><strong>שאלה 1: מה אני צריך למצוא?</strong>",
                 girl: "מעולה. בואי נתחיל.<br><strong>שאלה 1: מה אני צריכה למצוא?</strong>",
-                icon: 'magnifier_icon.png',
+                // תיקון שם הקובץ לפי התמונה שלך
+                icon: 'magnifying_glass.png', 
                 code: 'א',
                 next: 'q1_answer'
             },
             'q2_ask': {
                 boy: "יופי! עכשיו <strong>שאלה 2: מה אני יודע? (אילו נתונים יש לי?)</strong>",
                 girl: "יופי! עכשיו <strong>שאלה 2: מה אני יודעת? (אילו נתונים יש לי?)</strong>",
-                icon: 'list_icon.png',
+                // תיקון שם הקובץ לפי התמונה שלך
+                icon: 'list.png', 
                 code: 'ב',
                 next: 'q2_answer'
             },
             'q3_ask': {
                 boy: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
                 girl: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
-                icon: 'puzzle_icon.png',
+                // תיקון שם הקובץ לפי התמונה שלך
+                icon: 'Missing_puzzle.png', 
                 code: 'ג',
                 next: 'q3_answer'
             }
@@ -105,7 +109,8 @@ class MathProblemGuidingBot {
             const response = await fetch('questions_data.json');
             this.problems = await response.json();
             this.currentProblem = this.problems[0]; 
-        } catch (error) { console.error(error); }
+            console.log("Questions loaded");
+        } catch (error) { console.error("Error loading questions:", error); }
     }
     
     startConversationLogic() {
@@ -177,7 +182,7 @@ class MathProblemGuidingBot {
 
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
 
-        // תיקון: שימוש בתיקיית images לאייקונים
+        // שימוש בתיקיית images עם השמות החדשים
         const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
         displayMessage(questionHtml, 'bot', 'inviting');
         this.currentStep = stepData.next; 
@@ -235,8 +240,8 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
-            // תיקון: שימוש בתיקיית images לכוכבים
-            starElement.src = isCorrect ? 'images/star_filled.png' : 'images/star_empty.png'; 
+            // תיקון שמות הכוכבים לפי התמונה שלך
+            starElement.src = isCorrect ? 'images/star_gold.png' : 'images/star_empty.png'; 
         }
     }
     
@@ -257,10 +262,10 @@ class MathProblemGuidingBot {
     }
 }
 
-// אתחול
 window.bot = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log("Loading system...");
   startButton = document.getElementById('start-button');
   welcomeScreen = document.getElementById('welcome-screen');
   loginScreen = document.getElementById('login-screen');
@@ -294,7 +299,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   if (appMainContainer) appMainContainer.classList.add('hidden');
 
-  // לוגיקת כפתור התחלה
   if (loginBtn) {
       loginBtn.addEventListener('click', () => {
           const idVal = participantInput.value.trim();
