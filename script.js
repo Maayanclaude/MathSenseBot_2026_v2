@@ -11,6 +11,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
+// הגדרת הבעות הפנים (תיקייה: MatiCharacter)
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
     inviting: "Mati_inviting_action.png",
@@ -176,8 +177,8 @@ class MathProblemGuidingBot {
 
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
 
+        // תיקון: שימוש בתיקיית images לאייקונים
         const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
-        
         displayMessage(questionHtml, 'bot', 'inviting');
         this.currentStep = stepData.next; 
     }
@@ -234,6 +235,7 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
+            // תיקון: שימוש בתיקיית images לכוכבים
             starElement.src = isCorrect ? 'images/star_filled.png' : 'images/star_empty.png'; 
         }
     }
@@ -255,6 +257,7 @@ class MathProblemGuidingBot {
     }
 }
 
+// אתחול
 window.bot = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -291,6 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   if (appMainContainer) appMainContainer.classList.add('hidden');
 
+  // לוגיקת כפתור התחלה
   if (loginBtn) {
       loginBtn.addEventListener('click', () => {
           const idVal = participantInput.value.trim();
