@@ -24,7 +24,6 @@ const matiExpressions = {
 
 function updateAvatar(expressionKey) {
     if (matiExpressions[expressionKey] && largeAvatar) {
-        // מתי נמצאת בתיקייה MatiCharacter
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
     if (botStatus) {
@@ -69,21 +68,21 @@ class MathProblemGuidingBot {
             'q1_ask': {
                 boy: "מעולה. בוא נתחיל.<br><strong>שאלה 1: מה אני צריך למצוא?</strong>",
                 girl: "מעולה. בואי נתחיל.<br><strong>שאלה 1: מה אני צריכה למצוא?</strong>",
-                icon: 'magnifier_icon.png', // שם הקובץ
+                icon: 'magnifier_icon.png',
                 code: 'א',
                 next: 'q1_answer'
             },
             'q2_ask': {
                 boy: "יופי! עכשיו <strong>שאלה 2: מה אני יודע? (אילו נתונים יש לי?)</strong>",
                 girl: "יופי! עכשיו <strong>שאלה 2: מה אני יודעת? (אילו נתונים יש לי?)</strong>",
-                icon: 'list_icon.png', // שם הקובץ
+                icon: 'list_icon.png',
                 code: 'ב',
                 next: 'q2_answer'
             },
             'q3_ask': {
                 boy: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
                 girl: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
-                icon: 'puzzle_icon.png', // שם הקובץ
+                icon: 'puzzle_icon.png',
                 code: 'ג',
                 next: 'q3_answer'
             }
@@ -177,7 +176,6 @@ class MathProblemGuidingBot {
 
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
 
-        // --- תיקון: מפנים ל-images במקום icons ---
         const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
         
         displayMessage(questionHtml, 'bot', 'inviting');
@@ -236,7 +234,6 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
-            // --- תיקון: הכוכבים גם ב-images ---
             starElement.src = isCorrect ? 'images/star_filled.png' : 'images/star_empty.png'; 
         }
     }
