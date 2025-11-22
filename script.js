@@ -1,10 +1,9 @@
-console.log("Script loaded: The code is running!");
+console.log("Script loaded: Standard Version");
 
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 const IS_TEST_MODE = false; 
 
-// משתנים גלובליים
 let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, botStatus, largeAvatar, problemNote, problemNoteText;
 let loginBtn, participantInput;
 let isBotTyping = false;
@@ -46,7 +45,6 @@ function displayMessage(text, sender, expression = 'neutral') {
 function displayChoiceButtons(options) {
     const btnContainer = document.createElement('div');
     btnContainer.classList.add('choice-btn-container');
-    
     options.forEach(opt => {
         const btn = document.createElement('button');
         btn.classList.add('choice-btn');
@@ -54,7 +52,6 @@ function displayChoiceButtons(options) {
         btn.onclick = () => window.bot.handleGenderSelection(opt.value); 
         btnContainer.appendChild(btn);
     });
-    
     chatWindow.appendChild(btnContainer);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -70,7 +67,7 @@ class MathProblemGuidingBot {
             'q1_ask': {
                 boy: "מעולה. בוא נתחיל.<br><strong>שאלה 1: מה אני צריך למצוא?</strong>",
                 girl: "מעולה. בואי נתחיל.<br><strong>שאלה 1: מה אני צריכה למצוא?</strong>",
-                // תיקון שם הקובץ לפי התמונה שלך
+                // לפי התמונה שלך:
                 icon: 'magnifying_glass.png', 
                 code: 'א',
                 next: 'q1_answer'
@@ -78,7 +75,7 @@ class MathProblemGuidingBot {
             'q2_ask': {
                 boy: "יופי! עכשיו <strong>שאלה 2: מה אני יודע? (אילו נתונים יש לי?)</strong>",
                 girl: "יופי! עכשיו <strong>שאלה 2: מה אני יודעת? (אילו נתונים יש לי?)</strong>",
-                // תיקון שם הקובץ לפי התמונה שלך
+                // לפי התמונה שלך:
                 icon: 'list.png', 
                 code: 'ב',
                 next: 'q2_answer'
@@ -86,7 +83,7 @@ class MathProblemGuidingBot {
             'q3_ask': {
                 boy: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
                 girl: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
-                // תיקון שם הקובץ לפי התמונה שלך
+                // לפי התמונה שלך:
                 icon: 'Missing_puzzle.png', 
                 code: 'ג',
                 next: 'q3_answer'
@@ -109,8 +106,7 @@ class MathProblemGuidingBot {
             const response = await fetch('questions_data.json');
             this.problems = await response.json();
             this.currentProblem = this.problems[0]; 
-            console.log("Questions loaded");
-        } catch (error) { console.error("Error loading questions:", error); }
+        } catch (error) { console.error(error); }
     }
     
     startConversationLogic() {
@@ -123,19 +119,15 @@ class MathProblemGuidingBot {
     handleGenderSelection(gender) {
         studentGender = gender;
         this.sendToGoogle('intro', gender, 'gender_selected');
-        
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         displayMessage(`נעים להכיר, ${studentName}! (${gender === 'boy' ? 'בן' : 'בת'})`, 'user');
-        
         setTimeout(() => {
             const welcomeText = gender === 'boy' ? "מצוין! בוא נתחיל." : "מצוינת! בואי נתחיל.";
             displayMessage(welcomeText, 'bot', 'happy');
-            
             setTimeout(() => {
                 chatWindow.innerHTML = ''; 
                 problemNoteText.innerText = this.currentProblem.question;
                 problemNote.classList.remove('hidden');
-                
                 this.currentStep = 'q1_ask';
                 this._displayCurrentGuidingQuestion();
             }, 1500);
@@ -146,11 +138,9 @@ class MathProblemGuidingBot {
         if (isBotTyping) return; 
         displayMessage(reply, 'user');
         userInput.value = '';
-        
         if (this.currentStep === 'wait_for_name') {
             studentName = reply;
             this.sendToGoogle('intro', reply, 'name_received');
-            
             displayMessage(`היי ${studentName}, כדי שאדע איך לפנות אליך:`, 'bot', 'inviting');
             displayChoiceButtons([
                 { label: "אני בן 👦", value: "boy" },
@@ -159,12 +149,10 @@ class MathProblemGuidingBot {
             this.currentStep = 'wait_for_gender';
             return;
         }
-
         if (this.currentStep === 'wait_for_gender') {
             displayMessage("נא לבחור בכפתור למעלה 👆", 'bot', 'support');
             return;
         }
-
         const currentQuestionCode = this._getCurrentQuestionCode();
         if (currentQuestionCode) {
             this._processAnswer(currentQuestionCode, reply);
@@ -176,13 +164,9 @@ class MathProblemGuidingBot {
 
     _displayCurrentGuidingQuestion() {
         this.errorCount = 0; 
-        
         const stepData = this.genderedTexts[this.currentStep];
         if (!stepData) return;
-
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
-
-        // שימוש בתיקיית images עם השמות החדשים
         const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
         displayMessage(questionHtml, 'bot', 'inviting');
         this.currentStep = stepData.next; 
@@ -198,16 +182,12 @@ class MathProblemGuidingBot {
     _processAnswer(questionCode, reply) {
         const keywords = this.currentProblem.keywords[questionCode];
         const isCorrect = this._checkAnswer(reply, keywords);
-
         if (isCorrect) {
             this.sendToGoogle('answer', reply, 'correct');
             this.updateStars(questionCode, true);
-            
             const feedback = this.generateFeedback(questionCode, 'positive');
             const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
-            
             displayMessage(genderedFeedback, 'bot', 'compliment');
-            
             let nextStep = (questionCode === 'א' ? 'q2_ask' : questionCode === 'ב' ? 'q3_ask' : 'done');
             setTimeout(() => {
                 this.currentStep = nextStep;
@@ -240,7 +220,7 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
-            // תיקון שמות הכוכבים לפי התמונה שלך
+            // לפי התמונה שלך: star_gold.png
             starElement.src = isCorrect ? 'images/star_gold.png' : 'images/star_empty.png'; 
         }
     }
@@ -265,7 +245,6 @@ class MathProblemGuidingBot {
 window.bot = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log("Loading system...");
   startButton = document.getElementById('start-button');
   welcomeScreen = document.getElementById('welcome-screen');
   loginScreen = document.getElementById('login-screen');
