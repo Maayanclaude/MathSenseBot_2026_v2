@@ -1,16 +1,39 @@
-console.log("Script loaded: Standard Version");
+console.log("SCRIPT RELOADED: V3");
 
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 const IS_TEST_MODE = false; 
 
 let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, botStatus, largeAvatar, problemNote, problemNoteText;
-let loginBtn, participantInput;
+let participantInput;
 let isBotTyping = false;
 
 let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
+
+// --- פונקציית חירום לכניסה ---
+window.attemptLogin = function() {
+    console.log("Attempting manual login...");
+    const inputEl = document.getElementById('participant-id-input');
+    const loginScrn = document.getElementById('login-screen');
+    const welcomeScrn = document.getElementById('welcome-screen');
+
+    if (!inputEl) {
+        console.error("Input not found!");
+        return;
+    }
+
+    const idVal = inputEl.value.trim();
+    if (idVal.length > 0) {
+        currentUserID = idVal;
+        localStorage.setItem('mati_participant_id', currentUserID);
+        loginScrn.classList.add('hidden');
+        welcomeScrn.classList.remove('hidden');
+    } else {
+        alert("נא להזין קוד");
+    }
+};
 
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
@@ -67,24 +90,21 @@ class MathProblemGuidingBot {
             'q1_ask': {
                 boy: "מעולה. בוא נתחיל.<br><strong>שאלה 1: מה אני צריך למצוא?</strong>",
                 girl: "מעולה. בואי נתחיל.<br><strong>שאלה 1: מה אני צריכה למצוא?</strong>",
-                // לפי התמונה שלך:
-                icon: 'magnifying_glass.png', 
+                icon: 'magnifying_glass.png', // הותאם לשם הקובץ שלך
                 code: 'א',
                 next: 'q1_answer'
             },
             'q2_ask': {
                 boy: "יופי! עכשיו <strong>שאלה 2: מה אני יודע? (אילו נתונים יש לי?)</strong>",
                 girl: "יופי! עכשיו <strong>שאלה 2: מה אני יודעת? (אילו נתונים יש לי?)</strong>",
-                // לפי התמונה שלך:
-                icon: 'list.png', 
+                icon: 'list.png', // הותאם לשם הקובץ שלך
                 code: 'ב',
                 next: 'q2_answer'
             },
             'q3_ask': {
                 boy: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
                 girl: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
-                // לפי התמונה שלך:
-                icon: 'Missing_puzzle.png', 
+                icon: 'Missing_puzzle.png', // הותאם לשם הקובץ שלך
                 code: 'ג',
                 next: 'q3_answer'
             }
@@ -220,7 +240,7 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
-            // לפי התמונה שלך: star_gold.png
+            // הותאם לשם הקובץ שלך
             starElement.src = isCorrect ? 'images/star_gold.png' : 'images/star_empty.png'; 
         }
     }
@@ -256,7 +276,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   largeAvatar = document.getElementById('large-avatar');
   problemNote = document.getElementById('problem-note');
   problemNoteText = document.getElementById('problem-note-text');
-  loginBtn = document.getElementById('login-btn');
   participantInput = document.getElementById('participant-id-input');
 
   window.bot = new MathProblemGuidingBot();
@@ -277,18 +296,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   }
   if (appMainContainer) appMainContainer.classList.add('hidden');
-
-  if (loginBtn) {
-      loginBtn.addEventListener('click', () => {
-          const idVal = participantInput.value.trim();
-          if (idVal.length > 0) {
-              currentUserID = idVal;
-              localStorage.setItem('mati_participant_id', currentUserID);
-              loginScreen.classList.add('hidden');
-              welcomeScreen.classList.remove('hidden');
-          } else { alert("נא להזין קוד משתתף"); }
-      });
-  }
 
   if (startButton) {
     startButton.addEventListener('click', () => {

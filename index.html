@@ -12,21 +12,24 @@
 
   <div id="login-screen" class="login-screen">
       <div class="login-box">
-          <img src="images/main title.png" alt="מת-מתי" class="login-logo">
-          <img src="images/subtitle.png" alt="ממילים למספרים" class="login-subtitle">
+          <img src="images/main title.png" alt="מת-מתי" class="login-logo" style="width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto;">
           
-          <h2>ברוכים הבאים למחקר</h2>
-          <p>נא להזין את קוד המשתתף שקיבלת:</p>
+          <img src="images/subtitle.png" alt="ממילים למספרים" class="login-subtitle" style="width: 80%; max-width: 220px; height: auto; display: block; margin: 10px auto 20px auto;">
+          
+          <h2 style="font-size: 1.3rem; color: #6A1B9A; margin-bottom: 10px;">ברוכים הבאים למחקר</h2>
+          <p style="margin-bottom: 15px; color: #555;">נא להזין את קוד המשתתף שקיבלת:</p>
+          
           <input type="text" id="participant-id-input" placeholder="לדוגמה: 101">
           
-          <button id="login-btn">היכנס</button>
+          <button onclick="attemptLogin()" id="login-btn" class="login-btn-style">היכנס</button>
       </div>
   </div>
 
   <div id="welcome-screen" class="welcome-screen hidden">
+    
     <div class="header-section">
-        <img src="images/main title.png" alt="מת-מתי" class="title-img">
-        <img src="images/subtitle.png" alt="ממילים למספרים" class="subtitle-img">
+        <img src="images/main title.png" alt="מת-מתי" class="title-img" style="width: 80%; max-width: 300px; height: auto;">
+        <img src="images/subtitle.png" alt="ממילים למספרים" class="subtitle-img" style="width: 60%; max-width: 250px; height: auto;">
     </div>
 
     <div class="visuals-container">
@@ -37,15 +40,18 @@
     <div class="btn-container">
         <button id="start-button" class="start-btn">בוא/י נתחיל!</button>
     </div>
+
   </div>
 
   <div id="app-main-container" class="app-main-container hidden">
+
     <div class="right-panel">
         <img id="large-avatar" src="MatiCharacter/Mati_inviting_action.png" alt="מתי" class="large-character">
         <div id="bot-status" class="status-bubble">מתי ממתינה...</div>
     </div>
 
     <div class="left-panel">
+        
         <div class="top-bar">
             <div class="stars-container">
                 <img src="images/star_empty.png" class="star" id="star-0">
@@ -65,7 +71,9 @@
             <input type="text" id="user-input" placeholder="כתוב/י את תשובתך כאן..." autocomplete="off">
             <button id="send-button">שלח/י</button>
         </div>
+
     </div>
+
   </div>
 
   <script src="script.js"></script>
