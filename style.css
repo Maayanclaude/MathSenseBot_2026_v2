@@ -12,21 +12,70 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* מסך כניסה */
+/* --- מסך כניסה --- */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
     z-index: 2000; display: flex; justify-content: center; align-items: center;
 }
+
 .login-box {
-    text-align: center; padding: 30px; background: #fff;
-    border-radius: 25px; box-shadow: 0 15px 40px rgba(106, 27, 154, 0.15);
-    border: 3px solid var(--secondary-color); width: 90%; max-width: 450px;
+    text-align: center;
+    /* שינוי 1: הקטנתי את ה-padding (הרווח הפנימי) מ-30 ל-20 */
+    padding: 20px; 
+    background: #fff;
+    border-radius: 25px; 
+    box-shadow: 0 15px 40px rgba(106, 27, 154, 0.15);
+    border: 3px solid var(--secondary-color); 
+    width: 90%; 
+    
+    /* שינוי 2: הקטנתי את הרווח המקסימלי ב-20% (מ-450 ל-360) */
+    max-width: 360px; 
+    
     display: flex; flex-direction: column; align-items: center;
 }
-.login-box input { padding: 12px; font-size: 18px; border-radius: 50px; border: 2px solid #ddd; margin-bottom: 20px; width: 80%; text-align: center; outline: none; }
-.login-btn-style { padding: 12px 50px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+
+/* הוספתי שליטה על התמונות דרך ה-CSS כדי שייראו טוב בקופסה הקטנה */
+.login-logo {
+    width: 80%;
+    max-width: 220px;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.login-subtitle {
+    width: 70%;
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.login-box input { 
+    padding: 10px; 
+    font-size: 16px; /* הקטנתי טיפה את הפונט שיתאים */
+    border-radius: 50px; 
+    border: 2px solid #ddd; 
+    margin-bottom: 15px; 
+    width: 85%; 
+    text-align: center; 
+    outline: none; 
+}
+
+.login-btn-style { 
+    padding: 10px 40px; 
+    background: var(--primary-color); 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-size: 18px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: transform 0.2s; 
+}
 .login-btn-style:hover { transform: scale(1.05); }
+
+
+/* --- שאר הקוד ללא שינוי --- */
 
 /* מסך פתיחה */
 .welcome-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
