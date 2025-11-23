@@ -21,21 +21,16 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .login-box {
     text-align: center;
-    /* שינוי 1: הקטנתי את ה-padding (הרווח הפנימי) מ-30 ל-20 */
     padding: 20px; 
     background: #fff;
     border-radius: 25px; 
     box-shadow: 0 15px 40px rgba(106, 27, 154, 0.15);
     border: 3px solid var(--secondary-color); 
     width: 90%; 
-    
-    /* שינוי 2: הקטנתי את הרווח המקסימלי ב-20% (מ-450 ל-360) */
-    max-width: 360px; 
-    
+    max-width: 360px; /* נשאר 360px כמו שביקשת */
     display: flex; flex-direction: column; align-items: center;
 }
 
-/* הוספתי שליטה על התמונות דרך ה-CSS כדי שייראו טוב בקופסה הקטנה */
 .login-logo {
     width: 80%;
     max-width: 220px;
@@ -44,15 +39,15 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 }
 
 .login-subtitle {
-    width: 70%;
-    max-width: 180px;
+    width: 85%; /* הגדלתי את הרוחב היחסי */
+    max-width: 220px; /* הגדלתי את הרוחב המקסימלי מ-180 ל-220 */
     height: auto;
     margin-bottom: 15px;
 }
 
 .login-box input { 
     padding: 10px; 
-    font-size: 16px; /* הקטנתי טיפה את הפונט שיתאים */
+    font-size: 16px; 
     border-radius: 50px; 
     border: 2px solid #ddd; 
     margin-bottom: 15px; 
