@@ -40,7 +40,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 /* --- השינוי כאן: הגדלתי משמעותית את כותרת המשנה --- */
 .login-subtitle {
-    width: 90%; /* תופסת כמעט את כל רוחב הקופסה */
+    width: 120%; /* תופסת כמעט את כל רוחב הקופסה */
     max-width: 280px; /* גבול עליון גדול יותר */
     height: auto;
     margin-bottom: 15px;
