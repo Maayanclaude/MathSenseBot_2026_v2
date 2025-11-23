@@ -12,7 +12,7 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* --- מסך כניסה --- */
+/* --- מסך כניסה מעודכן - קומפקטי וצפוף --- */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
@@ -21,29 +21,45 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .login-box {
     text-align: center;
-    padding: 20px; 
+    /* שינוי 1: ריפוד פנימי מינימלי לקופסה קצרה */
+    padding: 15px 20px; 
     background: #fff;
-    border-radius: 25px; 
-    box-shadow: 0 15px 40px rgba(106, 27, 154, 0.15);
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(106, 27, 154, 0.15);
     border: 3px solid var(--secondary-color); 
     width: 90%; 
-    max-width: 360px; 
+    /* שינוי 2: רוחב מקסימלי צר יותר */
+    max-width: 380px; 
     display: flex; flex-direction: column; align-items: center;
 }
 
 .login-logo {
-    width: 80%;
-    max-width: 220px;
+    width: 70%;
+    max-width: 200px;
     height: auto;
-    margin-bottom: 5px;
+    /* שינוי 3: ביטול מרווח תחתון */
+    margin-bottom: 0;
 }
 
-/* --- השינוי כאן: הגדלתי משמעותית את כותרת המשנה --- */
+/* --- שינוי 4: כותרת משנה ענקית ביחס לקופסה --- */
 .login-subtitle {
-    width: 120%; /* תופסת כמעט את כל רוחב הקופסה */
-    max-width: 280px; /* גבול עליון גדול יותר */
+    width: 100%; /* תופסת את כל הרוחב הזמין */
+    max-width: 350px;
     height: auto;
-    margin-bottom: 15px;
+    /* שינוי 5: מרווחים קטנים מאוד */
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.login-box h2 {
+    margin: 5px 0; /* מרווחים קטנים */
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+
+.login-box p {
+    margin: 5px 0 15px 0; /* מרווחים קטנים */
+    color: #666;
 }
 
 .login-box input { 
@@ -51,8 +67,9 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     font-size: 16px; 
     border-radius: 50px; 
     border: 2px solid #ddd; 
-    margin-bottom: 15px; 
-    width: 85%; 
+    /* שינוי 6: מרווח קטן לפני הכפתור */
+    margin-bottom: 10px; 
+    width: 90%; 
     text-align: center; 
     outline: none; 
 }
