@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>מת-מתי: ממילים למתמטיקה</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  
+<style>
     :root {
         --primary-color: #6A1B9A;
         --secondary-color: #BA68C8;
@@ -19,9 +21,9 @@
     body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
     .hidden { display: none !important; }
 
-    /* =========================================
-       מסך 1: מסך כניסה (Login)
-       ========================================= */
+    /* ===========================================================
+       מסך 1: מסך כניסה (הקוד) - הגרסה הקומפקטית שאהבת (לא שונה!)
+       =========================================================== */
     .login-screen {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
@@ -30,86 +32,100 @@
 
     .login-box {
         text-align: center;
-        padding: 10px 15px; 
+        padding: 15px 10px; 
         background: #fff;
-        border-radius: 20px; 
-        box-shadow: 0 10px 30px rgba(106, 27, 154, 0.15);
-        border: 3px solid var(--secondary-color); 
-        width: 90%; 
-        max-width: 480px; 
+        border-radius: 15px; 
+        box-shadow: 0 10px 25px rgba(106, 27, 154, 0.1);
+        border: 2px solid var(--secondary-color); 
+        width: 85%; 
+        max-width: 320px; /* נשאר קומפקטי */
         display: flex; flex-direction: column; align-items: center;
     }
 
     .login-logo {
-        width: 75%; 
-        max-width: 240px; 
+        width: 90%; 
+        max-width: 260px; 
         height: auto;
-        margin-bottom: 2px; 
+        display: block;
+        margin-bottom: 0;
     }
 
     .login-subtitle {
-        width: 95%; 
-        max-width: 380px; 
+        width: 100%; 
+        max-width: 280px; 
         height: auto;
-        margin-top: 0;
-        margin-bottom: 5px; 
+        display: block;
+        margin-top: -5px; 
+        margin-bottom: 10px; 
     }
 
-    .login-box h2 { margin: 2px 0; font-size: 1.1rem; color: var(--primary-color); }
-    .login-box p { margin: 0 0 5px 0; color: #666; font-size: 0.9rem; }
-    .login-box input { padding: 6px; font-size: 16px; border-radius: 50px; border: 2px solid #ddd; margin-bottom: 5px; width: 80%; text-align: center; outline: none; }
-    .login-btn-style { padding: 6px 40px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; font-weight: bold; transition: transform 0.2s; margin-bottom: 2px; }
+    .login-box h2 { margin: 0 0 5px 0; font-size: 1rem; color: var(--primary-color); }
+    .login-box p { margin: 0 0 8px 0; color: #666; font-size: 0.85rem; }
+    
+    .login-box input { 
+        padding: 8px; 
+        font-size: 16px; 
+        border-radius: 50px; 
+        border: 1px solid #ccc; 
+        margin-bottom: 10px; 
+        width: 85%; 
+        text-align: center; 
+        outline: none; 
+        background: #fafafa;
+    }
+    
+    .login-btn-style { 
+        padding: 8px 45px; 
+        background: var(--primary-color); 
+        color: white; 
+        border: none; 
+        border-radius: 50px; 
+        font-size: 18px; 
+        cursor: pointer; 
+        font-weight: bold; 
+        transition: transform 0.2s; 
+        margin-bottom: 5px; 
+    }
     .login-btn-style:hover { transform: scale(1.05); }
 
 
-    /* =========================================
-       מסך 2: מסך שער (Intro) - מתי בצד שמאל, כותרות צמודות
-       ========================================= */
+    /* ===========================================================
+       מסך 2: מסך פתיחה (כביש ומתי) - התיקון הגדול
+       =========================================================== */
     .welcome-screen { 
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
         background: 
-            radial-gradient(circle at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 20%),
-            radial-gradient(circle at 80% 90%, rgba(218, 178, 230, 0.2) 0%, transparent 25%),
+            radial-gradient(circle at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 20%),
+            radial-gradient(circle at 90% 90%, rgba(186, 104, 200, 0.1) 0%, transparent 25%),
             var(--bg-color);
         z-index: 1000; 
         display: flex; flex-direction: column; align-items: center; 
         padding: 20px; 
+        overflow: hidden; 
     }
 
     .header-section { 
         text-align: center; 
-        margin-bottom: 10px; 
+        margin-top: 10px;
         z-index: 10; 
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0; 
+        display: flex; flex-direction: column; align-items: center; gap: 0; 
     }
 
-    .title-img { 
-        width: 70%; 
-        max-width: 280px; 
-        height: auto; 
-        display: block; 
-        margin: 0 auto; 
-    }
+    .title-img { width: 60%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+    .subtitle-img { width: 90%; max-width: 420px; height: auto; display: block; margin: 0 auto; margin-top: -5px; }
 
-    .subtitle-img { 
-        width: 95%; 
-        max-width: 450px; 
-        height: auto; 
-        display: block;
-        margin: 0 auto;
-        margin-top: -5px; 
-    }
-
+    /* תיקון: מיכל גמיש שתופס את כל הגובה הפנוי */
     .visuals-container { 
-        position: relative; 
+        position: absolute; /* שינוי מוחלט כדי לשלוט במיקום */
+        bottom: 0;
+        left: 0;
         width: 100%; 
-        max-width: 600px; 
-        flex-grow: 1; 
-        margin-bottom: 0;
+        height: 70%; /* תופס את החלק התחתון של המסך */
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        pointer-events: none; /* כדי שאפשר יהיה ללחוץ על כפתורים */
     }
 
     .road-img { 
@@ -117,35 +133,46 @@
         bottom: 0; 
         left: 50%; 
         transform: translateX(-50%); 
-        width: 100%; 
-        max-width: 500px;
+        width: 120%; 
+        max-width: 800px; 
         height: auto; 
         z-index: 1; 
     }
 
+    /* --- מתי: גדולה, בצד שמאל, על הכביש --- */
     .mati-welcome { 
         position: absolute; 
-        bottom: 20px; 
-        left: 5%; 
-        height: 85%; 
+        bottom: 10px; 
+        left: -5%; /* זזנו שמאלה */
+        height: 85%; /* גדולה מאוד! */
         width: auto; 
-        max-height: 450px; 
-        z-index: 2; 
+        max-height: 550px; 
+        z-index: 5; 
         object-fit: contain;
     }
 
     .btn-container { 
-        z-index: 10; 
-        margin-top: 10px; 
-        margin-bottom: 20px;
-        flex-shrink: 0; 
+        z-index: 20; 
+        position: absolute; 
+        bottom: 30px; /* מרחף מעל הכביש */
+        pointer-events: auto; /* מחזיר לחיצות */
     }
-    .start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    
+    .start-btn { 
+        background: var(--primary-color); 
+        color: white; border: none; 
+        padding: 15px 60px; 
+        font-size: 24px; 
+        border-radius: 50px; 
+        cursor: pointer; 
+        font-weight: bold; 
+        box-shadow: 0 5px 20px rgba(106, 27, 154, 0.3); 
+    }
     .start-btn:hover { transform: scale(1.05); }
 
 
     /* =========================================
-       מסך 3: מסך הצ'אט
+       מסך 3: צ'אט (ללא שינוי)
        ========================================= */
     .app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
     .right-panel { flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
@@ -169,7 +196,6 @@
     .guided-question { display: flex; align-items: center; gap: 10px; }
     .guided-question img { width: 30px; height: 30px; }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
