@@ -12,7 +12,9 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* --- מסך כניסה סופר-קומפקטי עם לוגו גדול --- */
+/* =========================================
+   מסך 1: מסך כניסה (Login) - קומפקטי
+   ========================================= */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
@@ -21,85 +23,129 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .login-box {
     text-align: center;
-    /* ריפוד מינימלי ביותר כדי להקטין שטח */
     padding: 10px 15px; 
     background: #fff;
     border-radius: 20px; 
     box-shadow: 0 10px 30px rgba(106, 27, 154, 0.15);
     border: 3px solid var(--secondary-color); 
     width: 90%; 
-    max-width: 480px; /* רוחב שמאפשר ללוגו לגדול */
+    max-width: 480px; 
     display: flex; flex-direction: column; align-items: center;
 }
 
-/* --- השינוי: לוגו ראשי גדול ופרופורציונלי --- */
 .login-logo {
-    width: 75%; /* תופס יותר רוחב */
-    max-width: 240px; /* גבול עליון גדול יותר משמעותית */
+    width: 75%; 
+    max-width: 240px; 
     height: auto;
-    margin-bottom: 2px; /* מרווח זעיר */
+    margin-bottom: 2px; 
 }
 
 .login-subtitle {
     width: 95%; 
-    max-width: 380px; /* איזנתי מעט את הרוחב ביחס ללוגו החדש */
+    max-width: 380px; 
     height: auto;
     margin-top: 0;
-    margin-bottom: 5px; /* מרווח קטן */
+    margin-bottom: 5px; 
 }
 
-.login-box h2 {
-    margin: 2px 0; /* מרווח מינימלי */
-    font-size: 1.1rem;
-    color: var(--primary-color);
-}
-
-.login-box p {
-    margin: 0 0 5px 0; /* צמצום רווח נוסף */
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.login-box input { 
-    padding: 6px; /* שדה רזה */
-    font-size: 16px; 
-    border-radius: 50px; 
-    border: 2px solid #ddd; 
-    margin-bottom: 5px; /* צמצום רווח נוסף */
-    width: 80%; 
-    text-align: center; 
-    outline: none; 
-}
-
-.login-btn-style { 
-    padding: 6px 40px; /* כפתור רזה */
-    background: var(--primary-color); 
-    color: white; 
-    border: none; 
-    border-radius: 50px; 
-    font-size: 18px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    transition: transform 0.2s; 
-    margin-bottom: 2px; /* כמעט ללא מרווח תחתון */
-}
+.login-box h2 { margin: 2px 0; font-size: 1.1rem; color: var(--primary-color); }
+.login-box p { margin: 0 0 5px 0; color: #666; font-size: 0.9rem; }
+.login-box input { padding: 6px; font-size: 16px; border-radius: 50px; border: 2px solid #ddd; margin-bottom: 5px; width: 80%; text-align: center; outline: none; }
+.login-btn-style { padding: 6px 40px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; font-weight: bold; transition: transform 0.2s; margin-bottom: 2px; }
 .login-btn-style:hover { transform: scale(1.05); }
 
 
-/* --- שאר הקוד ללא שינוי --- */
+/* =========================================
+   מסך 2: מסך שער / פתיחה (Intro) - עם מתי הגדולה והרקע המשופר
+   ========================================= */
+.welcome-screen { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    /* רקע חדש - בועות עדינות בצבעי המותג */
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 20%),
+        radial-gradient(circle at 80% 90%, rgba(218, 178, 230, 0.2) 0%, transparent 25%),
+        radial-gradient(circle at 40% 50%, rgba(253, 216, 53, 0.15) 0%, transparent 15%),
+        var(--bg-color); /* צבע רקע בסיס */
+    background-size: 300px 300px, 400px 400px, 200px 200px, cover;
+    background-position: top left, bottom right, center center, center center;
+    background-repeat: no-repeat;
+    
+    z-index: 1000; 
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; /* רווח בין האלמנטים */
+    padding: 20px; 
+}
 
-/* מסך פתיחה */
-.welcome-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-.header-section { text-align: center; margin-bottom: 10px; z-index: 10; flex-shrink: 0; }
-.title-img { width: 80%; max-width: 350px; height: auto; display: block; margin: 0 auto; }
-.subtitle-img { width: 60%; max-width: 250px; height: auto; }
-.visuals-container { position: relative; width: 100%; max-width: 500px; height: 350px; margin-bottom: 20px; }
-.road-img { position: absolute; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; }
-.mati-welcome { position: absolute; bottom: 40px; right: 20%; height: 65%; width: auto; z-index: 2; }
-.btn-container { z-index: 10; margin-top: 10px; }
+.header-section { 
+    text-align: center; 
+    margin-bottom: 15px; 
+    z-index: 10; 
+    flex-shrink: 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title-img { 
+    width: 70%; 
+    max-width: 280px; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto 5px auto; /* הקטנתי רווח */
+}
+
+.subtitle-img { 
+    width: 95%; 
+    max-width: 450px; 
+    height: auto; 
+    display: block;
+    margin: 0 auto;
+}
+
+.visuals-container { 
+    position: relative; 
+    width: 100%; 
+    max-width: 500px; 
+    flex-grow: 1; /* תופס כמה שיותר מקום */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* מתי תהיה למטה */
+    margin-bottom: 0; /* ביטלתי רווח תחתון */
+}
+
+.road-img { 
+    position: absolute; 
+    bottom: 0; left: 0; 
+    width: 100%; 
+    height: auto; 
+    z-index: 1; 
+    max-width: 500px; /* כדי שלא תהיה ענקית ברוחב */
+}
+
+/* --- השינוי הגדול: מתי ענקית --- */
+.mati-welcome { 
+    position: relative; /* יושבת על הכביש */
+    z-index: 2; 
+    height: 90%; /* גובה עצום! */
+    width: auto; 
+    max-height: 400px; /* גבול עליון כדי לא להתפוצץ במסכים ענקיים */
+    object-fit: contain; /* שומר על פרופורציות */
+    margin-bottom: -15px; /* מזיז אותה מעט כלפי מטה אל הכביש */
+}
+
+.btn-container { 
+    z-index: 10; 
+    margin-top: 15px; /* נותן לכפתור אוויר מתחת למתי */
+    flex-shrink: 0; /* שלא יתכווץ */
+}
 .start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+.start-btn:hover { transform: scale(1.05); }
 
-/* מסך ראשי */
+
+/* =========================================
+   מסך 3: מסך הצ'אט (Chat)
+   ========================================= */
 .app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
 .right-panel { flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
 .large-character { width: 100%; max-width: 350px; height: auto; object-fit: contain; margin-bottom: -10px; }
