@@ -12,7 +12,7 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* --- מסך כניסה --- */
+/* --- מסך כניסה סופר-קומפקטי עם לוגו גדול --- */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
@@ -21,62 +21,58 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .login-box {
     text-align: center;
-    /* צמצום דרסטי של הריפוד הפנימי */
-    padding: 15px 20px; 
+    /* ריפוד מינימלי ביותר כדי להקטין שטח */
+    padding: 10px 15px; 
     background: #fff;
     border-radius: 20px; 
     box-shadow: 0 10px 30px rgba(106, 27, 154, 0.15);
     border: 3px solid var(--secondary-color); 
     width: 90%; 
-    max-width: 500px; 
+    max-width: 480px; /* רוחב שמאפשר ללוגו לגדול */
     display: flex; flex-direction: column; align-items: center;
 }
 
+/* --- השינוי: לוגו ראשי גדול ופרופורציונלי --- */
 .login-logo {
-    width: 50%; 
-    max-width: 160px;
+    width: 75%; /* תופס יותר רוחב */
+    max-width: 240px; /* גבול עליון גדול יותר משמעותית */
     height: auto;
-    /* ביטול מרווח תחתון */
-    margin-bottom: 0;
+    margin-bottom: 2px; /* מרווח זעיר */
 }
 
 .login-subtitle {
-    width: 100%; 
-    max-width: 420px; 
+    width: 95%; 
+    max-width: 380px; /* איזנתי מעט את הרוחב ביחס ללוגו החדש */
     height: auto;
-    /* צמצום מרווחים סביב הכותרת */
-    margin-top: 2px;
-    margin-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 5px; /* מרווח קטן */
 }
 
 .login-box h2 {
-    /* מרווח מינימלי */
-    margin: 2px 0; 
-    font-size: 1.1rem; /* הקטנה קלה של הפונט */
+    margin: 2px 0; /* מרווח מינימלי */
+    font-size: 1.1rem;
     color: var(--primary-color);
 }
 
 .login-box p {
-    margin: 0 0 8px 0; /* צמצום רווח */
+    margin: 0 0 5px 0; /* צמצום רווח נוסף */
     color: #666;
     font-size: 0.9rem;
 }
 
 .login-box input { 
-    /* שדה רזה יותר */
-    padding: 6px; 
+    padding: 6px; /* שדה רזה */
     font-size: 16px; 
     border-radius: 50px; 
     border: 2px solid #ddd; 
-    margin-bottom: 8px; /* צמצום רווח */
+    margin-bottom: 5px; /* צמצום רווח נוסף */
     width: 80%; 
     text-align: center; 
     outline: none; 
 }
 
 .login-btn-style { 
-    /* כפתור רזה יותר */
-    padding: 6px 40px; 
+    padding: 6px 40px; /* כפתור רזה */
     background: var(--primary-color); 
     color: white; 
     border: none; 
@@ -85,7 +81,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     cursor: pointer; 
     font-weight: bold; 
     transition: transform 0.2s; 
-    margin-bottom: 5px;
+    margin-bottom: 2px; /* כמעט ללא מרווח תחתון */
 }
 .login-btn-style:hover { transform: scale(1.05); }
 
