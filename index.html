@@ -22,7 +22,7 @@
     .hidden { display: none !important; }
 
     /* ===========================================================
-       מסך 1: מסך כניסה (הקוד) - הגרסה הקומפקטית שאהבת (לא שונה!)
+       מסך 1: הזנת קוד (העיצוב הקומפקטי שאהבת - ללא שינוי)
        =========================================================== */
     .login-screen {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -38,130 +38,80 @@
         box-shadow: 0 10px 25px rgba(106, 27, 154, 0.1);
         border: 2px solid var(--secondary-color); 
         width: 85%; 
-        max-width: 320px; /* נשאר קומפקטי */
+        max-width: 320px; 
         display: flex; flex-direction: column; align-items: center;
     }
 
-    .login-logo {
-        width: 90%; 
-        max-width: 260px; 
-        height: auto;
-        display: block;
-        margin-bottom: 0;
-    }
-
-    .login-subtitle {
-        width: 100%; 
-        max-width: 280px; 
-        height: auto;
-        display: block;
-        margin-top: -5px; 
-        margin-bottom: 10px; 
-    }
-
+    .login-logo { width: 90%; max-width: 260px; height: auto; display: block; margin-bottom: 0; }
+    .login-subtitle { width: 100%; max-width: 280px; height: auto; display: block; margin-top: -5px; margin-bottom: 10px; }
     .login-box h2 { margin: 0 0 5px 0; font-size: 1rem; color: var(--primary-color); }
     .login-box p { margin: 0 0 8px 0; color: #666; font-size: 0.85rem; }
-    
-    .login-box input { 
-        padding: 8px; 
-        font-size: 16px; 
-        border-radius: 50px; 
-        border: 1px solid #ccc; 
-        margin-bottom: 10px; 
-        width: 85%; 
-        text-align: center; 
-        outline: none; 
-        background: #fafafa;
-    }
-    
-    .login-btn-style { 
-        padding: 8px 45px; 
-        background: var(--primary-color); 
-        color: white; 
-        border: none; 
-        border-radius: 50px; 
-        font-size: 18px; 
-        cursor: pointer; 
-        font-weight: bold; 
-        transition: transform 0.2s; 
-        margin-bottom: 5px; 
-    }
+    .login-box input { padding: 8px; font-size: 16px; border-radius: 50px; border: 1px solid #ccc; margin-bottom: 10px; width: 85%; text-align: center; outline: none; background: #fafafa; }
+    .login-btn-style { padding: 8px 45px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; font-weight: bold; transition: transform 0.2s; margin-bottom: 5px; }
     .login-btn-style:hover { transform: scale(1.05); }
 
 
     /* ===========================================================
-       מסך 2: מסך פתיחה (כביש ומתי) - התיקון הגדול
+       מסך 2: מסך פתיחה - תואם לסטוריבורד!
        =========================================================== */
     .welcome-screen { 
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-        background: 
-            radial-gradient(circle at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 20%),
-            radial-gradient(circle at 90% 90%, rgba(186, 104, 200, 0.1) 0%, transparent 25%),
-            var(--bg-color);
+        /* רקע סגול בהיר עדין כמו בסטוריבורד */
+        background: radial-gradient(circle at 50% 50%, #F3E5F5 0%, #E1BEE7 100%);
         z-index: 1000; 
-        display: flex; flex-direction: column; align-items: center; 
-        padding: 20px; 
-        overflow: hidden; 
+        overflow: hidden; /* חשוב מאוד כדי שמתי לא תיצור גלילה */
     }
 
+    /* כותרות: ממוקמות אבסולוטית למעלה במרכז */
     .header-section { 
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
         text-align: center; 
-        margin-top: 10px;
-        z-index: 10; 
+        z-index: 20; 
         width: 100%;
-        display: flex; flex-direction: column; align-items: center; gap: 0; 
     }
 
-    .title-img { width: 60%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
-    .subtitle-img { width: 90%; max-width: 420px; height: auto; display: block; margin: 0 auto; margin-top: -5px; }
+    .title-img { width: 60%; max-width: 400px; height: auto; margin: 0 auto; display: block; }
+    .subtitle-img { width: 80%; max-width: 600px; height: auto; margin: 0 auto; display: block; margin-top: -15px; }
 
-    /* תיקון: מיכל גמיש שתופס את כל הגובה הפנוי */
-    .visuals-container { 
-        position: absolute; /* שינוי מוחלט כדי לשלוט במיקום */
-        bottom: 0;
-        left: 0;
-        width: 100%; 
-        height: 70%; /* תופס את החלק התחתון של המסך */
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        pointer-events: none; /* כדי שאפשר יהיה ללחוץ על כפתורים */
-    }
-
+    /* כביש: ברקע, במרכז, רחב */
     .road-img { 
         position: absolute; 
         bottom: 0; 
         left: 50%; 
         transform: translateX(-50%); 
-        width: 120%; 
-        max-width: 800px; 
+        width: 100%; 
+        min-width: 800px; /* מבטיח שהוא יהיה רחב גם במסכים קטנים */
+        max-width: 1200px;
         height: auto; 
         z-index: 1; 
     }
 
-    /* --- מתי: גדולה, בצד שמאל, על הכביש --- */
+    /* --- מתי: ענקית בצד שמאל (כמו בסטוריבורד) --- */
     .mati-welcome { 
         position: absolute; 
-        bottom: 10px; 
-        left: -5%; /* זזנו שמאלה */
-        height: 85%; /* גדולה מאוד! */
+        bottom: 0; 
+        left: 2%; /* צמודה לשמאל */
+        height: 85vh; /* גובה יחסי למסך - תמיד ענקית */
         width: auto; 
-        max-height: 550px; 
-        z-index: 5; 
-        object-fit: contain;
+        z-index: 10; /* מעל הכביש */
     }
 
+    /* כפתור: במרכז למטה */
     .btn-container { 
-        z-index: 20; 
         position: absolute; 
-        bottom: 30px; /* מרחף מעל הכביש */
-        pointer-events: auto; /* מחזיר לחיצות */
+        bottom: 50px; 
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 30; 
     }
     
     .start-btn { 
         background: var(--primary-color); 
         color: white; border: none; 
-        padding: 15px 60px; 
+        padding: 15px 80px; /* כפתור רחב */
         font-size: 24px; 
         border-radius: 50px; 
         cursor: pointer; 
@@ -204,10 +154,8 @@
       <div class="login-box">
           <img src="images/main title.png" alt="מת-מתי" class="login-logo">
           <img src="images/subtitle.png" alt="ממילים למספרים" class="login-subtitle">
-          
           <h2>ברוכים הבאים למחקר</h2>
           <p>נא להזין את קוד המשתתף שקיבלת:</p>
-          
           <input type="text" id="participant-id-input" placeholder="לדוגמה: 101">
           <button id="login-btn" class="login-btn-style">היכנס</button>
       </div>
@@ -220,10 +168,9 @@
         <img src="images/subtitle.png" alt="ממילים למספרים" class="subtitle-img">
     </div>
 
-    <div class="visuals-container">
-        <img src="images/road.png" alt="שביל" class="road-img">
-        <img src="MatiCharacter/Mati_ready.png" alt="מתי" class="mati-welcome">
-    </div>
+    <img src="images/road.png" alt="שביל" class="road-img">
+    
+    <img src="MatiCharacter/Mati_ready.png" alt="מתי" class="mati-welcome">
 
     <div class="btn-container">
         <button id="start-button" class="start-btn">בוא/י נתחיל!</button>
@@ -232,14 +179,11 @@
   </div>
 
   <div id="app-main-container" class="app-main-container hidden">
-
     <div class="right-panel">
         <img id="large-avatar" src="MatiCharacter/Mati_inviting_action.png" alt="מתי" class="large-character">
         <div id="bot-status" class="status-bubble">מתי ממתינה...</div>
     </div>
-
     <div class="left-panel">
-        
         <div class="top-bar">
             <div class="stars-container">
                 <img src="images/star_empty.png" class="star" id="star-0">
@@ -247,21 +191,16 @@
                 <img src="images/star_empty.png" class="star" id="star-2">
             </div>
         </div>
-
         <div id="problem-note" class="problem-note hidden">
             <div class="pin">📍</div>
             <p id="problem-note-text">כאן תופיע הבעיה...</p>
         </div>
-
         <div id="chat-window" class="chat-window"></div>
-
         <div class="input-area">
             <input type="text" id="user-input" placeholder="כתוב/י את תשובתך כאן..." autocomplete="off">
             <button id="send-button">שלח/י</button>
         </div>
-
     </div>
-
   </div>
 
   <script src="script.js"></script>
