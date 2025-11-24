@@ -13,7 +13,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .hidden { display: none !important; }
 
 /* =========================================
-   מסך 1: מסך כניסה (Login) - קומפקטי
+   מסך 1: מסך כניסה (Login)
    ========================================= */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -56,34 +56,30 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 
 /* =========================================
-   מסך 2: מסך שער / פתיחה (Intro) - עם מתי הגדולה והרקע המשופר
+   מסך 2: מסך שער (Intro) - התיקון של מתי והכותרות
    ========================================= */
 .welcome-screen { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    /* רקע חדש - בועות עדינות בצבעי המותג */
+    /* הרקע היפה */
     background: 
         radial-gradient(circle at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 20%),
         radial-gradient(circle at 80% 90%, rgba(218, 178, 230, 0.2) 0%, transparent 25%),
-        radial-gradient(circle at 40% 50%, rgba(253, 216, 53, 0.15) 0%, transparent 15%),
-        var(--bg-color); /* צבע רקע בסיס */
-    background-size: 300px 300px, 400px 400px, 200px 200px, cover;
-    background-position: top left, bottom right, center center, center center;
-    background-repeat: no-repeat;
-    
+        var(--bg-color);
     z-index: 1000; 
-    display: flex; flex-direction: column; align-items: center; justify-content: space-between; /* רווח בין האלמנטים */
+    display: flex; flex-direction: column; align-items: center; 
     padding: 20px; 
 }
 
 .header-section { 
     text-align: center; 
-    margin-bottom: 15px; 
+    margin-bottom: 10px; 
     z-index: 10; 
-    flex-shrink: 0; 
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* ביטול רווחים פנימיים בין התמונות */
+    gap: 0; 
 }
 
 .title-img { 
@@ -91,7 +87,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     max-width: 280px; 
     height: auto; 
     display: block; 
-    margin: 0 auto 5px auto; /* הקטנתי רווח */
+    margin: 0 auto; /* אין רווח למטה */
 }
 
 .subtitle-img { 
@@ -100,51 +96,53 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     height: auto; 
     display: block;
     margin: 0 auto;
+    /* הזזה קטנה למעלה כדי להיצמד לכותרת */
+    margin-top: -5px; 
 }
 
 .visuals-container { 
     position: relative; 
     width: 100%; 
-    max-width: 500px; 
-    flex-grow: 1; /* תופס כמה שיותר מקום */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end; /* מתי תהיה למטה */
-    margin-bottom: 0; /* ביטלתי רווח תחתון */
+    max-width: 600px; /* הרחבתי קצת כדי שיהיה מקום בצדדים */
+    flex-grow: 1; 
+    margin-bottom: 0;
 }
 
 .road-img { 
     position: absolute; 
-    bottom: 0; left: 0; 
+    bottom: 0; 
+    left: 50%; 
+    transform: translateX(-50%); /* מרכוז הכביש */
     width: 100%; 
+    max-width: 500px;
     height: auto; 
     z-index: 1; 
-    max-width: 500px; /* כדי שלא תהיה ענקית ברוחב */
 }
 
-/* --- השינוי הגדול: מתי ענקית --- */
+/* --- מתי בצד שמאל! --- */
 .mati-welcome { 
-    position: relative; /* יושבת על הכביש */
-    z-index: 2; 
-    height: 90%; /* גובה עצום! */
+    position: absolute; 
+    bottom: 20px; /* קצת מעל התחתית */
+    left: 5%; /* --- כאן השינוי: הצמדה לשמאל --- */
+    height: 85%; /* גדולה ומרשימה */
     width: auto; 
-    max-height: 400px; /* גבול עליון כדי לא להתפוצץ במסכים ענקיים */
-    object-fit: contain; /* שומר על פרופורציות */
-    margin-bottom: -15px; /* מזיז אותה מעט כלפי מטה אל הכביש */
+    max-height: 450px; 
+    z-index: 2; 
+    object-fit: contain;
 }
 
 .btn-container { 
     z-index: 10; 
-    margin-top: 15px; /* נותן לכפתור אוויר מתחת למתי */
-    flex-shrink: 0; /* שלא יתכווץ */
+    margin-top: 10px; 
+    margin-bottom: 20px;
+    flex-shrink: 0; 
 }
-.start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+.start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 .start-btn:hover { transform: scale(1.05); }
 
 
 /* =========================================
-   מסך 3: מסך הצ'אט (Chat)
+   מסך 3: מסך הצ'אט
    ========================================= */
 .app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
 .right-panel { flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
