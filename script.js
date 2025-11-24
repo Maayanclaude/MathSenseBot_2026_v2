@@ -1,4 +1,4 @@
-console.log("Script Loaded: Compact & Working");
+console.log("Script Loaded: Fixed Icons, Avatar & Summary");
 
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
@@ -12,6 +12,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
+// מיפוי תמונות מתי (לפי התיקייה MatiCharacter)
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
     inviting: "Mati_inviting_action.png",
@@ -20,18 +21,15 @@ const matiExpressions = {
     thinking: "Mati_thinking.png",
     support: "Mati_support.png",
     frustration: "Mati_frustration.png",
-    happy: "Mati_inviting_action.png"
+    happy: "Mati_inviting_action.png",
+    ready: "Mati_ready.png"
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  
-  // 1. חיבור הכפתור והשדה (קריטי למסך הכניסה)
   loginBtn = document.getElementById('login-btn');
   participantInput = document.getElementById('participant-id-input');
   loginScreen = document.getElementById('login-screen');
   welcomeScreen = document.getElementById('welcome-screen');
-  
-  // 2. חיבור שאר האלמנטים
   startButton = document.getElementById('start-button');
   appMainContainer = document.getElementById('app-main-container');
   chatWindow = document.getElementById('chat-window');
@@ -42,37 +40,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   problemNote = document.getElementById('problem-note');
   problemNoteText = document.getElementById('problem-note-text');
 
-  // 3. אתחול הבוט
   window.bot = new MathProblemGuidingBot();
   await window.bot.loadProblemsFromFile();
 
-  // 4. בדיקת משתמש קיים
   if (IS_TEST_MODE) {
       loginScreen.classList.add('hidden');
       welcomeScreen.classList.remove('hidden');
-  } else {
-      if (currentUserID) {
-          if (participantInput) participantInput.value = currentUserID;
-      }
+  } else if (currentUserID) {
+      if (participantInput) participantInput.value = currentUserID;
   }
 
-  // 5. הפעלת כפתור הכניסה (התיקון החשוב!)
   if (loginBtn) {
       loginBtn.addEventListener('click', () => {
           const idVal = participantInput.value.trim();
           if (idVal.length > 0) {
               currentUserID = idVal;
               localStorage.setItem('mati_participant_id', currentUserID);
-              // מעבר מסך
               loginScreen.classList.add('hidden');
               welcomeScreen.classList.remove('hidden');
-          } else { 
-              alert("נא להזין קוד משתתף"); 
-          }
+          } else { alert("נא להזין קוד משתתף"); }
       });
   }
 
-  // 6. כפתור "בוא נתחיל" (במסך הפתיחה)
   if (startButton) {
     startButton.addEventListener('click', () => {
       welcomeScreen.classList.add('hidden');
@@ -81,7 +70,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 7. כפתור שליחת הודעה (בצ'אט)
   if (sendButton) {
     sendButton.addEventListener('click', () => {
       const reply = userInput.value.trim();
@@ -97,19 +85,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function updateAvatar(expressionKey) {
+    // וידוא שהתמונה קיימת במערך
     if (matiExpressions[expressionKey] && largeAvatar) {
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
+    
+    // עדכון סטטוס טקסטואלי
     if (botStatus) {
-        botStatus.textContent = expressionKey === 'thinking' ? 'מתי חושבת...' : 'מתי ממתינה…';
+        if (expressionKey === 'thinking') botStatus.textContent = 'מתי חושבת...';
+        else if (expressionKey === 'compliment' || expressionKey === 'happy') botStatus.textContent = 'מתי שמחה!';
+        else botStatus.textContent = 'מתי ממתינה...';
     }
 }
 
 function displayMessage(text, sender, expression = 'neutral') {
     if (!chatWindow) return;
+    
+    // עדכון הדמות אם זו הודעה מהבוט
+    if (sender === 'bot') { 
+        updateAvatar(expression); 
+    }
+
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message', sender + '-message');
-    if (sender === 'bot') { updateAvatar(expression); }
     messageElement.innerHTML = text; 
     chatWindow.appendChild(messageElement);
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
@@ -138,22 +136,25 @@ class MathProblemGuidingBot {
         
         this.genderedTexts = {
             'q1_ask': {
-                boy: "מעולה. בוא נתחיל.<br><strong>שאלה 1: מה אני צריך למצוא?</strong>",
-                girl: "מעולה. בואי נתחיל.<br><strong>שאלה 1: מה אני צריכה למצוא?</strong>",
+                // הורדתי את "שאלה 1" - רק השאלה עצמה
+                boy: "מה אני צריך למצוא?",
+                girl: "מה אני צריכה למצוא?",
                 icon: 'magnifying_glass.png', 
                 code: 'א',
                 next: 'q1_answer'
             },
             'q2_ask': {
-                boy: "יופי! עכשיו <strong>שאלה 2: מה אני יודע? (אילו נתונים יש לי?)</strong>",
-                girl: "יופי! עכשיו <strong>שאלה 2: מה אני יודעת? (אילו נתונים יש לי?)</strong>",
+                // הורדתי את "שאלה 2"
+                boy: "מה אני יודע? (אילו נתונים יש לי?)",
+                girl: "מה אני יודעת? (אילו נתונים יש לי?)",
                 icon: 'list.png', 
                 code: 'ב',
                 next: 'q2_answer'
             },
             'q3_ask': {
-                boy: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
-                girl: "כמעט סיימנו לתרגם!<br><strong>שאלה 3: איזה מידע חסר לי כדי לפתור?</strong>",
+                // הורדתי את "שאלה 3"
+                boy: "איזה מידע חסר לי כדי לפתור?",
+                girl: "איזה מידע חסר לי כדי לפתור?",
                 icon: 'Missing_puzzle.png', 
                 code: 'ג',
                 next: 'q3_answer'
@@ -179,9 +180,11 @@ class MathProblemGuidingBot {
         studentGender = gender;
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         displayMessage(`נעים להכיר, ${studentName}! (${gender === 'boy' ? 'בן' : 'בת'})`, 'user');
+        
         setTimeout(() => {
             const welcomeText = gender === 'boy' ? "מצוין! בוא נתחיל." : "מצוינת! בואי נתחיל.";
             displayMessage(welcomeText, 'bot', 'happy');
+            
             setTimeout(() => {
                 chatWindow.innerHTML = ''; 
                 problemNoteText.innerText = this.currentProblem.question;
@@ -194,8 +197,12 @@ class MathProblemGuidingBot {
 
     handleUserReply(reply) {
         if (isBotTyping) return; 
-        displayMessage(reply, 'user');
-        userInput.value = '';
+        
+        // אם זו לא פקודה פנימית, הצג את תשובת המשתמש
+        if (reply) {
+            displayMessage(reply, 'user');
+            userInput.value = '';
+        }
         
         if (this.currentStep === 'wait_for_name') {
             studentName = reply;
@@ -216,17 +223,18 @@ class MathProblemGuidingBot {
         const currentQuestionCode = this._getCurrentQuestionCode();
         if (currentQuestionCode) {
             this._processAnswer(currentQuestionCode, reply);
-        } else if (this.currentStep === 'done') {
-            displayMessage("סיימנו בהצלחה! כל הכבוד.", 'bot', 'confident');
-        }
+        } 
     }
 
     _displayCurrentGuidingQuestion() {
         this.errorCount = 0; 
         const stepData = this.genderedTexts[this.currentStep];
         if (!stepData) return;
+        
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
+        // שימוש ב-images/ לנתיב התמונה
         const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
+        
         displayMessage(questionHtml, 'bot', 'inviting');
         this.currentStep = stepData.next; 
     }
@@ -241,30 +249,54 @@ class MathProblemGuidingBot {
     _processAnswer(questionCode, reply) {
         const keywords = this.currentProblem.keywords[questionCode];
         const isCorrect = this._checkAnswer(reply, keywords);
+
         if (isCorrect) {
             this.updateStars(questionCode, true);
+            
             const feedback = this.generateFeedback(questionCode, 'positive');
             const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
-            displayMessage(genderedFeedback, 'bot', 'compliment');
+            
+            displayMessage(genderedFeedback, 'bot', 'compliment'); // הבעה שמחה
+            
             let nextStep = (questionCode === 'א' ? 'q2_ask' : questionCode === 'ב' ? 'q3_ask' : 'done');
+            
             setTimeout(() => {
                 this.currentStep = nextStep;
-                if (this.currentStep !== 'done') { this._displayCurrentGuidingQuestion(); } 
-                else { this.handleUserReply(''); }
-            }, 3500);
+                if (this.currentStep !== 'done') { 
+                    this._displayCurrentGuidingQuestion(); 
+                } else { 
+                    this._showFinalSummary(); // קריאה לפונקציית הסיכום החדשה
+                }
+            }, 2500);
         } else {
             this.errorCount++;
             this.updateStars(questionCode, false); 
             if (this.errorCount >= 2) {
                 const clarificationText = this.currentProblem.clarifications[questionCode];
-                displayMessage(`**אני כאן לעזור!**<br>בוא/י ננסה רמז: ${clarificationText}`, 'bot', 'thinking');
+                displayMessage(`**אני כאן לעזור!**<br>בוא/י ננסה רמז: ${clarificationText}`, 'bot', 'thinking'); // הבעה חושבת
                 this.errorCount = 0; 
             } else {
                 const feedback = this.generateFeedback(questionCode, 'negative');
                 const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
-                displayMessage(genderedFeedback, 'bot', 'support');
+                displayMessage(genderedFeedback, 'bot', 'support'); // הבעה תומכת
             }
         }
+    }
+
+    // פונקציה חדשה לסיכום בסוף
+    _showFinalSummary() {
+        const summaryHtml = `
+            <div class="summary-box">
+                <h3>כל הכבוד! פתרת את הבעיה בשלושה צעדים:</h3>
+                <ul>
+                    <li>🔍 ${studentGender === 'girl' ? 'מה אני צריכה למצוא?' : 'מה אני צריך למצוא?'}</li>
+                    <li>📋 ${studentGender === 'girl' ? 'מה אני יודעת?' : 'מה אני יודע?'}</li>
+                    <li>🧩 מה עליי לעשות כדי למצוא את הפתרון?</li>
+                </ul>
+                <strong>שמרי על השגרה הזו – היא תעזור לך גם בשאלות הבאות!</strong>
+            </div>
+        `;
+        displayMessage(summaryHtml, 'bot', 'happy');
     }
     
     _checkAnswer(reply, keywords) {
@@ -276,6 +308,7 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
+            // וידוא שנתיב התמונות נכון
             starElement.src = isCorrect ? 'images/star_gold.png' : 'images/star_empty.png'; 
         }
     }
