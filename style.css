@@ -13,7 +13,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .hidden { display: none !important; }
 
 /* =========================================
-   מסך 1: מסך כניסה (קומפקטי - לא שונה!)
+   מסך 1: מסך כניסה (קומפקטי)
    ========================================= */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -66,7 +66,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 
 /* =========================================
-   מסך 2: מסך פתיחה (מתי בימין)
+   מסך 2: מסך פתיחה (מתי גדולה בימין)
    ========================================= */
 .welcome-screen { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
@@ -117,73 +117,5 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 
 /* =========================================
-   מסך 3: צ'אט (תיקון כוכבים וסיכום)
+   מסך 3: צ'אט (כוכבים גדולים + אנימציה)
    ========================================= */
-.app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
-.right-panel { flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
-.large-character { width: 100%; max-width: 350px; height: auto; object-fit: contain; margin-bottom: -10px; }
-.status-bubble { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); padding: 8px 15px; border-radius: 20px; font-size: 14px; color: var(--primary-color); font-weight: bold; }
-.left-panel { flex: 2; display: flex; flex-direction: column; background: #fafafa; position: relative; }
-
-/* --- השינוי לכוכבים --- */
-.top-bar { 
-    height: 90px; /* גבוה יותר */
-    display: flex; 
-    align-items: center; 
-    justify-content: center; /* ממורכז */
-    background: white; 
-    border-bottom: 2px solid #eee; 
-}
-.stars-container { display: flex; gap: 20px; }
-.star { 
-    width: 65px; /* גדולים! */
-    height: 65px; 
-    object-fit: contain; 
-}
-
-.problem-note { background-color: #FFF59D; width: 90%; margin: 15px auto 5px auto; padding: 20px; border-radius: 2px; font-size: 1.2rem; font-weight: 500; color: #333; position: relative; transform: rotate(-1deg); }
-.pin { position: absolute; top: -15px; right: 50%; font-size: 24px; }
-
-.chat-window { flex: 1; padding: 20px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-.chat-message { max-width: 80%; padding: 12px 18px; border-radius: 20px; font-size: 16px; line-height: 1.5; }
-.bot-message { background: white; border: 2px solid var(--secondary-color); border-top-right-radius: 0; align-self: flex-start; }
-.user-message { background: var(--secondary-color); color: white; border-top-left-radius: 0; align-self: flex-end; }
-
-.input-area { padding: 15px; background: white; border-top: 1px solid #ddd; display: flex; gap: 10px; }
-.input-area input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid #ccc; font-size: 16px; outline: none; }
-.input-area button { padding: 0 25px; border-radius: 30px; background: var(--primary-color); color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
-
-.choice-btn-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
-.choice-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 25px; font-size: 15px; cursor: pointer; font-weight: bold; }
-
-/* עיצוב אייקונים בתוך בועות הצ'אט */
-.guided-question { display: flex; align-items: center; gap: 15px; }
-.guided-question img { width: 40px; height: 40px; object-fit: contain; }
-.guided-question span { font-size: 1.1rem; font-weight: bold; }
-
-/* --- עיצוב הריבוע של הסיכום הסופי --- */
-.summary-box {
-    text-align: right;
-}
-.summary-box h3 { 
-    color: var(--primary-color); 
-    margin-bottom: 15px; 
-    text-align: center; 
-    font-size: 1.2rem;
-}
-.summary-box ul { 
-    list-style: none; 
-    padding: 0; 
-    margin: 0;
-}
-.summary-box li { 
-    margin-bottom: 12px; 
-    font-size: 1.1rem; 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-}
-.summary-box li img { 
-    width: 30px; 
-    height: 30px; 
-}
