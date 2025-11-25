@@ -1,4 +1,4 @@
-console.log("Script Loaded: Final Version with UX Fixes");
+console.log("Script Loaded: Folders Fixed (Icons, Sounds, Images)");
 
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
@@ -7,12 +7,11 @@ const IS_TEST_MODE = false;
 let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, botStatus, largeAvatar, problemNote, problemNoteText;
 let loginBtn, participantInput;
 let isBotTyping = false;
-
 let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// תמונות מתי
+// --- הבעות פנים (MatiCharacter) ---
 const matiExpressions = {
     welcoming: "Mati_welcoming.png",
     inviting: "Mati_inviting_action.png",
@@ -24,6 +23,13 @@ const matiExpressions = {
     happy: "Mati_inviting_action.png",
     ready: "Mati_ready.png"
 };
+
+// --- פונקציה לניגון סאונד ---
+function playSound(soundName) {
+    // הנחה: הקבצים בתיקיית sounds והם מסוג mp3
+    const audio = new Audio(`sounds/${soundName}.mp3`);
+    audio.play().catch(e => console.log("Audio play failed (user interaction needed):", e));
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   loginBtn = document.getElementById('login-btn');
@@ -129,6 +135,7 @@ class MathProblemGuidingBot {
             'q1_ask': {
                 boy: "מה אני צריך למצוא?",
                 girl: "מה אני צריכה למצוא?",
+                // תיקון נתיב: icons/
                 icon: 'magnifying_glass.png', 
                 code: 'א',
                 next: 'q1_answer'
@@ -136,6 +143,7 @@ class MathProblemGuidingBot {
             'q2_ask': {
                 boy: "מה אני יודע? (אילו נתונים יש לי?)",
                 girl: "מה אני יודעת? (אילו נתונים יש לי?)",
+                // תיקון נתיב: icons/
                 icon: 'list.png', 
                 code: 'ב',
                 next: 'q2_answer'
@@ -143,6 +151,7 @@ class MathProblemGuidingBot {
             'q3_ask': {
                 boy: "מה עליי לעשות כדי למצוא את הפתרון?",
                 girl: "מה עליי לעשות כדי למצוא את הפתרון?",
+                // תיקון נתיב: icons/
                 icon: 'Missing_puzzle.png', 
                 code: 'ג',
                 next: 'q3_answer'
@@ -159,7 +168,7 @@ class MathProblemGuidingBot {
     }
     
     startConversationLogic() {
-        const introText = "הי, אני מתי.<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
+        const introText = "הי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
@@ -168,12 +177,13 @@ class MathProblemGuidingBot {
         studentGender = gender;
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         
-        displayMessage("נעים להכיר!", 'user'); 
+        const niceToMeet = gender === 'boy' ? `נעים להכיר, ${studentName}!` : `נעים להכיר, ${studentName}!`;
+        displayMessage(niceToMeet, 'user'); 
         
         setTimeout(() => {
             const readyText = gender === 'boy' 
-                ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, כתוב ״נפתור״ ונצא לדרך!"
-                : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, כתבי ״נפתור״ ונצא לדרך!";
+                ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, כתוב ״נפתור״!"
+                : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, כתבי ״נפתור״!";
                 
             displayMessage(readyText, 'bot', 'ready'); 
             
@@ -194,7 +204,7 @@ class MathProblemGuidingBot {
         
         if (this.currentStep === 'wait_for_name') {
             studentName = reply;
-            const genderText = `נעים מאוד ${studentName}.<br>אני רוצה לוודא שאני פונה אליך נכון.<br>האם תעדיפ.י שאפנה אליך בלשון זכר (בן) או לשון נקבה (בת)?`;
+            const genderText = `נעים מאוד, ${studentName}.<br>אני רוצה לוודא שאני פונה אליך נכון.<br>האם תעדיפ.י שאפנה אליך בלשון זכר (בן) או לשון נקבה (בת)?`;
             displayMessage(genderText, 'bot', 'inviting');
             displayChoiceButtons([
                 { label: "אני בן 👦", value: "boy" },
@@ -227,7 +237,9 @@ class MathProblemGuidingBot {
         if (!stepData) return;
         
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
-        const questionHtml = `<div class="guided-question"><img src="images/${stepData.icon}"><span>${textToShow}</span></div>`;
+        
+        // תיקון נתיב: icons/
+        const questionHtml = `<div class="guided-question"><img src="icons/${stepData.icon}"><span>${textToShow}</span></div>`;
         
         displayMessage(questionHtml, 'bot', 'inviting');
         this.currentStep = stepData.next; 
@@ -245,11 +257,14 @@ class MathProblemGuidingBot {
         const isCorrect = this._checkAnswer(reply, keywords);
 
         if (isCorrect) {
+            // הצלחה!
             this.updateStars(questionCode, true);
+            playSound('success-chime'); // השמעת צליל הצלחה
+            
             const feedback = this.generateFeedback(questionCode, 'positive');
             const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
             
-            displayMessage(genderedFeedback, 'bot', 'compliment'); 
+            displayMessage(genderedFeedback, 'bot', 'compliment');
             
             let nextStep = (questionCode === 'א' ? 'q2_ask' : questionCode === 'ב' ? 'q3_ask' : 'done');
             
@@ -262,8 +277,10 @@ class MathProblemGuidingBot {
                 }
             }, 2500);
         } else {
+            // טעות (מתווכת)
             this.errorCount++;
             this.updateStars(questionCode, false); 
+            
             if (this.errorCount >= 2) {
                 const clarificationText = this.currentProblem.clarifications[questionCode];
                 displayMessage(`**אני כאן לעזור!**<br>בוא/י ננסה רמז: ${clarificationText}`, 'bot', 'thinking');
@@ -277,13 +294,16 @@ class MathProblemGuidingBot {
     }
 
     _showFinalSummary() {
+        playSound('yeah'); // השמעת צליל סיום
+        
+        // שימוש בתיקיית icons לאייקונים בסיכום
         const summaryHtml = `
             <div class="summary-box">
                 <h3>כל הכבוד! פתרת את הבעיה בשלושה צעדים:</h3>
                 <ul>
-                    <li><img src="images/magnifying_glass.png"> ${studentGender === 'girl' ? 'מה אני צריכה למצוא?' : 'מה אני צריך למצוא?'}</li>
-                    <li><img src="images/list.png"> ${studentGender === 'girl' ? 'מה אני יודעת?' : 'מה אני יודע?'}</li>
-                    <li><img src="images/Missing_puzzle.png"> מה עליי לעשות כדי למצוא את הפתרון?</li>
+                    <li><img src="icons/magnifying_glass.png"> ${studentGender === 'girl' ? 'מה אני צריכה למצוא?' : 'מה אני צריך למצוא?'}</li>
+                    <li><img src="icons/list.png"> ${studentGender === 'girl' ? 'מה אני יודעת?' : 'מה אני יודע?'}</li>
+                    <li><img src="icons/Missing_puzzle.png"> מה עליי לעשות כדי למצוא את הפתרון?</li>
                 </ul>
                 <br>
                 <strong>שמרי על השגרה הזו – היא תעזור לך גם בשאלות הבאות!</strong>
@@ -301,7 +321,8 @@ class MathProblemGuidingBot {
         const starIndex = questionCode === 'א' ? 0 : questionCode === 'ב' ? 1 : 2;
         const starElement = document.getElementById(`star-${starIndex}`);
         if (starElement) { 
-            starElement.src = isCorrect ? 'images/star_gold.png' : 'images/star_empty.png'; 
+            // תיקון נתיב: icons/
+            starElement.src = isCorrect ? 'icons/star_gold.png' : 'icons/star_empty.png'; 
         }
     }
     
