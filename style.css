@@ -12,69 +12,178 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* מסך 1: כניסה קומפקטית */
+/* =========================================
+   מסך 1: מסך כניסה (קומפקטי - לא שונה!)
+   ========================================= */
 .login-screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%);
     z-index: 2000; display: flex; justify-content: center; align-items: center;
 }
+
 .login-box {
-    text-align: center; padding: 15px 10px; background: #fff;
-    border-radius: 15px; box-shadow: 0 10px 25px rgba(106, 27, 154, 0.1);
-    border: 2px solid var(--secondary-color); width: 85%; max-width: 320px; 
+    text-align: center;
+    padding: 15px 10px; 
+    background: #fff;
+    border-radius: 15px; 
+    box-shadow: 0 10px 25px rgba(106, 27, 154, 0.1);
+    border: 2px solid var(--secondary-color); 
+    width: 85%; 
+    max-width: 320px; 
     display: flex; flex-direction: column; align-items: center;
 }
+
 .login-logo { width: 90%; max-width: 260px; height: auto; display: block; margin-bottom: 0; }
 .login-subtitle { width: 100%; max-width: 280px; height: auto; display: block; margin-top: -5px; margin-bottom: 10px; }
 .login-box h2 { margin: 0 0 5px 0; font-size: 1rem; color: var(--primary-color); }
 .login-box p { margin: 0 0 8px 0; color: #666; font-size: 0.85rem; }
-.login-box input { padding: 8px; font-size: 16px; border-radius: 50px; border: 1px solid #ccc; margin-bottom: 10px; width: 85%; text-align: center; outline: none; background: #fafafa; }
-.login-btn-style { padding: 8px 45px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; font-weight: bold; transition: transform 0.2s; margin-bottom: 5px; }
+
+.login-box input { 
+    padding: 8px; 
+    font-size: 16px; 
+    border-radius: 50px; 
+    border: 1px solid #ccc; 
+    margin-bottom: 10px; 
+    width: 85%; 
+    text-align: center; 
+    outline: none; 
+    background: #fafafa;
+}
+
+.login-btn-style { 
+    padding: 8px 45px; 
+    background: var(--primary-color); 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-size: 18px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: transform 0.2s; 
+    margin-bottom: 5px; 
+}
 .login-btn-style:hover { transform: scale(1.05); }
 
-/* מסך 2: פתיחה (מתי גדולה בימין) */
+
+/* =========================================
+   מסך 2: מסך פתיחה (מתי בימין)
+   ========================================= */
 .welcome-screen { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
     background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 20%), radial-gradient(circle at 90% 90%, rgba(186, 104, 200, 0.1) 0%, transparent 25%), var(--bg-color);
-    z-index: 1000; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow: hidden; 
+    z-index: 1000; display: flex; flex-direction: column; align-items: center; 
+    padding: 20px; overflow: hidden; 
 }
+
 .header-section { margin-top: 20px; z-index: 20; width: 100%; text-align: center; }
 .title-img { width: 70%; max-width: 350px; height: auto; margin: 0 auto; display: block; }
 .subtitle-img { width: 90%; max-width: 500px; height: auto; margin: 0 auto; display: block; margin-top: -10px; }
-.visuals-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.road-img { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120%; max-width: 900px; height: auto; z-index: 1; }
-/* התיקון: מתי בימין */
-.mati-welcome { position: absolute; bottom: 0; right: -5%; height: 75vh; max-height: 650px; min-height: 400px; width: auto; z-index: 10; }
-.btn-container { position: absolute; bottom: 40px; left: 15%; z-index: 30; pointer-events: auto; }
-.start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(106, 27, 154, 0.3); }
+
+.visuals-container { 
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; 
+}
+
+.road-img { 
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); 
+    width: 120%; max-width: 900px; height: auto; z-index: 1; 
+}
+
+/* מתי ענקית בימין */
+.mati-welcome { 
+    position: absolute; 
+    bottom: 0; 
+    right: -5%; 
+    height: 75vh; 
+    max-height: 650px; 
+    min-height: 400px; 
+    width: auto; 
+    z-index: 10; 
+}
+
+.btn-container { 
+    position: absolute; 
+    bottom: 40px; 
+    left: 15%; 
+    z-index: 30; 
+    pointer-events: auto; 
+}
+
+.start-btn { 
+    background: var(--primary-color); color: white; border: none; 
+    padding: 15px 60px; font-size: 24px; border-radius: 50px; 
+    cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(106, 27, 154, 0.3); 
+}
 .start-btn:hover { transform: scale(1.05); }
 
-/* מסך 3: צ'אט */
+
+/* =========================================
+   מסך 3: צ'אט (תיקון כוכבים וסיכום)
+   ========================================= */
 .app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
 .right-panel { flex: 1; background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
 .large-character { width: 100%; max-width: 350px; height: auto; object-fit: contain; margin-bottom: -10px; }
 .status-bubble { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); padding: 8px 15px; border-radius: 20px; font-size: 14px; color: var(--primary-color); font-weight: bold; }
 .left-panel { flex: 2; display: flex; flex-direction: column; background: #fafafa; position: relative; }
-.top-bar { height: 60px; display: flex; align-items: center; padding: 0 30px; background: white; border-bottom: 2px solid #eee; }
-.stars-container { display: flex; gap: 10px; }
-.star { width: 30px; height: 30px; }
+
+/* --- השינוי לכוכבים --- */
+.top-bar { 
+    height: 90px; /* גבוה יותר */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; /* ממורכז */
+    background: white; 
+    border-bottom: 2px solid #eee; 
+}
+.stars-container { display: flex; gap: 20px; }
+.star { 
+    width: 65px; /* גדולים! */
+    height: 65px; 
+    object-fit: contain; 
+}
+
 .problem-note { background-color: #FFF59D; width: 90%; margin: 15px auto 5px auto; padding: 20px; border-radius: 2px; font-size: 1.2rem; font-weight: 500; color: #333; position: relative; transform: rotate(-1deg); }
 .pin { position: absolute; top: -15px; right: 50%; font-size: 24px; }
+
 .chat-window { flex: 1; padding: 20px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
 .chat-message { max-width: 80%; padding: 12px 18px; border-radius: 20px; font-size: 16px; line-height: 1.5; }
 .bot-message { background: white; border: 2px solid var(--secondary-color); border-top-right-radius: 0; align-self: flex-start; }
 .user-message { background: var(--secondary-color); color: white; border-top-left-radius: 0; align-self: flex-end; }
+
 .input-area { padding: 15px; background: white; border-top: 1px solid #ddd; display: flex; gap: 10px; }
 .input-area input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid #ccc; font-size: 16px; outline: none; }
 .input-area button { padding: 0 25px; border-radius: 30px; background: var(--primary-color); color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
+
 .choice-btn-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
 .choice-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 25px; font-size: 15px; cursor: pointer; font-weight: bold; }
-.guided-question { display: flex; align-items: center; gap: 10px; }
+
+/* עיצוב אייקונים בתוך בועות הצ'אט */
+.guided-question { display: flex; align-items: center; gap: 15px; }
 .guided-question img { width: 40px; height: 40px; object-fit: contain; }
 .guided-question span { font-size: 1.1rem; font-weight: bold; }
 
-/* עיצוב הסיכום */
-.summary-box h3 { color: var(--primary-color); margin-bottom: 15px; text-align: center; }
-.summary-box ul { list-style: none; padding: 0; text-align: right; }
-.summary-box li { margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-.summary-box li img { width: 25px; height: 25px; }
+/* --- עיצוב הריבוע של הסיכום הסופי --- */
+.summary-box {
+    text-align: right;
+}
+.summary-box h3 { 
+    color: var(--primary-color); 
+    margin-bottom: 15px; 
+    text-align: center; 
+    font-size: 1.2rem;
+}
+.summary-box ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0;
+}
+.summary-box li { 
+    margin-bottom: 12px; 
+    font-size: 1.1rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+.summary-box li img { 
+    width: 30px; 
+    height: 30px; 
+}
