@@ -1,4 +1,4 @@
-console.log("Script Loaded: Staggered Appearance (Text -> Note -> Button)");
+console.log("Script Loaded: Flow Fixed - Chat Note -> Button -> Pinned Note");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -12,7 +12,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// --- 10 ההבעות ---
+// --- הבעות ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -21,7 +21,7 @@ const matiExpressions = {
     confident: "Mati_confident.png",
     compliment: "Mati_compliment.png",
     confuse: "Mati_confuse.png",
-    thinking: "Mati_calculates.png", // הדמות החדשה
+    thinking: "Mati_calculates.png",
     empathic: "Mati_empathic.png",
     excited: "Mati_excited.png",
     success: "Mati_success.png", 
@@ -94,12 +94,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// --- פונקציות עזר ---
 function updateAvatar(expressionKey) {
     if (matiExpressions[expressionKey] && largeAvatar) {
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
-    // כוכב ביד - רק בsuccess
     const heldStar = document.getElementById('held-star');
     if (heldStar) {
         if (expressionKey === 'success') heldStar.classList.remove('hidden'); 
@@ -116,6 +114,15 @@ function displayMessage(text, sender, expression = 'neutral') {
     messageElement.innerHTML = text; 
     chatWindow.appendChild(messageElement);
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
+}
+
+// --- פונקציה להצגת הבעיה בתוך הצ'אט (זמני) ---
+function displayProblemInChat(problemText) {
+    const note = document.createElement('div');
+    note.classList.add('chat-problem-note'); // עיצוב צהוב מיוחד
+    note.innerHTML = problemText;
+    chatWindow.appendChild(note);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 function displayChoiceButtons(options) {
@@ -202,21 +209,23 @@ class MathProblemGuidingBot {
         chatWindow.innerHTML = ''; 
         this.resetStars();         
         this.errorCount = 0;
-        problemNote.classList.add('hidden'); // מסתירים את הפתק בהתחלה
         
-        // שלב 1: מתי מדברת
+        // חשוב: מסתירים את הפתק הקבוע למעלה בהתחלה!
+        problemNote.classList.add('hidden'); 
+        
+        // 1. מתי מדברת
         const transitionText = (studentGender === 'boy') ? 
             "נהדר! הנה הבעיה המילולית הבאה.<br>קרא אותה טוב, וכשתהיה מוכן לחץ על הכפתור." :
             "נהדר! הנה הבעיה המילולית הבאה.<br>קראי אותה טוב, וכשתהיי מוכנה לחצי על הכפתור.";
             
         displayMessage(transitionText, 'bot', 'welcoming');
         
-        // שלב 2: אחרי 2 שניות - הבעיה מופיעה
+        // 2. אחרי 3 שניות: מציגים בעיה בתוך הצ'אט (זמני)
         setTimeout(() => {
-            problemNoteText.innerText = this.currentProblem.question;
-            problemNote.classList.remove('hidden');
+            displayProblemInChat(this.currentProblem.question);
+            updateAvatar('inviting'); 
             
-            // שלב 3: אחרי עוד שנייה וחצי - הכפתור מופיע
+            // 3. אחרי עוד 2 שניות: כפתור
             setTimeout(() => {
                 const btnLabel = (studentGender === 'boy') ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
                 displayChoiceButtons([
@@ -224,9 +233,9 @@ class MathProblemGuidingBot {
                 ]);
                 
                 this.currentStep = 'wait_for_button_click';
-            }, 1500);
+            }, 2000); 
             
-        }, 2000);
+        }, 3000); 
     }
 
     resetStars() {
@@ -237,9 +246,18 @@ class MathProblemGuidingBot {
     }
 
     handleGenderSelection(gender) {
-        // טיפול בכפתור "מוכן"
+        // --- לחיצה על "אני מוכן" ---
         if (gender === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
+            
+            // 1. מנקים את הצ'אט (כולל הפתק הזמני)
+            chatWindow.innerHTML = '';
+            
+            // 2. מציגים את הפתק הקבוע למעלה
+            problemNoteText.innerText = this.currentProblem.question;
+            problemNote.classList.remove('hidden');
+            
+            // 3. מתחילים שאלה א'
             this.currentStep = 'q1_ask';
             this._displayCurrentGuidingQuestion();
             return;
@@ -252,21 +270,17 @@ class MathProblemGuidingBot {
         displayMessage(niceToMeet, 'user'); 
         
         setTimeout(() => {
-            // שלב 1: מתי מדברת
             const readyText = gender === 'boy' 
                 ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
                 : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
             displayMessage(readyText, 'bot', 'ready'); 
             
-            // שלב 2: אחרי 2 שניות - הבעיה מופיעה
             setTimeout(() => {
-                problemNoteText.innerText = this.currentProblem.question;
-                problemNote.classList.remove('hidden');
-                
+                // הצגת בעיה בתוך הצ'אט
+                displayProblemInChat(this.currentProblem.question);
                 updateAvatar('inviting'); 
                 
-                // שלב 3: אחרי עוד שנייה וחצי - הכפתור מופיע
                 setTimeout(() => {
                     const btnLabel = gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
                     displayChoiceButtons([
@@ -274,9 +288,9 @@ class MathProblemGuidingBot {
                     ]);
                     
                     this.currentStep = 'wait_for_button_click'; 
-                }, 1500);
+                }, 2000);
                 
-            }, 2000);
+            }, 3000);
         }, 500);
     }
 
@@ -390,7 +404,6 @@ class MathProblemGuidingBot {
             setTimeout(() => { matiImage.classList.remove('mati-bounce'); }, 5000);
         }
 
-        // כפתור לבעיה הבאה
         setTimeout(() => {
             displayChoiceButtons([
                 { label: "לבעיה הבאה ⬅️", value: "next_problem" }
