@@ -1,18 +1,18 @@
-console.log("Script Loaded: Manual Correction Required");
+console.log("Script Loaded: Mati says HI after name");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
 const GOOGLE_ENTRY_ID = "entry.1044193202";
 const IS_TEST_MODE = false; 
 
-let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, botStatus, largeAvatar, problemNote, problemNoteText;
+let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, largeAvatar, problemNote, problemNoteText;
 let loginBtn, participantInput;
 let isBotTyping = false;
 let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// --- 10 ההבעות ---
+// --- רשימת ההבעות (הוספתי את hi) ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -20,16 +20,19 @@ const matiExpressions = {
     inviting: "Mati_inviting_action.png",
     confident: "Mati_confident.png",
     compliment: "Mati_compliment.png",
+    confuse: "Mati_confuse.png",
     thinking: "Mati_thinking.png",
-    support: "Mati_support.png",
-    frustration: "Mati_frustration.png",
-    happy: "Mati_inviting_action.png",
-    excited: "Mati_excited.png"
+    empathic: "Mati_empathic.png",
+    excited: "Mati_excited.png",
+    success: "Mati_success.png", // לייק עם כוכב
+    star_hold: "Mati_star_hold.png", // (אם נשאר בשימוש)
+    hi: "Mati_hi.png" // <--- הדמות החדשה שאומרת היי!
 };
 
 // --- סאונד ---
 function playSound(soundName) {
     const audio = new Audio(`sounds/${soundName}.mp3`);
+    audio.volume = 0.6;
     audio.play().catch(e => console.log("Audio play failed:", e));
 }
 
@@ -44,7 +47,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   chatWindow = document.getElementById('chat-window');
   userInput = document.getElementById('user-input');
   sendButton = document.getElementById('send-button');
-  botStatus = document.getElementById('bot-status');
   largeAvatar = document.getElementById('large-avatar');
   problemNote = document.getElementById('problem-note');
   problemNoteText = document.getElementById('problem-note-text');
@@ -93,15 +95,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// --- פונקציית העדכון ---
 function updateAvatar(expressionKey) {
+    // 1. עדכון תמונת הדמות
     if (matiExpressions[expressionKey] && largeAvatar) {
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
+    }
+    
+    // 2. האם להציג את הכוכב המרחף? (רק בלייק)
+    const heldStar = document.getElementById('held-star');
+    if (heldStar) {
+        if (expressionKey === 'success') {
+            heldStar.classList.remove('hidden'); 
+        } else {
+            heldStar.classList.add('hidden'); 
+        }
     }
 }
 
 function displayMessage(text, sender, expression = 'neutral') {
     if (!chatWindow) return;
-    if (sender === 'bot') { updateAvatar(expression); }
+    
+    // אם זה בוט ויש הבעה, נעדכן
+    if (sender === 'bot') { 
+        updateAvatar(expression); 
+    }
     
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message', sender + '-message');
@@ -190,6 +208,7 @@ class MathProblemGuidingBot {
                 ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
                 : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
+            // חזרה ל-ready לקראת המשימה
             displayMessage(readyText, 'bot', 'ready'); 
             
             setTimeout(() => {
@@ -202,7 +221,7 @@ class MathProblemGuidingBot {
                 ]);
                 
                 this.currentStep = 'wait_for_button_click'; 
-            }, 1000);
+            }, 1500);
         }, 500);
     }
 
@@ -213,10 +232,14 @@ class MathProblemGuidingBot {
             userInput.value = '';
         }
         
+        // שלב 1: קבלת שם
         if (this.currentStep === 'wait_for_name') {
             studentName = reply;
             const genderText = `נעים מאוד, ${studentName}.<br>אני רוצה לוודא שאני פונה אליך נכון.<br>האם תעדיפ.י שאפנה אליך בלשון זכר (בן) או לשון נקבה (בת)?`;
-            displayMessage(genderText, 'bot', 'inviting');
+            
+            // --- כאן השינוי: מתי אומרת היי! ---
+            displayMessage(genderText, 'bot', 'hi'); 
+            
             displayChoiceButtons([
                 { label: "אני בן 👦", value: "boy" },
                 { label: "אני בת 👧", value: "girl" }
@@ -265,14 +288,14 @@ class MathProblemGuidingBot {
         const isCorrect = this._checkAnswer(reply, keywords);
 
         if (isCorrect) {
-            // --- הצלחה ---
             this.updateStars(questionCode, true);
-            // playSound('success-chime'); // מנוטרל
+            playSound('success-chime');
             
             const feedback = this.generateFeedback(questionCode, 'positive');
             const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
             
-            displayMessage(genderedFeedback, 'bot', 'compliment');
+            // מתי עושה לייק + כוכב מרחף
+            displayMessage(genderedFeedback, 'bot', 'success');
             
             let nextStep = (questionCode === 'א' ? 'q2_ask' : questionCode === 'ב' ? 'q3_ask' : 'done');
             
@@ -283,22 +306,15 @@ class MathProblemGuidingBot {
                 } else { 
                     this._showFinalSummary(); 
                 }
-            }, 2500);
+            }, 3000); 
         } else {
-            // --- טעות: משוב מתווך ועצירה לתיקון ---
             this.errorCount++;
-            this.updateStars(questionCode, false); // כוכב נשאר ריק
+            this.updateStars(questionCode, false); 
             
-            // לוקחים את התשובה הנכונה מקובץ השאלות
             const clarificationText = this.currentProblem.clarifications[questionCode];
-            
-            // משפט מתווך: "כיוון יפה! בוא נדייק... נסה לכתוב את זה."
             const mediationText = `כיוון יפה! בואי נדייק: ${clarificationText}.<br><strong>נסה/י לכתוב את זה עכשיו:</strong>`;
             
             displayMessage(mediationText, 'bot', 'support');
-            
-            // חשוב: אנחנו לא עוברים לשלב הבא! (מחקתי את ה-setTimeout של ה-nextStep)
-            // המערכת נשארת באותו שלב ומחכה לקלט נוסף מהמשתמש.
         }
     }
 
@@ -317,6 +333,12 @@ class MathProblemGuidingBot {
             </div>
         `;
         displayMessage(summaryHtml, 'bot', 'excited');
+        
+        const matiImage = document.getElementById('large-avatar');
+        if (matiImage) {
+            matiImage.classList.add('mati-bounce');
+            setTimeout(() => { matiImage.classList.remove('mati-bounce'); }, 5000);
+        }
     }
     
     _checkAnswer(reply, keywords) {
@@ -340,7 +362,6 @@ class MathProblemGuidingBot {
             'ג': { boy: "הבנה מעולה!", girl: "הבנה מעולה!" }
           },
           negative: {
-             // פחות רלוונטי כי יש משוב מותאם אישית ב-_processAnswer
             'א': { boy: "...", girl: "..." },
             'ב': { boy: "...", girl: "..." },
             'ג': { boy: "...", girl: "..." }
