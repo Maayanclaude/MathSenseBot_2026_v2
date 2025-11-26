@@ -1,4 +1,4 @@
-console.log("Script Loaded: Flow Fixed - Chat Note -> Button -> Pinned Note");
+console.log("Script Loaded: Fixed Logic - Mati says Nice to Meet You");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -116,10 +116,10 @@ function displayMessage(text, sender, expression = 'neutral') {
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
-// --- פונקציה להצגת הבעיה בתוך הצ'אט (זמני) ---
+// --- פונקציה להצגת הבעיה בתוך הצ'אט ---
 function displayProblemInChat(problemText) {
     const note = document.createElement('div');
-    note.classList.add('chat-problem-note'); // עיצוב צהוב מיוחד
+    note.classList.add('chat-problem-note'); 
     note.innerHTML = problemText;
     chatWindow.appendChild(note);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -205,33 +205,26 @@ class MathProblemGuidingBot {
 
         this.currentProblem = this.problems[this.currentProblemIndex];
         
-        // איפוס
         chatWindow.innerHTML = ''; 
         this.resetStars();         
         this.errorCount = 0;
-        
-        // חשוב: מסתירים את הפתק הקבוע למעלה בהתחלה!
         problemNote.classList.add('hidden'); 
         
-        // 1. מתי מדברת
         const transitionText = (studentGender === 'boy') ? 
-            "נהדר! הנה הבעיה המילולית הבאה.<br>קרא אותה טוב, וכשתהיה מוכן לחץ על הכפתור." :
-            "נהדר! הנה הבעיה המילולית הבאה.<br>קראי אותה טוב, וכשתהיי מוכנה לחצי על הכפתור.";
+            "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הבאה!<br>קרא אותה טוב, וכשתהיה מוכן לחץ על הכפתור." :
+            "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הבאה!<br>קראי אותה טוב, וכשתהיי מוכנה לחצי על הכפתור.";
             
         displayMessage(transitionText, 'bot', 'welcoming');
         
-        // 2. אחרי 3 שניות: מציגים בעיה בתוך הצ'אט (זמני)
         setTimeout(() => {
             displayProblemInChat(this.currentProblem.question);
             updateAvatar('inviting'); 
             
-            // 3. אחרי עוד 2 שניות: כפתור
             setTimeout(() => {
                 const btnLabel = (studentGender === 'boy') ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
                 displayChoiceButtons([
                     { label: btnLabel, value: "ready_to_start" }
                 ]);
-                
                 this.currentStep = 'wait_for_button_click';
             }, 2000); 
             
@@ -246,52 +239,51 @@ class MathProblemGuidingBot {
     }
 
     handleGenderSelection(gender) {
-        // --- לחיצה על "אני מוכן" ---
+        // --- לחיצה על "אני מוכן" (מעבר לשלב הפתרון) ---
         if (gender === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
             
-            // 1. מנקים את הצ'אט (כולל הפתק הזמני)
-            chatWindow.innerHTML = '';
-            
-            // 2. מציגים את הפתק הקבוע למעלה
+            chatWindow.innerHTML = ''; // מנקים מסך
             problemNoteText.innerText = this.currentProblem.question;
-            problemNote.classList.remove('hidden');
+            problemNote.classList.remove('hidden'); // נועצים את הפתק למעלה
             
-            // 3. מתחילים שאלה א'
             this.currentStep = 'q1_ask';
             this._displayCurrentGuidingQuestion();
             return;
         }
 
+        // --- בחירת מגדר (רק בהתחלה) ---
         studentGender = gender;
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         
+        // 1. מתי אומרת נעים להכיר
         const niceToMeet = `נעים להכיר, ${studentName}!`;
-        displayMessage(niceToMeet, 'user'); 
+        displayMessage(niceToMeet, 'bot', 'welcoming'); // שינוי: 'bot' ולא 'user'
         
         setTimeout(() => {
+            // 2. מתי נותנת הוראות (הטקסט שביקשת)
             const readyText = gender === 'boy' 
-                ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
-                : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
+                ? "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
+                : "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
             displayMessage(readyText, 'bot', 'ready'); 
             
+            // 3. הצגת הבעיה בתוך הצ'אט
             setTimeout(() => {
-                // הצגת בעיה בתוך הצ'אט
                 displayProblemInChat(this.currentProblem.question);
                 updateAvatar('inviting'); 
                 
+                // 4. הצגת כפתור
                 setTimeout(() => {
                     const btnLabel = gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
                     displayChoiceButtons([
                         { label: btnLabel, value: "ready_to_start" }
                     ]);
-                    
                     this.currentStep = 'wait_for_button_click'; 
                 }, 2000);
                 
             }, 3000);
-        }, 500);
+        }, 1000);
     }
 
     handleUserReply(reply) {
