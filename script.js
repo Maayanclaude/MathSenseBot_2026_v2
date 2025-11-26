@@ -1,4 +1,4 @@
-console.log("Script Loaded: Mati says HI after name");
+console.log("Script Loaded: Mati Calculates added!");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -12,7 +12,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// --- רשימת ההבעות (הוספתי את hi) ---
+// --- רשימת ההבעות המעודכנת ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -21,12 +21,14 @@ const matiExpressions = {
     confident: "Mati_confident.png",
     compliment: "Mati_compliment.png",
     confuse: "Mati_confuse.png",
-    thinking: "Mati_thinking.png",
+    
+    // --- הנה השינוי! הדמות החדשה ---
+    thinking: "Mati_calculates.png", 
+    
     empathic: "Mati_empathic.png",
     excited: "Mati_excited.png",
-    success: "Mati_success.png", // לייק עם כוכב
-    star_hold: "Mati_star_hold.png", // (אם נשאר בשימוש)
-    hi: "Mati_hi.png" // <--- הדמות החדשה שאומרת היי!
+    success: "Mati_success.png", 
+    hi: "Mati_hi.png" 
 };
 
 // --- סאונד ---
@@ -95,14 +97,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// --- פונקציית העדכון ---
+// --- עדכון דמות (כולל כוכב ביד אם צריך) ---
 function updateAvatar(expressionKey) {
-    // 1. עדכון תמונת הדמות
+    // 1. עדכון תמונה
     if (matiExpressions[expressionKey] && largeAvatar) {
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
     
-    // 2. האם להציג את הכוכב המרחף? (רק בלייק)
+    // 2. הצגת כוכב ביד רק בהבעת success (לייק)
     const heldStar = document.getElementById('held-star');
     if (heldStar) {
         if (expressionKey === 'success') {
@@ -116,7 +118,6 @@ function updateAvatar(expressionKey) {
 function displayMessage(text, sender, expression = 'neutral') {
     if (!chatWindow) return;
     
-    // אם זה בוט ויש הבעה, נעדכן
     if (sender === 'bot') { 
         updateAvatar(expression); 
     }
@@ -208,7 +209,6 @@ class MathProblemGuidingBot {
                 ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
                 : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
-            // חזרה ל-ready לקראת המשימה
             displayMessage(readyText, 'bot', 'ready'); 
             
             setTimeout(() => {
@@ -232,14 +232,10 @@ class MathProblemGuidingBot {
             userInput.value = '';
         }
         
-        // שלב 1: קבלת שם
         if (this.currentStep === 'wait_for_name') {
             studentName = reply;
             const genderText = `נעים מאוד, ${studentName}.<br>אני רוצה לוודא שאני פונה אליך נכון.<br>האם תעדיפ.י שאפנה אליך בלשון זכר (בן) או לשון נקבה (בת)?`;
-            
-            // --- כאן השינוי: מתי אומרת היי! ---
-            displayMessage(genderText, 'bot', 'hi'); 
-            
+            displayMessage(genderText, 'bot', 'hi'); // מתי אומרת היי!
             displayChoiceButtons([
                 { label: "אני בן 👦", value: "boy" },
                 { label: "אני בת 👧", value: "girl" }
@@ -272,6 +268,7 @@ class MathProblemGuidingBot {
         const textToShow = (studentGender === 'girl') ? stepData.girl : stepData.boy;
         const questionHtml = `<div class="guided-question"><img src="icons/${stepData.icon}"><span>${textToShow}</span></div>`;
         
+        // שימוש בדמות החדשה שמחשבת/חושבת!
         displayMessage(questionHtml, 'bot', 'thinking');
         this.currentStep = stepData.next; 
     }
@@ -294,8 +291,7 @@ class MathProblemGuidingBot {
             const feedback = this.generateFeedback(questionCode, 'positive');
             const genderedFeedback = (studentGender === 'girl') ? feedback.girl : feedback.boy;
             
-            // מתי עושה לייק + כוכב מרחף
-            displayMessage(genderedFeedback, 'bot', 'success');
+            displayMessage(genderedFeedback, 'bot', 'success'); // לייק + כוכב
             
             let nextStep = (questionCode === 'א' ? 'q2_ask' : questionCode === 'ב' ? 'q3_ask' : 'done');
             
