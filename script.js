@@ -1,4 +1,4 @@
-console.log("Script Loaded: Multi-Problem Flow Implemented");
+console.log("Script Loaded: Staggered Appearance (Text -> Note -> Button)");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -21,7 +21,7 @@ const matiExpressions = {
     confident: "Mati_confident.png",
     compliment: "Mati_compliment.png",
     confuse: "Mati_confuse.png",
-    thinking: "Mati_calculates.png", // הדמות החדשה שיצרת
+    thinking: "Mati_calculates.png", // הדמות החדשה
     empathic: "Mati_empathic.png",
     excited: "Mati_excited.png",
     success: "Mati_success.png", 
@@ -125,9 +125,9 @@ function displayChoiceButtons(options) {
         const btn = document.createElement('button');
         btn.classList.add('choice-btn');
         btn.innerText = opt.label;
-        // אם זה כפתור "הבעיה הבאה", נקרא לפונקציה המתאימה
+        
         if (opt.value === 'next_problem') {
-            btn.classList.add('next-problem-btn'); // עיצוב מיוחד
+            btn.classList.add('next-problem-btn'); 
             btn.onclick = () => window.bot.loadNextProblem();
         } else {
             btn.onclick = () => window.bot.handleGenderSelection(opt.value);
@@ -143,7 +143,7 @@ class MathProblemGuidingBot {
     constructor() {
         this.problems = [];
         this.currentProblem = null;
-        this.currentProblemIndex = 0; // מעקב אחרי מספר השאלה
+        this.currentProblemIndex = 0; 
         this.currentStep = 'intro'; 
         this.errorCount = 0; 
         
@@ -176,7 +176,6 @@ class MathProblemGuidingBot {
         try {
             const response = await fetch('questions_data.json');
             this.problems = await response.json();
-            // טעינת הבעיה הראשונה
             this.currentProblemIndex = 0;
             this.currentProblem = this.problems[this.currentProblemIndex]; 
         } catch (error) { console.error(error); }
@@ -188,48 +187,48 @@ class MathProblemGuidingBot {
         this.currentStep = 'wait_for_name'; 
     }
     
-    // --- פונקציה למעבר לבעיה הבאה ---
+    // --- פונקציה לבעיה הבאה ---
     loadNextProblem() {
-        // 1. קידום האינדקס
         this.currentProblemIndex++;
         
-        // בדיקה אם נגמרו השאלות
         if (this.currentProblemIndex >= this.problems.length) {
             displayMessage("כל הכבוד! סיימת את כל הבעיות להיום! 🏆", 'bot', 'excited');
             return;
         }
 
-        // 2. טעינת הנתונים החדשים
         this.currentProblem = this.problems[this.currentProblemIndex];
         
-        // 3. איפוס המסך (ניקוי צ'אט וכוכבים)
-        chatWindow.innerHTML = ''; // מנקה את ההיסטוריה
-        this.resetStars();         // מאפס כוכבים לאפור
+        // איפוס
+        chatWindow.innerHTML = ''; 
+        this.resetStars();         
         this.errorCount = 0;
+        problemNote.classList.add('hidden'); // מסתירים את הפתק בהתחלה
         
-        // 4. מתי מדברת (Mati Welcoming)
+        // שלב 1: מתי מדברת
         const transitionText = (studentGender === 'boy') ? 
             "נהדר! הנה הבעיה המילולית הבאה.<br>קרא אותה טוב, וכשתהיה מוכן לחץ על הכפתור." :
             "נהדר! הנה הבעיה המילולית הבאה.<br>קראי אותה טוב, וכשתהיי מוכנה לחצי על הכפתור.";
             
         displayMessage(transitionText, 'bot', 'welcoming');
         
-        // 5. טעינת הבעיה החדשה לפתק הצהוב
+        // שלב 2: אחרי 2 שניות - הבעיה מופיעה
         setTimeout(() => {
             problemNoteText.innerText = this.currentProblem.question;
             problemNote.classList.remove('hidden');
             
-            // 6. הצגת כפתור "מוכן"
-            const btnLabel = (studentGender === 'boy') ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
-            displayChoiceButtons([
-                { label: btnLabel, value: "ready_to_start" }
-            ]);
+            // שלב 3: אחרי עוד שנייה וחצי - הכפתור מופיע
+            setTimeout(() => {
+                const btnLabel = (studentGender === 'boy') ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
+                displayChoiceButtons([
+                    { label: btnLabel, value: "ready_to_start" }
+                ]);
+                
+                this.currentStep = 'wait_for_button_click';
+            }, 1500);
             
-            this.currentStep = 'wait_for_button_click';
-        }, 1000);
+        }, 2000);
     }
 
-    // פונקציית עזר לאיפוס כוכבים
     resetStars() {
         for (let i = 0; i < 3; i++) {
             const star = document.getElementById(`star-${i}`);
@@ -238,7 +237,7 @@ class MathProblemGuidingBot {
     }
 
     handleGenderSelection(gender) {
-        // טיפול בכפתור "מוכן" (גם בבעיה הראשונה וגם בבאות)
+        // טיפול בכפתור "מוכן"
         if (gender === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
             this.currentStep = 'q1_ask';
@@ -253,23 +252,31 @@ class MathProblemGuidingBot {
         displayMessage(niceToMeet, 'user'); 
         
         setTimeout(() => {
+            // שלב 1: מתי מדברת
             const readyText = gender === 'boy' 
                 ? "נהדר! בוא נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
                 : "נהדר! בואי נתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
             displayMessage(readyText, 'bot', 'ready'); 
             
+            // שלב 2: אחרי 2 שניות - הבעיה מופיעה
             setTimeout(() => {
                 problemNoteText.innerText = this.currentProblem.question;
                 problemNote.classList.remove('hidden');
                 
                 updateAvatar('inviting'); 
-                displayChoiceButtons([
-                    { label: (gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀"), value: "ready_to_start" }
-                ]);
                 
-                this.currentStep = 'wait_for_button_click'; 
-            }, 1500);
+                // שלב 3: אחרי עוד שנייה וחצי - הכפתור מופיע
+                setTimeout(() => {
+                    const btnLabel = gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
+                    displayChoiceButtons([
+                        { label: btnLabel, value: "ready_to_start" }
+                    ]);
+                    
+                    this.currentStep = 'wait_for_button_click'; 
+                }, 1500);
+                
+            }, 2000);
         }, 500);
     }
 
@@ -383,7 +390,7 @@ class MathProblemGuidingBot {
             setTimeout(() => { matiImage.classList.remove('mati-bounce'); }, 5000);
         }
 
-        // --- הוספת כפתור "הבעיה הבאה" ---
+        // כפתור לבעיה הבאה
         setTimeout(() => {
             displayChoiceButtons([
                 { label: "לבעיה הבאה ⬅️", value: "next_problem" }
