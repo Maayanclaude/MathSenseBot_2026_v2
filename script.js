@@ -1,4 +1,4 @@
-console.log("Script Loaded: FORCED Yellow Note Style in JS");
+console.log("Script Loaded: Gender Fixes & Multiplication Support");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -12,6 +12,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
+// --- הבעות ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -27,12 +28,14 @@ const matiExpressions = {
     hi: "Mati_hi.png"
 };
 
+// --- סאונד ---
 function playSound(soundName) {
     const audio = new Audio(`sounds/${soundName}.mp3`);
     audio.volume = 0.6;
     audio.play().catch(e => console.log("Audio play failed:", e));
 }
 
+// --- אתחול ---
 document.addEventListener('DOMContentLoaded', async () => {
   loginBtn = document.getElementById('login-btn');
   participantInput = document.getElementById('participant-id-input');
@@ -113,12 +116,11 @@ function displayMessage(text, sender, expression = 'neutral') {
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
-// --- פונקציה להצגת הבעיה בתוך הצ'אט (עם עיצוב מוטמע בכוח) ---
+// פונקציה להצגת הבעיה בתוך הצ'אט (עם עיצוב כפוי)
 function displayProblemInChat(problemText) {
     const note = document.createElement('div');
     
-    // הגדרת העיצוב ישירות בתוך ה-JS כדי לעקוף בעיות CSS
-    note.style.backgroundColor = "#FFF59D"; // צהוב
+    note.style.backgroundColor = "#FFF59D"; 
     note.style.color = "#333";
     note.style.padding = "20px";
     note.style.borderRadius = "2px";
@@ -132,7 +134,6 @@ function displayProblemInChat(problemText) {
     note.style.position = "relative";
     note.style.alignSelf = "center";
     
-    // הוספת אייקון הסיכה כחלק מהטקסט (כי ::before לא עובד ב-inline style)
     note.innerHTML = `<div style="position:absolute; top:-15px; right:50%; font-size:24px;">📍</div>${problemText}`;
     
     chatWindow.appendChild(note);
@@ -203,15 +204,13 @@ class MathProblemGuidingBot {
     }
     
     startConversationLogic() {
-        // וידוא שהפתק הקבוע למעלה מוסתר בהתחלה!
-        problemNote.classList.add('hidden');
+        problemNote.classList.add('hidden'); 
         
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
     
-    // --- פונקציה למעבר לבעיה הבאה ---
     loadNextProblem() {
         this.currentProblemIndex++;
         
@@ -226,7 +225,6 @@ class MathProblemGuidingBot {
         this.resetStars();         
         this.errorCount = 0;
         
-        // מסתירים את הפתק הקבוע למעלה!
         problemNote.classList.add('hidden'); 
         
         const transitionText = (studentGender === 'boy') ? 
@@ -236,12 +234,11 @@ class MathProblemGuidingBot {
         displayMessage(transitionText, 'bot', 'welcoming');
         
         setTimeout(() => {
-            // מציגים בתוך הצ'אט (עכשיו עם עיצוב כפוי)
             displayProblemInChat(this.currentProblem.question);
             updateAvatar('inviting'); 
             
             setTimeout(() => {
-                const btnLabel = (studentGender === 'boy') ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
+                const btnLabel = "קראתי! ✅";
                 displayChoiceButtons([
                     { label: btnLabel, value: "ready_to_start" }
                 ]);
@@ -259,13 +256,10 @@ class MathProblemGuidingBot {
     }
 
     handleGenderSelection(gender) {
-        // --- לחיצה על "אני מוכן" ---
         if (gender === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
             
-            chatWindow.innerHTML = ''; // ניקוי המסך (מוחק את הפתק הזמני)
-            
-            // עכשיו מציגים את הפתק הקבוע למעלה
+            chatWindow.innerHTML = ''; 
             problemNoteText.innerText = this.currentProblem.question;
             problemNote.classList.remove('hidden'); 
             
@@ -274,7 +268,6 @@ class MathProblemGuidingBot {
             return;
         }
 
-        // --- בחירת מגדר והתחלה ---
         studentGender = gender;
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         
@@ -288,14 +281,12 @@ class MathProblemGuidingBot {
             
             displayMessage(readyText, 'bot', 'ready'); 
             
-            // 3. הצגת הבעיה *בתוך הצ'אט*
             setTimeout(() => {
                 displayProblemInChat(this.currentProblem.question);
                 updateAvatar('inviting'); 
                 
-                // 4. הצגת כפתור
                 setTimeout(() => {
-                    const btnLabel = gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
+                    const btnLabel = "קראתי! ✅";
                     displayChoiceButtons([
                         { label: btnLabel, value: "ready_to_start" }
                     ]);
@@ -387,8 +378,13 @@ class MathProblemGuidingBot {
             this.errorCount++;
             this.updateStars(questionCode, false); 
             
+            // --- תיקון מגדרי וטקסטואלי כאן ---
             const clarificationText = this.currentProblem.clarifications[questionCode];
-            const mediationText = `כיוון יפה! בואי נדייק: ${clarificationText}.<br><strong>נסה/י לכתוב את זה עכשיו:</strong>`;
+            
+            const startPrefix = (studentGender === 'boy') ? "כיוון יפה! בוא נדייק" : "כיוון יפה! בואי נדייק";
+            const tryAgainText = (studentGender === 'boy') ? "נסה לכתוב את זה עכשיו:" : "נסי לכתוב את זה עכשיו:";
+            
+            const mediationText = `${startPrefix}: ${clarificationText}<br><strong>${tryAgainText}</strong>`;
             
             displayMessage(mediationText, 'bot', 'support');
         }
