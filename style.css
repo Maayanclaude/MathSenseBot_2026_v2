@@ -12,7 +12,7 @@ html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body { font-family: var(--font-family); direction: rtl; background: var(--bg-color); display: flex; justify-content: center; align-items: center; }
 .hidden { display: none !important; }
 
-/* --- מסך 1: כניסה --- */
+/* מסך 1 */
 .login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fff 0%, #E1BEE7 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; }
 .login-box { text-align: center; padding: 15px 10px; background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(106, 27, 154, 0.1); border: 2px solid var(--secondary-color); width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; }
 .login-logo { width: 90%; max-width: 260px; height: auto; display: block; margin-bottom: 0; }
@@ -23,7 +23,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .login-btn-style { padding: 8px 45px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; font-weight: bold; transition: transform 0.2s; margin-bottom: 5px; }
 .login-btn-style:hover { transform: scale(1.05); }
 
-/* --- מסך 2: פתיחה --- */
+/* מסך 2 */
 .welcome-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 20%), radial-gradient(circle at 90% 90%, rgba(186, 104, 200, 0.1) 0%, transparent 25%), var(--bg-color); z-index: 1000; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow: hidden; }
 .header-section { margin-top: 20px; z-index: 20; width: 100%; text-align: center; }
 .title-img { width: 70%; max-width: 350px; height: auto; margin: 0 auto; display: block; }
@@ -35,7 +35,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(106, 27, 154, 0.3); }
 .start-btn:hover { transform: scale(1.05); }
 
-/* --- מסך 3: צ'אט --- */
+/* מסך 3 */
 .app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
 .right-panel { 
     flex: 1; 
@@ -60,44 +60,32 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .left-panel { flex: 2; display: flex; flex-direction: column; background: #fafafa; position: relative; }
 
-/* סרגל עליון עם כוכבים גדולים */
+/* כוכבים */
 .top-bar { height: 90px; display: flex; align-items: center; justify-content: center; background: white; border-bottom: 2px solid #eee; }
 .stars-container { display: flex; gap: 20px; }
 .star { width: 65px; height: 65px; object-fit: contain; } 
 
 /* הפתק הצהוב הקבוע (למעלה) */
-.problem-note { 
-    background-color: #FFF59D; 
-    width: 90%; 
-    margin: 15px auto 5px auto; 
-    padding: 20px; 
-    border-radius: 2px; 
-    font-size: 1.2rem; 
-    font-weight: 500; 
-    color: #333; 
-    position: relative; 
-    transform: rotate(-1deg); 
-    z-index: 10; 
-}
+.problem-note { background-color: #FFF59D; width: 90%; margin: 15px auto 5px auto; padding: 20px; border-radius: 2px; font-size: 1.2rem; font-weight: 500; color: #333; position: relative; transform: rotate(-1deg); z-index: 10; }
 .pin { position: absolute; top: -15px; right: 50%; font-size: 24px; }
 
-/* --- העיצוב החדש: הפתק הצהוב הזמני (בתוך השיחה) --- */
+/* --- זה החלק שהיה חסר: הפתק הצהוב הזמני בתוך הצ'אט --- */
 .chat-problem-note {
-    background-color: #FFF59D;
+    background-color: #FFF59D; /* צהוב */
     color: #333;
     padding: 20px;
     border-radius: 2px;
     font-size: 1.2rem;
     font-weight: 500;
     width: 85%;
-    margin: 15px auto;
-    transform: rotate(-1deg);
+    margin: 15px auto; /* ריווח מהצדדים */
+    transform: rotate(-1deg); /* הטיה קלה */
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     text-align: center;
     position: relative;
-    align-self: center; /* ממורכז בתוך הצ'אט */
+    align-self: center; /* ממורכז */
 }
-/* הסיכה של הפתק בתוך הצ'אט */
+/* הסיכה בתוך הצ'אט */
 .chat-problem-note::before {
     content: '📍';
     position: absolute;
@@ -110,7 +98,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .chat-window { flex: 1; padding: 20px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
 .chat-message { max-width: 80%; padding: 12px 18px; border-radius: 20px; font-size: 16px; line-height: 1.5; }
 
-/* בועות שיחה */
+/* בועות */
 .bot-message { background: #F3E5F5; color: #333; border: 1px solid var(--secondary-color); border-top-right-radius: 0; align-self: flex-start; }
 .user-message { background: var(--primary-color); color: white; border-top-left-radius: 0; align-self: flex-end; }
 
@@ -120,23 +108,13 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 
 .choice-btn-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
 .choice-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 25px; font-size: 15px; cursor: pointer; font-weight: bold; }
-
-/* כפתור הבעיה הבאה */
-.next-problem-btn { 
-    display: block; margin: 20px auto 0 auto; 
-    background: var(--accent-color); color: #333; 
-    border: 2px solid #FBC02D; padding: 10px 30px; 
-    border-radius: 50px; font-size: 1.2rem; font-weight: 900; 
-    cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    transition: transform 0.2s; 
-}
+.next-problem-btn { display: block; margin: 20px auto 0 auto; background: var(--accent-color); color: #333; border: 2px solid #FBC02D; padding: 10px 30px; border-radius: 50px; font-size: 1.2rem; font-weight: 900; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
 .next-problem-btn:hover { transform: scale(1.05); }
 
 .guided-question { display: flex; align-items: center; gap: 15px; }
 .guided-question img { width: 40px; height: 40px; object-fit: contain; }
 .guided-question span { font-size: 1.1rem; font-weight: bold; }
 
-/* סיכום */
 .summary-box h3 { color: var(--primary-color); margin-bottom: 15px; text-align: center; }
 .summary-box ul { list-style: none; padding: 0; text-align: right; }
 .summary-box li { margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
