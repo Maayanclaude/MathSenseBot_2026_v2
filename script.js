@@ -1,4 +1,4 @@
-console.log("Script Loaded: First Problem Flow Fixed (Text -> Chat Note -> Button)");
+console.log("Script Loaded: FORCED Yellow Note Style in JS");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -12,7 +12,6 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// --- הבעות ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -28,14 +27,12 @@ const matiExpressions = {
     hi: "Mati_hi.png"
 };
 
-// --- סאונד ---
 function playSound(soundName) {
     const audio = new Audio(`sounds/${soundName}.mp3`);
     audio.volume = 0.6;
     audio.play().catch(e => console.log("Audio play failed:", e));
 }
 
-// --- אתחול ---
 document.addEventListener('DOMContentLoaded', async () => {
   loginBtn = document.getElementById('login-btn');
   participantInput = document.getElementById('participant-id-input');
@@ -116,11 +113,28 @@ function displayMessage(text, sender, expression = 'neutral') {
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
-// --- פונקציה להצגת בעיה בתוך הצ'אט ---
+// --- פונקציה להצגת הבעיה בתוך הצ'אט (עם עיצוב מוטמע בכוח) ---
 function displayProblemInChat(problemText) {
     const note = document.createElement('div');
-    note.classList.add('chat-problem-note'); 
-    note.innerHTML = problemText;
+    
+    // הגדרת העיצוב ישירות בתוך ה-JS כדי לעקוף בעיות CSS
+    note.style.backgroundColor = "#FFF59D"; // צהוב
+    note.style.color = "#333";
+    note.style.padding = "20px";
+    note.style.borderRadius = "2px";
+    note.style.fontSize = "1.2rem";
+    note.style.fontWeight = "500";
+    note.style.width = "85%";
+    note.style.margin = "15px auto";
+    note.style.transform = "rotate(-1deg)";
+    note.style.boxShadow = "0 3px 10px rgba(0,0,0,0.1)";
+    note.style.textAlign = "center";
+    note.style.position = "relative";
+    note.style.alignSelf = "center";
+    
+    // הוספת אייקון הסיכה כחלק מהטקסט (כי ::before לא עובד ב-inline style)
+    note.innerHTML = `<div style="position:absolute; top:-15px; right:50%; font-size:24px;">📍</div>${problemText}`;
+    
     chatWindow.appendChild(note);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -189,12 +203,15 @@ class MathProblemGuidingBot {
     }
     
     startConversationLogic() {
+        // וידוא שהפתק הקבוע למעלה מוסתר בהתחלה!
+        problemNote.classList.add('hidden');
+        
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
     
-    // --- מעבר לבעיה הבאה ---
+    // --- פונקציה למעבר לבעיה הבאה ---
     loadNextProblem() {
         this.currentProblemIndex++;
         
@@ -208,6 +225,8 @@ class MathProblemGuidingBot {
         chatWindow.innerHTML = ''; 
         this.resetStars();         
         this.errorCount = 0;
+        
+        // מסתירים את הפתק הקבוע למעלה!
         problemNote.classList.add('hidden'); 
         
         const transitionText = (studentGender === 'boy') ? 
@@ -217,6 +236,7 @@ class MathProblemGuidingBot {
         displayMessage(transitionText, 'bot', 'welcoming');
         
         setTimeout(() => {
+            // מציגים בתוך הצ'אט (עכשיו עם עיצוב כפוי)
             displayProblemInChat(this.currentProblem.question);
             updateAvatar('inviting'); 
             
@@ -243,9 +263,11 @@ class MathProblemGuidingBot {
         if (gender === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
             
-            chatWindow.innerHTML = ''; 
+            chatWindow.innerHTML = ''; // ניקוי המסך (מוחק את הפתק הזמני)
+            
+            // עכשיו מציגים את הפתק הקבוע למעלה
             problemNoteText.innerText = this.currentProblem.question;
-            problemNote.classList.remove('hidden'); // הפתק עולה למעלה
+            problemNote.classList.remove('hidden'); 
             
             this.currentStep = 'q1_ask';
             this._displayCurrentGuidingQuestion();
@@ -260,19 +282,18 @@ class MathProblemGuidingBot {
         displayMessage(niceToMeet, 'bot', 'welcoming'); 
         
         setTimeout(() => {
-            // הטקסט המדויק שביקשת
             const readyText = gender === 'boy' 
                 ? "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קרא אותה טוב, וכשתהיה מוכן, לחץ על הכפתור!"
                 : "נהדר, אפשר להתחיל.<br>הנה הבעיה המילולית הראשונה שלנו!<br>קראי אותה טוב, וכשתהיי מוכנה, לחצי על הכפתור!";
             
             displayMessage(readyText, 'bot', 'ready'); 
             
-            // הצגת הבעיה בתוך הצ'אט
+            // 3. הצגת הבעיה *בתוך הצ'אט*
             setTimeout(() => {
                 displayProblemInChat(this.currentProblem.question);
                 updateAvatar('inviting'); 
                 
-                // הצגת הכפתור
+                // 4. הצגת כפתור
                 setTimeout(() => {
                     const btnLabel = gender === 'boy' ? "אני מוכן! 🚀" : "אני מוכנה! 🚀";
                     displayChoiceButtons([
