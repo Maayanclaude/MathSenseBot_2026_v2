@@ -45,13 +45,13 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: center; /* מרכוז אנכי */
     position: relative; 
 }
 
 /* מתי בגודל אחיד לכולן */
 .large-character { 
-    height: 60vh; 
+    height: 60vh; /* גובה קבוע */
     width: auto; 
     max-width: 90%; 
     object-fit: contain; 
@@ -59,19 +59,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
     filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); 
 }
 
-/* כוכב מרחף */
-.held-star {
-    position: absolute;
-    bottom: 40%; 
-    right: 50%; 
-    transform: translateX(60%); 
-    width: 90px; 
-    height: auto; 
-    z-index: 20;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
-    animation: float-star 2s ease-in-out infinite;
-}
-@keyframes float-star { 0%, 100% { transform: translateX(60%) translateY(0); } 50% { transform: translateX(60%) translateY(-10px); } }
+/* מחקתי את העיצוב של held-star כי ביקשת להסיר אותו */
 
 .left-panel { flex: 2; display: flex; flex-direction: column; background: #fafafa; position: relative; }
 .top-bar { height: 90px; display: flex; align-items: center; justify-content: center; background: white; border-bottom: 2px solid #eee; }
@@ -87,7 +75,7 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 }
 .pin { position: absolute; top: -15px; right: 50%; font-size: 24px; }
 
-/* הפתק הזמני בתוך הצ'אט */
+/* הפתק הצהוב הזמני בתוך הצ'אט */
 .chat-problem-note {
     background-color: #FFF59D;
     color: #333;
@@ -136,5 +124,3 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .summary-box li { margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
 .summary-box li img { width: 25px; height: 25px; }
 
-@keyframes happy-bounce { 0%, 100% { transform: translateY(0) scale(1, 1); } 25% { transform: translateY(5px) scale(1.05, 0.95); } 50% { transform: translateY(-30px) scale(0.95, 1.05); } 75% { transform: translateY(5px) scale(1.05, 0.95); } }
-.mati-bounce { animation: happy-bounce 0.8s ease-in-out infinite; transform-origin: bottom center; }

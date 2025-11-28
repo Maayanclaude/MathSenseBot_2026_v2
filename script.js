@@ -1,4 +1,4 @@
-console.log("Script Loaded: Final Version");
+console.log("Script Loaded: No Bounce, No Floating Star");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -98,11 +98,7 @@ function updateAvatar(expressionKey) {
     if (matiExpressions[expressionKey] && largeAvatar) {
         largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
     }
-    const heldStar = document.getElementById('held-star');
-    if (heldStar) {
-        if (expressionKey === 'success') heldStar.classList.remove('hidden'); 
-        else heldStar.classList.add('hidden'); 
-    }
+    // כאן ביטלתי את הלוגיקה של הכוכב המרחף
 }
 
 function displayMessage(text, sender, expression = 'neutral') {
@@ -116,12 +112,12 @@ function displayMessage(text, sender, expression = 'neutral') {
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
-// פונקציה להצגת הבעיה בתוך הצ'אט
+// פונקציה להצגת בעיה בתוך הצ'אט (כולל הגנה על העיצוב)
 function displayProblemInChat(problemText) {
     const note = document.createElement('div');
     note.classList.add('chat-problem-note'); // משתמש בקלאס מה-CSS
     
-    // עיצוב כפוי לגיבוי
+    // עיצוב כפוי ב-JS לגיבוי
     note.style.backgroundColor = "#FFF59D"; 
     note.style.color = "#333";
     note.style.padding = "20px";
@@ -202,7 +198,7 @@ class MathProblemGuidingBot {
     }
     
     startConversationLogic() {
-        problemNote.classList.add('hidden'); // הסתרת הפתק העליון
+        problemNote.classList.add('hidden'); // הסתרת פתק עליון
         
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
@@ -224,7 +220,7 @@ class MathProblemGuidingBot {
         this.resetStars();         
         this.errorCount = 0;
         
-        problemNote.classList.add('hidden'); 
+        problemNote.classList.add('hidden'); // הסתרת פתק עליון
         
         const transitionText = (studentGender === 'boy') ? 
             "נהדר! הנה הבעיה המילולית הבאה.<br>קרא אותה טוב, וכשתהיה מוכן לחץ על הכפתור." :
@@ -260,7 +256,7 @@ class MathProblemGuidingBot {
             
             chatWindow.innerHTML = ''; 
             problemNoteText.innerText = this.currentProblem.question;
-            problemNote.classList.remove('hidden'); // הפתק עולה למעלה
+            problemNote.classList.remove('hidden'); // פתק עליון מופיע
             
             this.currentStep = 'q1_ask';
             this._displayCurrentGuidingQuestion();
@@ -403,11 +399,7 @@ class MathProblemGuidingBot {
         `;
         displayMessage(summaryHtml, 'bot', 'excited');
         
-        const matiImage = document.getElementById('large-avatar');
-        if (matiImage) {
-            matiImage.classList.add('mati-bounce');
-            setTimeout(() => { matiImage.classList.remove('mati-bounce'); }, 5000);
-        }
+        // כאן ביטלתי את הקוד של הקפיצה (bounce)
 
         setTimeout(() => {
             displayChoiceButtons([
