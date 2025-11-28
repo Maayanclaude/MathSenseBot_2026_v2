@@ -1,4 +1,4 @@
-console.log("Script Loaded: Gender Fixes & Multiplication Support");
+console.log("Script Loaded: Final Version");
 
 // --- הגדרות ---
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfQS9MLVUp1WHnZ47cFktiPB7QtUmVcVBjeE67NqyhXAca_Tw/formResponse";
@@ -12,7 +12,7 @@ let currentUserID = localStorage.getItem('mati_participant_id');
 let studentName = ""; 
 let studentGender = ""; 
 
-// --- הבעות ---
+// --- 10 ההבעות ---
 const matiExpressions = {
     ready: "Mati_ready.png",
     welcoming: "Mati_welcoming.png",
@@ -116,23 +116,21 @@ function displayMessage(text, sender, expression = 'neutral') {
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
 }
 
-// פונקציה להצגת הבעיה בתוך הצ'אט (עם עיצוב כפוי)
+// פונקציה להצגת הבעיה בתוך הצ'אט
 function displayProblemInChat(problemText) {
     const note = document.createElement('div');
+    note.classList.add('chat-problem-note'); // משתמש בקלאס מה-CSS
     
+    // עיצוב כפוי לגיבוי
     note.style.backgroundColor = "#FFF59D"; 
     note.style.color = "#333";
     note.style.padding = "20px";
     note.style.borderRadius = "2px";
-    note.style.fontSize = "1.2rem";
-    note.style.fontWeight = "500";
     note.style.width = "85%";
     note.style.margin = "15px auto";
-    note.style.transform = "rotate(-1deg)";
-    note.style.boxShadow = "0 3px 10px rgba(0,0,0,0.1)";
     note.style.textAlign = "center";
-    note.style.position = "relative";
     note.style.alignSelf = "center";
+    note.style.transform = "rotate(-1deg)";
     
     note.innerHTML = `<div style="position:absolute; top:-15px; right:50%; font-size:24px;">📍</div>${problemText}`;
     
@@ -204,13 +202,14 @@ class MathProblemGuidingBot {
     }
     
     startConversationLogic() {
-        problemNote.classList.add('hidden'); 
+        problemNote.classList.add('hidden'); // הסתרת הפתק העליון
         
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה בשלושה שלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
     
+    // --- מעבר לבעיה הבאה ---
     loadNextProblem() {
         this.currentProblemIndex++;
         
@@ -261,7 +260,7 @@ class MathProblemGuidingBot {
             
             chatWindow.innerHTML = ''; 
             problemNoteText.innerText = this.currentProblem.question;
-            problemNote.classList.remove('hidden'); 
+            problemNote.classList.remove('hidden'); // הפתק עולה למעלה
             
             this.currentStep = 'q1_ask';
             this._displayCurrentGuidingQuestion();
@@ -378,9 +377,7 @@ class MathProblemGuidingBot {
             this.errorCount++;
             this.updateStars(questionCode, false); 
             
-            // --- תיקון מגדרי וטקסטואלי כאן ---
             const clarificationText = this.currentProblem.clarifications[questionCode];
-            
             const startPrefix = (studentGender === 'boy') ? "כיוון יפה! בוא נדייק" : "כיוון יפה! בואי נדייק";
             const tryAgainText = (studentGender === 'boy') ? "נסה לכתוב את זה עכשיו:" : "נסי לכתוב את זה עכשיו:";
             
