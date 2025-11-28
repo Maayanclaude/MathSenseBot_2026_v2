@@ -35,16 +35,58 @@ body { font-family: var(--font-family); direction: rtl; background: var(--bg-col
 .start-btn { background: var(--primary-color); color: white; border: none; padding: 15px 60px; font-size: 24px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(106, 27, 154, 0.3); }
 .start-btn:hover { transform: scale(1.05); }
 
-/* מסך 3 */
-.app-main-container { width: 95%; max-width: 1200px; height: 95vh; background: white; border-radius: 20px; display: flex; overflow: hidden; }
+//* --- מסך 3: צ'אט (עיצוב מעודכן למיקום וגודל אחיד) --- */
+.app-main-container { 
+    width: 95%; 
+    max-width: 1200px; 
+    height: 95vh; 
+    background: white; 
+    border-radius: 20px; 
+    display: flex; 
+    overflow: hidden; 
+}
+
 .right-panel { 
     flex: 1; 
     background: linear-gradient(180deg, #fff 0%, #F3E5F5 100%); 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: flex-end; 
+    
+    /* --- השינוי הגדול: מרכוז אנכי --- */
+    justify-content: center; /* ממקם את מתי במרכז הגובה */
     position: relative; 
+}
+
+.large-character { 
+    /* --- גודל אחיד לכל הדמויות --- */
+    height: 60vh; /* גובה קבוע יחסית למסך (60%) */
+    width: auto;  /* הרוחב יסתדר אוטומטית כדי לא למעוך אותה */
+    max-width: 90%; /* שלא תצא מהמסגרת אם היא רחבה מדי */
+    object-fit: contain; 
+    
+    /* הרמה קלה למעלה כדי שהעיניים שלה יהיו מול הצ'אט */
+    margin-bottom: 20px; 
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); /* צל עדין ליופי */
+}
+
+/* כוכב מוחזק ביד (מותאם למיקום החדש) */
+.held-star {
+    position: absolute;
+    /* צריך לשחק עם המספרים האלה כי מתי זזה למעלה */
+    bottom: 40%; /* הרמתי את הכוכב כי היד שלה עלתה */
+    right: 50%; 
+    transform: translateX(60%); /* הזזה קלה הצידה */
+    width: 90px; 
+    height: auto; 
+    z-index: 20;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+    animation: float-star 2s ease-in-out infinite;
+}
+
+@keyframes float-star { 
+    0%, 100% { transform: translateX(60%) translateY(0); } 
+    50% { transform: translateX(60%) translateY(-10px); } 
 }
 .large-character { width: 100%; max-width: 350px; height: auto; object-fit: contain; margin-bottom: -10px; }
 
