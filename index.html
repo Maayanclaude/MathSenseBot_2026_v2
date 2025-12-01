@@ -4,61 +4,28 @@
   <meta charset="UTF-8">
   <title>מת-מתי: ממילים למתמטיקה</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
-
   <style>
     .mic-btn {
-        background-color: #4CAF50; /* ירוק */
-        border: none;
-        color: white;
-        padding: 0;
-        text-align: center;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        cursor: pointer;
-        border-radius: 50%; /* עיגול */
-        width: 45px;
-        height: 45px;
-        transition: background-color 0.3s;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        margin-right: 5px; 
+        background-color: #4CAF50; border: none; color: white; padding: 0;
+        text-align: center; text-decoration: none; display: flex; align-items: center;
+        justify-content: center; font-size: 24px; cursor: pointer; border-radius: 50%;
+        width: 45px; height: 45px; transition: background-color 0.3s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); margin-right: 5px; 
     }
-
-    .mic-btn:hover {
-        background-color: #45a049;
-    }
-
-    .mic-btn.recording {
-        background-color: #ff4444;
-        animation: pulse 1.5s infinite;
-    }
-
+    .mic-btn:hover { background-color: #45a049; }
+    .mic-btn.recording { background-color: #ff4444; animation: pulse 1.5s infinite; }
     @keyframes pulse {
         0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
         70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
         100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
-
-    .input-area {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    #send-button {
-        height: 45px;
-    }
+    .input-area { display: flex; align-items: center; gap: 10px; padding: 10px; }
+    #send-button { height: 45px; }
   </style>
 </head>
-
 <body>
-
   <div id="login-screen" class="login-screen">
       <div class="login-box">
           <img src="images/main title.png" alt="מת-מתי" class="login-logo">
@@ -85,13 +52,10 @@
   </div>
 
   <div id="app-main-container" class="app-main-container hidden">
-    
     <div class="right-panel">
         <img id="large-avatar" src="MatiCharacter/Mati_inviting_action.png" alt="מתי" class="large-character">
     </div>
-
     <div class="left-panel">
-        
         <div class="top-bar">
             <div class="stars-container">
                 <img src="icons/star_empty.png" class="star" id="star-0">
@@ -99,14 +63,11 @@
                 <img src="icons/star_empty.png" class="star" id="star-2">
             </div>
         </div>
-
         <div id="problem-note" class="problem-note hidden">
             <div class="pin">📍</div>
             <p id="problem-note-text">כאן תופיע הבעיה...</p>
         </div>
-
         <div id="chat-window" class="chat-window"></div>
-
         <div class="input-area">
             <input type="text" id="user-input" placeholder="כתוב/י או הקלט/י את תשובתך..." autocomplete="off">
             <button id="mic-btn" class="mic-btn">🎤</button>
@@ -118,74 +79,48 @@
   <script src="script.js"></script>
 
   <script>
-    // 1. הגדרת הכתובת החדשה של גוגל סקריפט
+    // הגדרת הכתובת החדשה של גוגל סקריפט
     const NEW_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFRtc_gmtP4qQ0Coo9LE2VFQjHswKMukBjf72GonV6bxcSk9hEfSBeScA5qze5iItoog/exec';
 
-    // פונקציית דריסה כדי להבטיח שהנתונים יישלחו לכתובת החדשה
+    // פונקציית דריסה לשליחת נתונים
     window.sendDataToGoogleSheet = function(logData, userId) {
         let currentLevel = "General";
         try {
-             if (typeof questions !== 'undefined' && typeof currentQuestionIndex !== 'undefined' && questions[currentQuestionIndex]) {
-                currentLevel = questions[currentQuestionIndex].level || "General";
+             if (typeof window.bot !== 'undefined' && window.bot.currentProblem) {
+                currentLevel = window.bot.currentProblem.level || "General";
             }
-        } catch (e) {
-            console.log("Error getting level:", e);
-        }
+        } catch (e) { console.log("Error getting level:", e); }
 
-        const dataToSend = {
-            logData: logData,
-            userId: userId,
-            level: currentLevel 
-        };
+        const dataToSend = { logData: logData, userId: userId, level: currentLevel };
 
         fetch(NEW_GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSend)
-        })
-        .then(response => console.log('Data sent to new Google Sheet URL (Level included)'))
-        .catch(error => console.error('Error sending data:', error));
+        }).then(r => console.log('Data sent')).catch(e => console.error('Error:', e));
     };
 
-    // 2. לוגיקה של המיקרופון - תוקן למניעת התנגשות עם script.js
+    // לוגיקה של המיקרופון (השם כאן שונה כדי למנוע התנגשות!)
     const micBtn = document.getElementById('mic-btn');
-    
-    // *** התיקון הקריטי: שימוש בשם משתנה חדש ***
-    const inputFieldForMic = document.getElementById('user-input');
+    const inputFieldForMic = document.getElementById('user-input'); // <--- כאן השינוי החשוב
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
     if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'he-IL'; 
-        recognition.continuous = false; 
+        recognition.lang = 'he-IL'; recognition.continuous = false; 
 
         micBtn.addEventListener('click', () => {
-            if (micBtn.classList.contains('recording')) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
+            if (micBtn.classList.contains('recording')) recognition.stop();
+            else recognition.start();
         });
-
-        recognition.onstart = () => {
-            micBtn.classList.add('recording'); 
-        };
-
-        recognition.onend = () => {
-            micBtn.classList.remove('recording'); 
-        };
-
+        recognition.onstart = () => micBtn.classList.add('recording');
+        recognition.onend = () => micBtn.classList.remove('recording');
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             inputFieldForMic.value = transcript; 
         };
     } else {
         micBtn.style.display = 'none'; 
-        console.log("דפדפן זה לא תומך בזיהוי דיבור");
     }
   </script>
 </body>
