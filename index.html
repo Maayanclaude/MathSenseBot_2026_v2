@@ -26,14 +26,13 @@
         height: 45px;
         transition: background-color 0.3s;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        margin-right: 5px; /* רווח קטן מהכפתור שליחה */
+        margin-right: 5px; 
     }
 
     .mic-btn:hover {
         background-color: #45a049;
     }
 
-    /* כיתת עיצוב למצב הקלטה - יהבהב באדום */
     .mic-btn.recording {
         background-color: #ff4444;
         animation: pulse 1.5s infinite;
@@ -45,7 +44,6 @@
         100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
 
-    /* סידור אזור ההקלדה */
     .input-area {
         display: flex;
         align-items: center;
@@ -53,7 +51,6 @@
         padding: 10px;
     }
     
-    /* התאמות לכפתור שלח המקורי שייראה טוב ליד המיקרופון */
     #send-button {
         height: 45px;
     }
@@ -112,9 +109,7 @@
 
         <div class="input-area">
             <input type="text" id="user-input" placeholder="כתוב/י או הקלט/י את תשובתך..." autocomplete="off">
-            
             <button id="mic-btn" class="mic-btn">🎤</button>
-            
             <button id="send-button">שלח/י</button>
         </div>
     </div>
@@ -129,7 +124,6 @@
     // פונקציית דריסה כדי להבטיח שהנתונים יישלחו לכתובת החדשה
     window.sendDataToGoogleSheet = function(logData, userId) {
         let currentLevel = "General";
-        // בדיקה זהירה יותר כדי לא לקרוס אם המשתנים לא קיימים
         try {
              if (typeof questions !== 'undefined' && typeof currentQuestionIndex !== 'undefined' && questions[currentQuestionIndex]) {
                 currentLevel = questions[currentQuestionIndex].level || "General";
@@ -156,18 +150,18 @@
         .catch(error => console.error('Error sending data:', error));
     };
 
-    // 2. לוגיקה של המיקרופון - תיקון שמות משתנים למניעת התנגשות
+    // 2. לוגיקה של המיקרופון - תוקן למניעת התנגשות עם script.js
     const micBtn = document.getElementById('mic-btn');
-    // שינינו את השם כאן כדי לא להתנגש עם הסקריפט המקורי
+    
+    // *** התיקון הקריטי: שימוש בשם משתנה חדש ***
     const inputFieldForMic = document.getElementById('user-input');
 
-    // בדיקה אם הדפדפן תומך בזיהוי דיבור
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'he-IL'; // עברית
-        recognition.continuous = false; // להפסיק אחרי משפט אחד
+        recognition.lang = 'he-IL'; 
+        recognition.continuous = false; 
 
         micBtn.addEventListener('click', () => {
             if (micBtn.classList.contains('recording')) {
@@ -178,19 +172,19 @@
         });
 
         recognition.onstart = () => {
-            micBtn.classList.add('recording'); // שינוי צבע לאדום
+            micBtn.classList.add('recording'); 
         };
 
         recognition.onend = () => {
-            micBtn.classList.remove('recording'); // חזרה לירוק
+            micBtn.classList.remove('recording'); 
         };
 
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            inputFieldForMic.value = transcript; // הכנסת הטקסט לתיבה
+            inputFieldForMic.value = transcript; 
         };
     } else {
-        micBtn.style.display = 'none'; // הסתרת הכפתור אם הדפדפן לא תומך
+        micBtn.style.display = 'none'; 
         console.log("דפדפן זה לא תומך בזיהוי דיבור");
     }
   </script>
