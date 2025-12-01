@@ -1,6 +1,6 @@
-console.log("Script Loaded: FINAL FIXED VERSION (Correct Order)");
+console.log("Script Loaded: SAFE & FINAL VERSION");
 
-// --- 1. הגדרת המחלקה (המוח של הבוט) חייבת להיות ראשונה ---
+// --- 1. הגדרת המוח של הבוט (Class) ---
 class MathProblemGuidingBot {
     constructor() {
         this.problems = [];
@@ -10,7 +10,7 @@ class MathProblemGuidingBot {
         this.questionStep = 'א';    
         this.errorCount = 0; 
         
-        // טקסטים לשלבים
+        // הטקסטים המדויקים שביקשת (3 שלבים)
         this.genderedTexts = {
             'step_A': { 
                 boy: "שלב א' - זיהוי: מה עלי למצוא בשאלה?", 
@@ -18,13 +18,13 @@ class MathProblemGuidingBot {
                 icon: 'magnifying_glass.png' 
             },
             'step_B': { 
-                boy: "שלב ב' - אסטרטגיה: מה הנתונים ומה התשובה?", 
-                girl: "שלב ב' - אסטרטגיה: מה הנתונים ומה התשובה?", 
+                boy: "שלב ב' - אסטרטגיה: מה אני כבר יודע (אילו נתונים יש לי)?", 
+                girl: "שלב ב' - אסטרטגיה: מה אני כבר יודעת (אילו נתונים יש לי)?", 
                 icon: 'list.png' 
             },
             'step_C': { 
-                boy: "שלב ג': מה אני צריך לעשות כדי לדעת?", 
-                girl: "שלב ג': מה אני צריכה לעשות כדי לדעת?", 
+                boy: "שלב ג' - פתרון: מה אני צריך לעשות כדי לדעת?", 
+                girl: "שלב ג' - פתרון: מה אני צריכה לעשות כדי לדעת?", 
                 icon: 'Missing_puzzle.png' 
             }
         };
@@ -62,7 +62,7 @@ class MathProblemGuidingBot {
         chatWindow.innerHTML = ''; this.resetStars(); this.errorCount = 0;
         if (problemNote) problemNote.classList.add('hidden'); 
         
-        this.questionStep = 'א'; // תמיד מתחילים בא
+        this.questionStep = 'א'; // איפוס לשלב א
 
         const transitionText = (studentGender === 'boy') ? "נהדר! הנה הבעיה הבאה.<br>קרא אותה, וכשתהיה מוכן לחץ על הכפתור." : "נהדר! הנה הבעיה הבאה.<br>קראי אותה, וכשתהיי מוכנה לחצי על הכפתור.";
         displayMessage(transitionText, 'bot', 'welcoming');
@@ -142,7 +142,7 @@ class MathProblemGuidingBot {
              const data = this.genderedTexts['step_B'];
              textToShow = (studentGender === 'girl') ? data.girl : data.boy; iconName = data.icon;
         } else {
-             // שלב ג (אם קיים)
+             // שלב ג
              const data = this.genderedTexts['step_C'];
              textToShow = (studentGender === 'girl') ? data.girl : data.boy; iconName = data.icon;
         }
@@ -154,10 +154,10 @@ class MathProblemGuidingBot {
     _processAnswer(reply) {
         if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Ans: ${reply} (Step: ${this.questionStep})`, currentUserID);
         
-        // מיפוי חכם: אם אנחנו בשלב ג', משתמשים במילות מפתח של ב' אם אין ג'
+        // מיפוי חכם למילות מפתח
         let jsonKey = this.questionStep;
         if (this.questionStep === 'ג' && (!this.currentProblem.keywords['ג'])) {
-             jsonKey = 'ב'; 
+             jsonKey = 'ב'; // ברירת מחדל אם אין מילות מפתח לשלב ג ב-JSON
         }
 
         let keywords = [];
@@ -184,7 +184,6 @@ class MathProblemGuidingBot {
                 setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
             }
             else {
-                // סיום שלב ג'
                 this.updateStars('ג', true);
                 this._showFinalSummary();
             }
@@ -192,6 +191,7 @@ class MathProblemGuidingBot {
         } else {
             this.errorCount++; playSound('error');
             
+            // שליפת הרמז הספציפי מקובץ השאלות
             let clarification = "נסה לקרוא שוב את השאלה...";
             if (this.currentProblem.clarifications && this.currentProblem.clarifications[jsonKey]) {
                 clarification = this.currentProblem.clarifications[jsonKey];
@@ -224,7 +224,7 @@ class MathProblemGuidingBot {
     }
 }
 
-// --- 2. משתנים גלובליים וטעינת העמוד (אחרי שהמחלקה הוגדרה) ---
+// --- 2. משתנים גלובליים וטעינת העמוד (מתבצע רק אחרי שהמחלקה למעלה הוגדרה) ---
 let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, largeAvatar, problemNote, problemNoteText;
 let loginBtn, participantInput;
 let isBotTyping = false;
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   problemNote = document.getElementById('problem-note');
   problemNoteText = document.getElementById('problem-note-text');
 
-  // אתחול הבוט (עכשיו זה יעבוד כי המחלקה כבר הוגדרה למעלה)
+  // יצירת הבוט - עכשיו זה בטוח כי המחלקה מוגדרת למעלה
   window.bot = new MathProblemGuidingBot();
   await window.bot.loadProblemsFromFile();
 

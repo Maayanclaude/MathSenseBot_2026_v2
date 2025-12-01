@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  
   <style>
+    /* עיצוב כפתור המיקרופון */
     .mic-btn {
         background-color: #4CAF50; border: none; color: white; padding: 0;
         text-align: center; text-decoration: none; display: flex; align-items: center;
@@ -26,6 +28,7 @@
   </style>
 </head>
 <body>
+
   <div id="login-screen" class="login-screen">
       <div class="login-box">
           <img src="images/main title.png" alt="מת-מתי" class="login-logo">
@@ -76,20 +79,19 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-
   <script>
-    // הגדרת הכתובת החדשה של גוגל סקריפט
+    // 1. הגדרת הכתובת לטבלה
     const NEW_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFRtc_gmtP4qQ0Coo9LE2VFQjHswKMukBjf72GonV6bxcSk9hEfSBeScA5qze5iItoog/exec';
 
-    // פונקציית דריסה לשליחת נתונים
+    // 2. פונקציית שליחת הנתונים
     window.sendDataToGoogleSheet = function(logData, userId) {
         let currentLevel = "General";
         try {
-             if (typeof window.bot !== 'undefined' && window.bot.currentProblem) {
+             // מנסה לשלוף את הרמה מהבוט בצורה בטוחה
+             if (window.bot && window.bot.currentProblem) {
                 currentLevel = window.bot.currentProblem.level || "General";
             }
-        } catch (e) { console.log("Error getting level:", e); }
+        } catch (e) { console.log("Level error:", e); }
 
         const dataToSend = { logData: logData, userId: userId, level: currentLevel };
 
@@ -100,28 +102,36 @@
         }).then(r => console.log('Data sent')).catch(e => console.error('Error:', e));
     };
 
-    // לוגיקה של המיקרופון (השם כאן שונה כדי למנוע התנגשות!)
-    const micBtn = document.getElementById('mic-btn');
-    const inputFieldForMic = document.getElementById('user-input'); // <--- כאן השינוי החשוב
+    // 3. הפעלת המיקרופון
+    const myMicBtn = document.getElementById('mic-btn');
+    const myInputField = document.getElementById('user-input');
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'he-IL'; recognition.continuous = false; 
+        recognition.lang = 'he-IL'; 
+        recognition.continuous = false; 
 
-        micBtn.addEventListener('click', () => {
-            if (micBtn.classList.contains('recording')) recognition.stop();
-            else recognition.start();
+        myMicBtn.addEventListener('click', () => {
+            if (myMicBtn.classList.contains('recording')) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
         });
-        recognition.onstart = () => micBtn.classList.add('recording');
-        recognition.onend = () => micBtn.classList.remove('recording');
+
+        recognition.onstart = () => myMicBtn.classList.add('recording');
+        recognition.onend = () => myMicBtn.classList.remove('recording');
+        
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            inputFieldForMic.value = transcript; 
+            myInputField.value = transcript; 
         };
     } else {
-        micBtn.style.display = 'none'; 
+        myMicBtn.style.display = 'none'; // הסתרה אם הדפדפן לא תומך
     }
   </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
