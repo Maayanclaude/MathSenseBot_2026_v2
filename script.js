@@ -29,7 +29,7 @@ class MathProblemGuidingBot {
             }
         };
 
-        this.positiveResponses = ["מצוין!", "כל הכבוד!", "בדיוק!", "אלופ/ה!", "תשובה נהדרת!"];
+        this.positiveResponses = ["מצוין!", "כל הכבוד!", "בדיוק!", "יפה מאוד!", "תשובה נהדרת!"];
     }
 
     async loadProblemsFromFile() {
@@ -52,7 +52,7 @@ class MathProblemGuidingBot {
         if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Finished Question ${this.currentProblemIndex + 1}`, currentUserID);
         this.currentProblemIndex++;
         if (this.currentProblemIndex >= this.problems.length) {
-            displayMessage("כל הכבוד! סיימת את כל הבעיות להיום! 🏆", 'bot', 'excited');
+            displayMessage("כל הכבוד! הצלחת לעבור ממילים למספרים בשלושה שלבים! 🏆", 'bot', 'excited');
             if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet("Finished All Questions", currentUserID);
             return;
         }
