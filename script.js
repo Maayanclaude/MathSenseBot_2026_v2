@@ -1,4 +1,4 @@
-console.log("Script Loaded: FINAL VERSION - Verified");
+console.log("Script Loaded: PRESENTATION FINAL (3 Steps + Varied Feedback + Mic)");
 
 // משתנים גלובליים
 let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, largeAvatar, problemNote, problemNoteText;
@@ -31,7 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   startButton = document.getElementById('start-button');
   appMainContainer = document.getElementById('app-main-container');
   chatWindow = document.getElementById('chat-window');
+  
+  // זיהוי אלמנטים (כולל המיקרופון)
   userInput = document.getElementById('user-input');
+
   sendButton = document.getElementById('send-button');
   largeAvatar = document.getElementById('large-avatar');
   problemNote = document.getElementById('problem-note');
@@ -129,10 +132,29 @@ class MathProblemGuidingBot {
         this.currentStep = 'intro'; 
         this.questionStep = 'א';    
         this.errorCount = 0; 
+        
+        // הטקסטים של 3 השלבים
         this.genderedTexts = {
-            'step_A': { boy: "בוא נתחיל מההתחלה: מה אנחנו צריכים למצוא?", girl: "בואי נתחיל מההתחלה: מה אנחנו צריכות למצוא?", icon: 'magnifying_glass.png' },
-            'step_B': { boy: "מעולה. עכשיו, מה התשובה הסופית?", girl: "מעולה. עכשיו, מה התשובה הסופית?", icon: 'list.png' }
+            'step_A': { 
+                boy: "מה עלי למצוא?", 
+                girl: "מה עלי למצוא?", 
+                icon: 'magnifying_glass.png' 
+            },
+            'step_B': { 
+                boy: "מה אני כבר יודע (אילו נתונים יש לי)?", 
+                girl: "מה אני כבר יודעת (אילו נתונים יש לי)?", 
+                icon: 'list.png' 
+            },
+            'step_C': { 
+                boy: "מה אני צריך לעשות כדי לדעת?", 
+                girl: "מה אני צריכה לעשות כדי לדעת?", 
+                icon: 'Missing_puzzle.png' 
+            }
         };
+
+        // בנק תגובות מגוונות (כדי לא להישמע רובוטי)
+        this.positiveResponses = ["מצוין!", "כל הכבוד!", "בדיוק!", "אלופ/ה!", "תשובה נהדרת!"];
+        this.supportiveResponses = ["כיוון יפה, אבל...", "לא בדיוק, אבל...", "קרוב, בוא ננסה שוב...", "שים לב לפרטים..."];
     }
 
     async loadProblemsFromFile() {
@@ -146,7 +168,7 @@ class MathProblemGuidingBot {
     
     startConversationLogic() {
         if (problemNote) problemNote.classList.add('hidden'); 
-        const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות במתמטיקה.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
+        const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות בשיטת השלבים.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
@@ -163,8 +185,7 @@ class MathProblemGuidingBot {
         chatWindow.innerHTML = ''; this.resetStars(); this.errorCount = 0;
         if (problemNote) problemNote.classList.add('hidden'); 
         
-        if (this.currentProblem.keywords && this.currentProblem.keywords['א']) this.questionStep = 'א';
-        else this.questionStep = 'ב';
+        this.questionStep = 'א'; // מתחילים תמיד מ-א
 
         const transitionText = (studentGender === 'boy') ? "נהדר! הנה הבעיה הבאה.<br>קרא אותה, וכשתהיה מוכן לחץ על הכפתור." : "נהדר! הנה הבעיה הבאה.<br>קראי אותה, וכשתהיי מוכנה לחצי על הכפתור.";
         displayMessage(transitionText, 'bot', 'welcoming');
@@ -203,8 +224,7 @@ class MathProblemGuidingBot {
         setTimeout(() => {
             const readyText = studentGender === 'boy' ? "נהדר, הנה הבעיה הראשונה!<br>קרא אותה, וכשתהיה מוכן, לחץ על הכפתור!" : "נהדר, הנה הבעיה הראשונה!<br>קראי אותה, וכשתהיי מוכנה, לחצי על הכפתור!";
             displayMessage(readyText, 'bot', 'ready'); 
-            if (this.currentProblem.keywords && this.currentProblem.keywords['א']) this.questionStep = 'א';
-            else this.questionStep = 'ב';
+            this.questionStep = 'א';
             setTimeout(() => {
                 displayProblemInChat(this.currentProblem.question);
                 updateAvatar('inviting'); 
@@ -237,61 +257,32 @@ class MathProblemGuidingBot {
     _displayCurrentGuidingQuestion() {
         this.errorCount = 0; stepStartTime = Date.now();
         let textToShow = ""; let iconName = "";
+        
         if (this.questionStep === 'א') {
              const data = this.genderedTexts['step_A'];
              textToShow = (studentGender === 'girl') ? data.girl : data.boy; iconName = data.icon;
+        } else if (this.questionStep === 'ב') {
+             const data = this.genderedTexts['step_B'];
+             textToShow = (studentGender === 'girl') ? data.girl : data.boy; iconName = data.icon;
         } else {
-             if (this.currentProblem.level === "רמה 1") textToShow = "מה התשובה לשאלה?";
-             else {
-                 const data = this.genderedTexts['step_B'];
-                 textToShow = (studentGender === 'girl') ? data.girl : data.boy;
-             }
-             iconName = 'list.png';
+             // שלב ג'
+             const data = this.genderedTexts['step_C'];
+             textToShow = (studentGender === 'girl') ? data.girl : data.boy; iconName = data.icon;
         }
+
         const questionHtml = `<div class="guided-question"><img src="icons/${iconName}"><span>${textToShow}</span></div>`;
         displayMessage(questionHtml, 'bot', 'thinking');
     }
     
     _processAnswer(reply) {
         if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Ans: ${reply} (Step: ${this.questionStep})`, currentUserID);
-        let keywords = [];
-        if (this.currentProblem.keywords && this.currentProblem.keywords[this.questionStep]) keywords = this.currentProblem.keywords[this.questionStep];
         
-        const isCorrect = this._checkAnswer(reply, keywords);
-
-        if (isCorrect) {
-            this.updateStars(this.questionStep, true); playSound('success-chime');
-            if (this.questionStep === 'א') {
-                const goodJob = (studentGender === 'girl') ? "מצוינת! זיהית נכון." : "מצוין! זיהית נכון.";
-                displayMessage(goodJob, 'bot', 'success');
-                this.questionStep = 'ב';
-                setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
-            } else this._showFinalSummary();
-        } else {
-            this.errorCount++; playSound('error');
-            let clarification = "נסה שוב...";
-            if (this.currentProblem.clarifications && this.currentProblem.clarifications[this.questionStep]) clarification = this.currentProblem.clarifications[this.questionStep];
-            const startPrefix = "כיוון יפה, אבל...";
-            displayMessage(`${startPrefix} ${clarification}`, 'bot', 'support');
+        // מיפוי חכם: שלב ג' נבדק מול נתוני ב' (כי ב-JSON יש רק ב) או מול ג' אם קיים
+        let jsonKey = this.questionStep;
+        if (this.questionStep === 'ג' && (!this.currentProblem.keywords['ג'])) {
+             jsonKey = 'ב'; 
         }
-    }
 
-    _showFinalSummary() {
-        playSound('yeah');
-        const summaryHtml = `<div class="summary-box"><h3>כל הכבוד! התשובה נכונה! 🎉</h3><br><strong>מוכנ.ה לשאלה הבאה?</strong></div>`;
-        displayMessage(summaryHtml, 'bot', 'excited');
-        setTimeout(() => displayChoiceButtons([{ label: "לבעיה הבאה ⬅️", value: "next_problem" }]), 1500);
-    }
-    
-    _checkAnswer(reply, keywords) {
-        if (!keywords || keywords.length === 0) return true; 
-        const normalizedReply = reply.toLowerCase().trim();
-        return keywords.some(keyword => normalizedReply.includes(keyword.toLowerCase()));
-    }
-    
-    updateStars(step, isCorrect) {
-        let starIndex = 0; if (step === 'ב') starIndex = 1;
-        const starElement = document.getElementById(`star-${starIndex}`);
-        if (starElement) starElement.src = isCorrect ? 'icons/star_gold.png' : 'icons/star_empty.png'; 
-    }
-}
+        let keywords = [];
+        if (this.currentProblem.keywords && this.currentProblem.keywords[jsonKey]) {
+            keywords = this
