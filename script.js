@@ -226,4 +226,153 @@ class MathProblemGuidingBot {
         // הסיכום היפה והמקורי שביקשת
         const summaryHtml = `
             <div class="summary-box">
-                <h3>כל הכבוד! פתרת את
+                <h3>כל הכבוד! פתרת את הבעיה בשלושה צעדים:</h3>
+                <ul style="list-style: none; padding: 0; text-align: right;">
+                    <li style="margin-bottom: 8px;">🔍 ${studentGender === 'girl' ? 'מה אני צריכה למצוא?' : 'מה אני צריך למצוא?'}</li>
+                    <li style="margin-bottom: 8px;">📋 ${studentGender === 'girl' ? 'מה אני יודעת?' : 'מה אני יודע?'}</li>
+                    <li style="margin-bottom: 8px;">🧩 מה עליי לעשות כדי למצוא את הפתרון?</li>
+                </ul>
+                <br>
+                <strong>${studentGender === 'girl' ? 'שמרי' : 'שמור'} על השגרה הזו – היא תעזור לך גם בשאלות הבאות!</strong>
+            </div>
+        `;
+        
+        displayMessage(summaryHtml, 'bot', 'excited');
+        setTimeout(() => displayChoiceButtons([{ label: "לבעיה הבאה ⬅️", value: "next_problem" }]), 2500);
+    }
+    
+    _checkAnswer(reply, keywords) {
+        if (!keywords || keywords.length === 0) return true; 
+        const normalizedReply = reply.toLowerCase().trim();
+        return keywords.some(keyword => normalizedReply.includes(keyword.toLowerCase()));
+    }
+    
+    updateStars(step, isCorrect) {
+        let starIndex = 0; 
+        if (step === 'ב') starIndex = 1;
+        if (step === 'ג') starIndex = 2;
+        const starElement = document.getElementById(`star-${starIndex}`);
+        if (starElement) starElement.src = isCorrect ? 'icons/star_gold.png' : 'icons/star_empty.png'; 
+    }
+}
+
+// --- 2. משתנים גלובליים והפעלה ---
+let startButton, welcomeScreen, loginScreen, appMainContainer, chatWindow, userInput, sendButton, largeAvatar, problemNote, problemNoteText;
+let loginBtn, participantInput;
+let isBotTyping = false;
+let currentUserID = localStorage.getItem('mati_participant_id') || "";
+let studentName = ""; 
+let studentGender = ""; 
+let stepStartTime = 0;
+
+const matiExpressions = {
+    ready: "Mati_ready.png", welcoming: "Mati_welcoming.png", support: "Mati_support.png",
+    inviting: "Mati_inviting_action.png", confident: "Mati_confident.png", compliment: "Mati_compliment.png",
+    confuse: "Mati_confuse.png", thinking: "Mati_calculates.png", empathic: "Mati_empathic.png",
+    excited: "Mati_excited.png", success: "Mati_success.png", hi: "Mati_hi.png"
+};
+
+function playSound(soundName) {
+    try {
+        const audio = new Audio(`sounds/${soundName}.mp3`);
+        audio.volume = 0.6; audio.play().catch(e => {});
+    } catch (e) {}
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  loginBtn = document.getElementById('login-btn');
+  participantInput = document.getElementById('participant-id-input');
+  loginScreen = document.getElementById('login-screen');
+  welcomeScreen = document.getElementById('welcome-screen');
+  startButton = document.getElementById('start-button');
+  appMainContainer = document.getElementById('app-main-container');
+  chatWindow = document.getElementById('chat-window');
+  userInput = document.getElementById('user-input');
+  sendButton = document.getElementById('send-button');
+  largeAvatar = document.getElementById('large-avatar');
+  problemNote = document.getElementById('problem-note');
+  problemNoteText = document.getElementById('problem-note-text');
+
+  window.bot = new MathProblemGuidingBot();
+  await window.bot.loadProblemsFromFile();
+
+  if (currentUserID && participantInput) participantInput.value = currentUserID;
+
+  if (loginBtn) {
+      loginBtn.addEventListener('click', () => {
+          const idVal = participantInput.value.trim();
+          if (idVal.length > 0) {
+              currentUserID = idVal;
+              localStorage.setItem('mati_participant_id', currentUserID);
+              loginScreen.classList.add('hidden');
+              welcomeScreen.classList.remove('hidden');
+              if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet("Login", currentUserID);
+          } else { alert("נא להזין קוד משתתף"); }
+      });
+  }
+
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      welcomeScreen.classList.add('hidden');
+      appMainContainer.classList.remove('hidden');
+      window.bot.startConversationLogic();
+    });
+  }
+
+  if (sendButton) {
+    sendButton.addEventListener('click', () => {
+      const reply = userInput.value.trim();
+      if (reply) window.bot.handleUserReply(reply);
+    });
+  }
+  
+  if (userInput) {
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendButton.click();
+    });
+  }
+});
+
+function updateAvatar(expressionKey) {
+    if (matiExpressions[expressionKey] && largeAvatar) largeAvatar.src = `MatiCharacter/${matiExpressions[expressionKey]}`; 
+}
+
+function displayMessage(text, sender, expression = 'neutral') {
+    if (!chatWindow) return;
+    if (sender === 'bot') updateAvatar(expression);
+    const msg = document.createElement('div');
+    msg.classList.add('chat-message', sender + '-message');
+    msg.innerHTML = text; 
+    chatWindow.appendChild(msg);
+    setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 50);
+}
+
+function displayProblemInChat(problemText) {
+    const note = document.createElement('div');
+    note.classList.add('chat-problem-note'); 
+    note.style.backgroundColor = "#FFF59D"; note.style.color = "#333"; note.style.padding = "20px";
+    note.style.borderRadius = "2px"; note.style.width = "85%"; note.style.margin = "15px auto";
+    note.style.textAlign = "center"; note.style.alignSelf = "center"; note.style.transform = "rotate(-1deg)";
+    note.innerHTML = `<div style="position:absolute; top:-15px; right:50%; font-size:24px;">📍</div>${problemText}`;
+    chatWindow.appendChild(note);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function displayChoiceButtons(options) {
+    const btnContainer = document.createElement('div');
+    btnContainer.classList.add('choice-btn-container');
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.classList.add('choice-btn');
+        btn.innerText = opt.label;
+        if (opt.value === 'next_problem') {
+            btn.classList.add('next-problem-btn'); 
+            btn.onclick = () => window.bot.loadNextProblem();
+        } else {
+            btn.onclick = () => window.bot.handleGenderSelection(opt.value);
+        }
+        btnContainer.appendChild(btn);
+    });
+    chatWindow.appendChild(btnContainer);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
