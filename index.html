@@ -6,8 +6,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <link rel="stylesheet" href="style.css">
-  
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    .mic-btn {
+        background-color: #4CAF50; /* ירוק */
+        border: none;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 50%; /* עיגול */
+        width: 50px;
+        height: 50px;
+        transition: background-color 0.3s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .mic-btn:hover {
+        background-color: #45a049;
+    }
+
+    /* כיתת עיצוב למצב הקלטה - יהבהב באדום */
+    .mic-btn.recording {
+        background-color: #ff4444;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+    }
+
+    /* סידור אזור ההקלדה שיהיה מקום למיקרופון */
+    .input-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+  </style>
 </head>
 
 <body>
@@ -61,12 +103,85 @@
         <div id="chat-window" class="chat-window"></div>
 
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="כתוב/י את תשובתך כאן..." autocomplete="off">
+            <button id="mic-btn" class="mic-btn">🎤</button>
+            
+            <input type="text" id="user-input" placeholder="כתוב/י או הקלט/י את תשובתך..." autocomplete="off">
             <button id="send-button">שלח/י</button>
         </div>
     </div>
   </div>
 
   <script src="script.js"></script>
+
+  <script>
+    // 1. הגדרת הכתובת החדשה של גוגל סקריפט (מה שהוצאת עכשיו)
+    const NEW_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFRtc_gmtP4qQ0Coo9LE2VFQjHswKMukBjf72GonV6bxcSk9hEfSBeScA5qze5iItoog/exec';
+
+    // פונקציית דריסה כדי להבטיח שהנתונים יישלחו לכתובת החדשה
+    // (זה יחליף את הפונקציה הישנה ב-script.js אם היא קיימת)
+    window.sendDataToGoogleSheet = function(logData, userId) {
+        let currentLevel = "General";
+        // נסיון לשלוף את הרמה אם המשתנה questions קיים
+        if (typeof questions !== 'undefined' && typeof currentQuestionIndex !== 'undefined' && questions[currentQuestionIndex]) {
+            currentLevel = questions[currentQuestionIndex].level || "General";
+        }
+
+        const dataToSend = {
+            logData: logData,
+            userId: userId,
+            level: currentLevel 
+        };
+
+        fetch(NEW_GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend)
+        })
+        .then(response => console.log('Data sent to new Google Sheet URL (Level included)'))
+        .catch(error => console.error('Error sending data:', error));
+    };
+
+    // 2. לוגיקה של המיקרופון
+    const micBtn = document.getElementById('mic-btn');
+    const userInput = document.getElementById('user-input');
+
+    // בדיקה אם הדפדפן תומך בזיהוי דיבור
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'he-IL'; // עברית
+        recognition.continuous = false; // להפסיק אחרי משפט אחד
+
+        micBtn.addEventListener('click', () => {
+            if (micBtn.classList.contains('recording')) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+
+        recognition.onstart = () => {
+            micBtn.classList.add('recording'); // שינוי צבע לאדום
+        };
+
+        recognition.onend = () => {
+            micBtn.classList.remove('recording'); // חזרה לירוק
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript; // הכנסת הטקסט לתיבה
+            // אופציונלי: שליחה אוטומטית (אם רוצים)
+            // document.getElementById('send-button').click(); 
+        };
+    } else {
+        micBtn.style.display = 'none'; // הסתרת הכפתור אם הדפדפן לא תומך
+        console.log("דפדפן זה לא תומך בזיהוי דיבור");
+    }
+  </script>
 </body>
 </html>
