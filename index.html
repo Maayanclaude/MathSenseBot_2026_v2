@@ -13,18 +13,20 @@
         background-color: #4CAF50; /* ירוק */
         border: none;
         color: white;
-        padding: 10px;
+        padding: 0;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
-        font-size: 20px;
-        margin: 4px 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
         cursor: pointer;
         border-radius: 50%; /* עיגול */
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         transition: background-color 0.3s;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        margin-right: 5px; /* רווח קטן מהכפתור שליחה */
     }
 
     .mic-btn:hover {
@@ -43,11 +45,17 @@
         100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
 
-    /* סידור אזור ההקלדה שיהיה מקום למיקרופון */
+    /* סידור אזור ההקלדה */
     .input-area {
         display: flex;
         align-items: center;
         gap: 10px;
+        padding: 10px;
+    }
+    
+    /* התאמות לכפתור שלח המקורי שייראה טוב ליד המיקרופון */
+    #send-button {
+        height: 45px;
     }
   </style>
 </head>
@@ -103,9 +111,10 @@
         <div id="chat-window" class="chat-window"></div>
 
         <div class="input-area">
+            <input type="text" id="user-input" placeholder="כתוב/י או הקלט/י את תשובתך..." autocomplete="off">
+            
             <button id="mic-btn" class="mic-btn">🎤</button>
             
-            <input type="text" id="user-input" placeholder="כתוב/י או הקלט/י את תשובתך..." autocomplete="off">
             <button id="send-button">שלח/י</button>
         </div>
     </div>
@@ -114,16 +123,19 @@
   <script src="script.js"></script>
 
   <script>
-    // 1. הגדרת הכתובת החדשה של גוגל סקריפט (מה שהוצאת עכשיו)
+    // 1. הגדרת הכתובת החדשה של גוגל סקריפט
     const NEW_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFRtc_gmtP4qQ0Coo9LE2VFQjHswKMukBjf72GonV6bxcSk9hEfSBeScA5qze5iItoog/exec';
 
     // פונקציית דריסה כדי להבטיח שהנתונים יישלחו לכתובת החדשה
-    // (זה יחליף את הפונקציה הישנה ב-script.js אם היא קיימת)
     window.sendDataToGoogleSheet = function(logData, userId) {
         let currentLevel = "General";
-        // נסיון לשלוף את הרמה אם המשתנה questions קיים
-        if (typeof questions !== 'undefined' && typeof currentQuestionIndex !== 'undefined' && questions[currentQuestionIndex]) {
-            currentLevel = questions[currentQuestionIndex].level || "General";
+        // בדיקה זהירה יותר כדי לא לקרוס אם המשתנים לא קיימים
+        try {
+             if (typeof questions !== 'undefined' && typeof currentQuestionIndex !== 'undefined' && questions[currentQuestionIndex]) {
+                currentLevel = questions[currentQuestionIndex].level || "General";
+            }
+        } catch (e) {
+            console.log("Error getting level:", e);
         }
 
         const dataToSend = {
@@ -144,9 +156,10 @@
         .catch(error => console.error('Error sending data:', error));
     };
 
-    // 2. לוגיקה של המיקרופון
+    // 2. לוגיקה של המיקרופון - תיקון שמות משתנים למניעת התנגשות
     const micBtn = document.getElementById('mic-btn');
-    const userInput = document.getElementById('user-input');
+    // שינינו את השם כאן כדי לא להתנגש עם הסקריפט המקורי
+    const inputFieldForMic = document.getElementById('user-input');
 
     // בדיקה אם הדפדפן תומך בזיהוי דיבור
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -174,9 +187,7 @@
 
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            userInput.value = transcript; // הכנסת הטקסט לתיבה
-            // אופציונלי: שליחה אוטומטית (אם רוצים)
-            // document.getElementById('send-button').click(); 
+            inputFieldForMic.value = transcript; // הכנסת הטקסט לתיבה
         };
     } else {
         micBtn.style.display = 'none'; // הסתרת הכפתור אם הדפדפן לא תומך
