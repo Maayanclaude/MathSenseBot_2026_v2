@@ -1,4 +1,4 @@
-console.log("Script Loaded: PRESENTATION FINAL (New Intro + Pedagogical Goal + HTML Fix)");
+console.log("Script Loaded: FINAL FIXED VERSION - Pedagogical Intro");
 
 // --- 1. המוח של הבוט ---
 class MathProblemGuidingBot {
@@ -10,7 +10,7 @@ class MathProblemGuidingBot {
         this.questionStep = 'א';    
         this.errorCount = 0; 
         
-        // טקסטים לשלבים (גוף ראשון)
+        // טקסטים לשלבים (גוף ראשון) - תוקן למנוע כפילויות
         this.genderedTexts = {
             'step_A': { 
                 boy: "אחרי שקראת את השאלה, <b>מה אני צריך למצוא?</b>", 
@@ -44,7 +44,7 @@ class MathProblemGuidingBot {
     startConversationLogic() {
         if (problemNote) problemNote.classList.add('hidden'); 
         
-        // --- שינוי 1: הפתיחה החדשה עם הדגשת "3 שלבים" ---
+        // --- פתיחה: הצגה עצמית + 3 שלבים ---
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות ב-<b>3 שלבים</b>.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
         
         displayMessage(introText, 'bot', 'welcoming'); 
@@ -88,9 +88,9 @@ class MathProblemGuidingBot {
         // אם המשתמש לחץ על "קראתי!"
         if (selection === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
-            chatWindow.innerHTML = ''; // מנקה את הצ'אט להתחלה נקייה של הפתרון
+            chatWindow.innerHTML = ''; 
             
-            // --- התיקון הקריטי כאן: innerHTML במקום innerText ---
+            // הצגת השאלה בפתק הצהוב
             problemNoteText.innerHTML = this.currentProblem.question;
             
             problemNote.classList.remove('hidden'); 
@@ -99,15 +99,14 @@ class MathProblemGuidingBot {
             return;
         }
 
-        // בחירת מגדר ראשונית
+        // --- כאן נמצא התיקון הגדול: הטקסט החדש אחרי בחירת שם ומגדר ---
         studentGender = selection; 
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
         
         if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Signup: ${studentName} (${studentGender})`, currentUserID);
 
-        // --- שינוי 2: הסבר פדגוגי על "דרך הפתרון" לפני הבעיה הראשונה ---
-        
         let goalText = "";
+        // הטקסט הפדגוגי החדש מחליף את הטקסט הישן
         if (studentGender === 'boy') {
             goalText = `נעים להכיר, ${studentName}!<br><br>לפני שנתחיל, חשוב לזכור:<br>המטרה שלנו היא תרגול <b>דרך הפתרון</b>, ולא התוצאה.<br><br>אציג לפניך את הבעיה הראשונה.<br>קרא אותה, וכשתהיה מוכן, לחץ "קראתי!".`;
         } else {
@@ -116,14 +115,14 @@ class MathProblemGuidingBot {
 
         displayMessage(goalText, 'bot', 'welcoming'); 
         
-        // הצגת הבעיה הראשונה + כפתור
+        // הצגת הבעיה הראשונה בצ'אט + כפתור
         setTimeout(() => {
             displayProblemInChat(this.currentProblem.question);
             updateAvatar('inviting'); 
             setTimeout(() => {
                 displayChoiceButtons([{ label: "קראתי! ✅", value: "ready_to_start" }]);
                 this.currentStep = 'wait_for_button_click'; 
-            }, 2000); // השהייה קלה לקריאת הטקסט
+            }, 2000); 
         }, 1500);
     }
 
@@ -229,7 +228,6 @@ class MathProblemGuidingBot {
                 clarification = this.currentProblem.clarifications[jsonKey];
             }
             
-            // הודעה מותאמת לטעות - ניטרלית ומכוונת
             const startPrefix = "זו לא התשובה הנכונה. בוא/י נבדוק את הנתונים והפעולה:<br>";
             displayMessage(`${startPrefix} ${clarification}`, 'bot', 'support');
         }
