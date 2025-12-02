@@ -1,6 +1,9 @@
-console.log("Script Loaded: FINAL FIXED VERSION - Pedagogical Intro");
 
-// --- 1. המוח של הבוט ---
+const OPENAI_API_KEY = 'כאן_מדביקים_את_המפתח_של_sk-proj-uUzbMDu_ZLhx3fF52oU9pkOmsx0uFlZnO9TnrLZ1Nq-_mVvw46DqYGUOnd4P4VaJzB6jXCqcJzT3BlbkFJo9s0p5DrtJ1Q0If535wEW4s0JgYuJgO_Ttqw_vxnDbGQaAXBA7rXlArqwIkgpZKmUSbDfzGR0A'; 
+
+console.log("Script Loaded: AI AGENT VERSION 🤖");
+
+// --- 1. המוח של הבוט (מבוסס AI) ---
 class MathProblemGuidingBot {
     constructor() {
         this.problems = [];
@@ -8,9 +11,8 @@ class MathProblemGuidingBot {
         this.currentProblemIndex = 0; 
         this.currentStep = 'intro'; 
         this.questionStep = 'א';    
-        this.errorCount = 0; 
         
-        // טקסטים לשלבים (גוף ראשון) - תוקן למנוע כפילויות
+        // טקסטים לשלבים (עיצוב וניסוח)
         this.genderedTexts = {
             'step_A': { 
                 boy: "אחרי שקראת את השאלה, <b>מה אני צריך למצוא?</b>", 
@@ -28,8 +30,6 @@ class MathProblemGuidingBot {
                 icon: 'Missing_puzzle.png' 
             }
         };
-
-        this.positiveResponses = ["מצוין!", "כל הכבוד!", "בדיוק!", "אלופ/ה!", "תשובה נהדרת!"];
     }
 
     async loadProblemsFromFile() {
@@ -43,10 +43,7 @@ class MathProblemGuidingBot {
     
     startConversationLogic() {
         if (problemNote) problemNote.classList.add('hidden'); 
-        
-        // --- פתיחה: הצגה עצמית + 3 שלבים ---
         const introText = "היי, אני מתי!<br>יחד נפתור בעיות מילוליות ב-<b>3 שלבים</b>.<br>לפני שנתחיל, אשמח לדעת איך קוראים לך?";
-        
         displayMessage(introText, 'bot', 'welcoming'); 
         this.currentStep = 'wait_for_name'; 
     }
@@ -60,9 +57,8 @@ class MathProblemGuidingBot {
             return;
         }
         this.currentProblem = this.problems[this.currentProblemIndex];
-        chatWindow.innerHTML = ''; this.resetStars(); this.errorCount = 0;
+        chatWindow.innerHTML = ''; this.resetStars();
         if (problemNote) problemNote.classList.add('hidden'); 
-        
         this.questionStep = 'א'; 
 
         const transitionText = (studentGender === 'boy') ? "נהדר! הנה הבעיה הבאה.<br>קרא אותה, וכשתהיה מוכן לחץ על הכפתור." : "נהדר! הנה הבעיה הבאה.<br>קראי אותה, וכשתהיי מוכנה לחצי על הכפתור.";
@@ -85,28 +81,21 @@ class MathProblemGuidingBot {
     }
 
     handleGenderSelection(selection) {
-        // אם המשתמש לחץ על "קראתי!"
         if (selection === 'ready_to_start') {
             document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
             chatWindow.innerHTML = ''; 
-            
-            // הצגת השאלה בפתק הצהוב
             problemNoteText.innerHTML = this.currentProblem.question;
-            
             problemNote.classList.remove('hidden'); 
             this.currentStep = 'problem_solving';
             this._displayCurrentGuidingQuestion();
             return;
         }
 
-        // --- כאן נמצא התיקון הגדול: הטקסט החדש אחרי בחירת שם ומגדר ---
         studentGender = selection; 
         document.querySelectorAll('.choice-btn-container').forEach(b => b.remove());
-        
         if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Signup: ${studentName} (${studentGender})`, currentUserID);
 
         let goalText = "";
-        // הטקסט הפדגוגי החדש מחליף את הטקסט הישן
         if (studentGender === 'boy') {
             goalText = `נעים להכיר, ${studentName}!<br><br>לפני שנתחיל, חשוב לזכור:<br>המטרה שלנו היא תרגול <b>דרך הפתרון</b>, ולא התוצאה.<br><br>אציג לפניך את הבעיה הראשונה.<br>קרא אותה, וכשתהיה מוכן, לחץ "קראתי!".`;
         } else {
@@ -114,8 +103,6 @@ class MathProblemGuidingBot {
         }
 
         displayMessage(goalText, 'bot', 'welcoming'); 
-        
-        // הצגת הבעיה הראשונה בצ'אט + כפתור
         setTimeout(() => {
             displayProblemInChat(this.currentProblem.question);
             updateAvatar('inviting'); 
@@ -141,11 +128,10 @@ class MathProblemGuidingBot {
         if (this.currentStep === 'wait_for_gender' || this.currentStep === 'wait_for_button_click') {
              displayMessage("נא להשתמש בכפתורים 👆", 'bot', 'support'); return;
         }
-        if (this.currentStep === 'problem_solving') this._processAnswer(reply);
+        if (this.currentStep === 'problem_solving') this._processAnswerAI(reply);
     }
 
     _displayCurrentGuidingQuestion() {
-        this.errorCount = 0; stepStartTime = Date.now();
         let textToShow = ""; let iconName = "";
         
         if (this.questionStep === 'א') {
@@ -163,73 +149,106 @@ class MathProblemGuidingBot {
         displayMessage(questionHtml, 'bot', 'thinking');
     }
     
-    _processAnswer(reply) {
-        if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Ans: ${reply} (Step: ${this.questionStep})`, currentUserID);
+    // --- 🤖 הפונקציה החדשה: פנייה ל-ChatGPT ---
+    async _processAnswerAI(userReply) {
+        if (window.sendDataToGoogleSheet) window.sendDataToGoogleSheet(`Ans: ${userReply} (Step: ${this.questionStep})`, currentUserID);
         
-        // טיפול ב"לא יודע"
-        if (reply.includes("לא יודע") || reply.includes("לא מבין") || reply.includes("אין לי מושג") || reply.includes("עזרה")) {
-            this.errorCount++;
-            let clarification = "בוא ננסה לקרוא שוב את השאלה...";
+        // מציג חיווי שהבוט חושב
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'chat-message bot-message';
+        typingIndicator.innerText = 'מתי מקליד... 🤖';
+        typingIndicator.id = 'temp-typing';
+        chatWindow.appendChild(typingIndicator);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        isBotTyping = true;
+
+        try {
+            // בניית הפרומפט הפדגוגי ל-AI
+            const problemText = this.currentProblem.question;
+            const correctData = JSON.stringify(this.currentProblem.keywords[this.questionStep]); // הנתונים מה-JSON עוזרים ל-AI לדעת מה התשובה
             
-            let jsonKey = this.questionStep;
-            if (this.questionStep === 'ג' && (!this.currentProblem.keywords['ג'])) jsonKey = 'ב';
-            
-            if (this.currentProblem.clarifications && this.currentProblem.clarifications[jsonKey]) {
-                clarification = this.currentProblem.clarifications[jsonKey];
-            }
-            
-            const supportText = (studentGender === 'boy') ? 
-                `זה בסדר גמור לא לדעת. בוא נחשוב יחד: ${clarification}` : 
-                `זה בסדר גמור לא לדעת. בואי נחשוב יחד: ${clarification}`;
+            let stepGoal = "";
+            if(this.questionStep === 'א') stepGoal = "לזהות מה השאלה מבקשת למצוא";
+            if(this.questionStep === 'ב') stepGoal = "לזהות את הנתונים המספריים והמילוליים בשאלה";
+            if(this.questionStep === 'ג') stepGoal = "לזהות את הפעולה המתמטית (חיבור/חיסור/כפל/חילוק) ואת התרגיל";
+
+            const systemPrompt = `
+                אתה "מתי", סוכן פדגוגי למתמטיקה לכיתה ה'.
+                התלמיד (${studentName}, ${studentGender === 'boy' ? 'בן' : 'בת'}) פותר בעיה מילולית בשלבים.
                 
-            displayMessage(supportText, 'bot', 'support');
-            return;
-        }
+                הבעיה הנוכחית: "${problemText}"
+                השלב הנוכחי: ${this.questionStep} (המטרה: ${stepGoal}).
+                מידע אמת (התשובה הנכונה) לשלב זה: ${correctData}.
 
-        // בדיקה רגילה
-        let jsonKey = this.questionStep;
-        if (this.questionStep === 'ג' && (!this.currentProblem.keywords['ג'])) {
-             jsonKey = 'ב'; 
-        }
+                תפקידך:
+                1. נתח את תשובת התלמיד: "${userReply}".
+                2. אם התשובה נכונה (מבחינת משמעות, גם אם הניסוח שונה):
+                   - תחזיר JSON עם: {"isCorrect": true, "feedback": "משפט חיזוק קצר"}.
+                3. אם התשובה שגויה או חלקית:
+                   - תחזיר JSON עם: {"isCorrect": false, "feedback": "רמז מכוון או הסבר קצר (בלי לגלות את התשובה!)"}.
+                   - אם הילד כתב "לא יודע", תן רמז עדין.
+                   - אם חסר נתון (בשלב ב'), כתוב שחסר משהו.
+                
+                התשובה שלך חייבת להיות בפורמט JSON בלבד.
+                דבר בעברית, בגובה העיניים, מעודד וסבלני.
+            `;
 
-        let keywords = [];
-        if (this.currentProblem.keywords && this.currentProblem.keywords[jsonKey]) {
-            keywords = this.currentProblem.keywords[jsonKey];
-        }
-        
-        const isCorrect = this._checkAnswer(reply, keywords);
+            // שליחה ל-OpenAI
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${OPENAI_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini", // מודל מהיר וזול
+                    messages: [{ role: "system", content: systemPrompt }],
+                    temperature: 0.7
+                })
+            });
 
-        if (isCorrect) {
-            playSound('success-chime');
-            const randomGood = this.positiveResponses[Math.floor(Math.random() * this.positiveResponses.length)];
+            const data = await response.json();
+            const aiContent = data.choices[0].message.content;
             
-            if (this.questionStep === 'א') {
-                this.updateStars('א', true);
-                displayMessage(`${randomGood} זיהית נכון.`, 'bot', 'success');
-                this.questionStep = 'ב';
-                setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
-            } 
-            else if (this.questionStep === 'ב') {
-                this.updateStars('ב', true);
-                displayMessage(`${randomGood} עלית על הנתונים.`, 'bot', 'success');
-                this.questionStep = 'ג'; 
-                setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
-            }
-            else {
-                this.updateStars('ג', true);
-                this._showFinalSummary();
+            // ניקוי ה-JSON (לפעמים ה-AI מוסיף ```json)
+            const cleanJson = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
+            const result = JSON.parse(cleanJson);
+
+            // הסרת חיווי הקלדה
+            document.getElementById('temp-typing').remove();
+            isBotTyping = false;
+
+            // --- טיפול בתשובה מה-AI ---
+            if (result.isCorrect) {
+                playSound('success-chime');
+                
+                if (this.questionStep === 'א') {
+                    this.updateStars('א', true);
+                    displayMessage(result.feedback, 'bot', 'success');
+                    this.questionStep = 'ב';
+                    setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
+                } 
+                else if (this.questionStep === 'ב') {
+                    this.updateStars('ב', true);
+                    displayMessage(result.feedback, 'bot', 'success');
+                    this.questionStep = 'ג'; 
+                    setTimeout(() => this._displayCurrentGuidingQuestion(), 1500);
+                }
+                else {
+                    this.updateStars('ג', true);
+                    this._showFinalSummary();
+                }
+            } else {
+                this.errorCount++;
+                playSound('error');
+                displayMessage(result.feedback, 'bot', 'support'); // ה-AI מייצר את הרמז בעצמו!
             }
 
-        } else {
-            this.errorCount++; playSound('error');
-            
-            let clarification = "נסה לקרוא שוב את השאלה...";
-            if (this.currentProblem.clarifications && this.currentProblem.clarifications[jsonKey]) {
-                clarification = this.currentProblem.clarifications[jsonKey];
-            }
-            
-            const startPrefix = "זו לא התשובה הנכונה. בוא/י נבדוק את הנתונים והפעולה:<br>";
-            displayMessage(`${startPrefix} ${clarification}`, 'bot', 'support');
+        } catch (error) {
+            console.error("AI Error:", error);
+            document.getElementById('temp-typing').remove();
+            isBotTyping = false;
+            displayMessage("אופס, הייתה לי בעיה בתקשורת. בוא ננסה שוב.", 'bot', 'confuse');
         }
     }
 
@@ -249,12 +268,6 @@ class MathProblemGuidingBot {
         `;
         displayMessage(summaryHtml, 'bot', 'excited');
         setTimeout(() => displayChoiceButtons([{ label: "לבעיה הבאה ⬅️", value: "next_problem" }]), 2500);
-    }
-    
-    _checkAnswer(reply, keywords) {
-        if (!keywords || keywords.length === 0) return true; 
-        const normalizedReply = reply.toLowerCase().trim();
-        return keywords.some(keyword => normalizedReply.includes(keyword.toLowerCase()));
     }
     
     updateStars(step, isCorrect) {
